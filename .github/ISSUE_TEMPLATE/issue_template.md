@@ -16,25 +16,9 @@ so that **[benefit/value]**.
 - **Current behavior:** [How does it work today?]
 - **Expected behavior:** [How should it work?]
 
-## Acceptance Criteria
-- [ ] Given **[initial state]**, when **[action]**, then **[expected result]**
-- [ ] Given **[initial state]**, when **[action]**, then **[expected result]**
-- [ ] Edge case: **[describe edge case and expected behavior]**
-
 ## Scope
 - **In scope:** [What is included in this story]
 - **Out of scope:** [What is not included]
-
-## Technical Notes
-- **Dependencies:** [Other stories/issues, services, APIs]
-- **Risks:** [Known risks or constraints]
-- **Implementation notes:** [Optional technical details]
-
-## Definition of Done
-- [ ] Acceptance criteria met
-- [ ] Tests added/updated
-- [ ] Documentation updated (if needed)
-- [ ] Reviewed and approved
 
 ## Estimation & Planning
 - **Priority:** [Low / Medium / High / Critical]
