@@ -16,11 +16,8 @@ RUN uv sync --frozen --no-dev
 # Copy project
 COPY . .
 
-# Collect static files (for production)
-RUN uv run python manage.py collectstatic --noinput
-
 # Expose port
 EXPOSE 8000
 
 # Start server
-CMD sh -c "uv run python manage.py migrate && uv run gunicorn SoftwareProject.wsgi:application --bind 0.0.0.0:8000"
+CMD ["./entrypoint.sh"]
