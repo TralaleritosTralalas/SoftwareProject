@@ -1,7 +1,2 @@
 Django==4.2.11
-python-apt==2.7.7+ubuntu3
-python-debian==0.1.49+ubuntu2
-python-gnupg==0.5.2
-python-magic==0.4.27
-python-xlib==0.33
 uvicorn==0.27.0
