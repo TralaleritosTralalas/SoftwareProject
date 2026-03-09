@@ -1,0 +1,35 @@
+# Byte-compiled / Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+.env
+
+# Logs
+*.log
+*.sqlite3
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Node / frontend (si tens)
+node_modules/
+dist/
+
+# Static / media build folders (si es re-generen en collectstatic)
+staticfiles/
+media/
+
+# IDE / editor configs
+.vscode/
+.idea/
+*.swp
