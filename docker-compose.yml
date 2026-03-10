@@ -1,0 +1,27 @@
+# Docker Compose file -- defines how to run the project's containers
+
+services:
+  # The Django web application
+  web:
+    # Build the image using the Dockerfile in the current directory (./Dockerfile)
+    build: .
+
+    environment:
+      SECRET_KEY: django-insecure-e@p&465=fx5(a#@t7q!1*-3z@3@-&1ar-v29!zr1hvn+fj$8g$
+      DEBUG: False
+      ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0
+
+    # Map port 8000 on your machine to port 8000 in the container
+    # Access the app at http://localhost:8000
+    ports:
+      - "8000:8000"
+
+    # Mount the current directory into /app in the container
+    # This means code changes on your machine are reflected instantly (live reload)
+    volumes:
+      - .:/app  # "." = your project folder, "/app" = where it goes inside the container
+
+# Named volumes (folders managed by Docker that live outside the containers)
+# They keep data even if you delete and recreate the containers
+volumes:
+  pgdata:
