@@ -28,7 +28,7 @@ jobs:
 
       - name: Run issues histogram script
         env:
-          GITHUB_TOKEN: ${{ secrets.HISTORY_TOKEN }}
+          HISTORY_TOKEN: ${{ secrets.HISTORY_TOKEN }}
         run: python histogram.py
 
       - name: Upload histogram artifact
