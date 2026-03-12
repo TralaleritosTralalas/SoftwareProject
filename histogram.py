@@ -81,11 +81,9 @@ def main():
     issue_dates = parse_dates(issues)
     print(f"  → {len(issues)} issues encontradas (sin PRs)")
 
-    now    = datetime.now()
     weeks = []
     weeks.extend(build_weeks(2026, 3))
     weeks.extend(build_weeks(2026, 4))
-
     sprint_end_date = datetime(2026, 4, 24)
 
     weeks = [
