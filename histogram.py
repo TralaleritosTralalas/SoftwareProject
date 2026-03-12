@@ -1,4 +1,5 @@
 import calendar
+from decouple import config
 import requests
 from datetime import datetime
 import matplotlib.pyplot as plt
@@ -6,7 +7,7 @@ from matplotlib.ticker import MaxNLocator
 
 # ── Configuración ──────────────────────────────────────────────────────────────
 REPO   = "TralaleritosTralalas/SoftwareProject"
-TOKEN  = "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"
+TOKEN  = config("HISTOGRAM_TOKEN")
 OWNER, REPO_NAME = REPO.split("/")
 
 headers = {
