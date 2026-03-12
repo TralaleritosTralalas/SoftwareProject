@@ -69,7 +69,7 @@ def count_open_per_week(
         open_count = sum(
             1
             for created, closed in issue_dates
-            if created <= end and (closed is None or closed >= start)
+            if start <= created <= end and (closed is None)
         )
         counts.append(open_count)
     return counts
@@ -82,12 +82,27 @@ def main():
     print(f"  → {len(issues)} issues encontradas (sin PRs)")
 
     now    = datetime.now()
-    weeks  = build_weeks(now.year, now.month)
+    weeks = []
+    weeks.extend(build_weeks(2026, 3))
+    weeks.extend(build_weeks(2026, 4))
+
+    sprint_end_date = datetime(2026, 4, 24)
+
+    weeks = [
+        (label, start, end)
+        for (label, start, end) in weeks
+        if start <= sprint_end_date
+    ]
+
     counts = count_open_per_week(issue_dates, weeks)
-    labels = [w[0] for w in weeks]
+
+    labels = [
+        f"{datetime(start.year, start.month, 1).strftime('%b')} {label}"
+        for label, start, end in weeks
+    ]
 
     # ── Gráfica ────────────────────────────────────────────────────────────────
-    fig, ax = plt.subplots(figsize=(9, 5))
+    fig, ax = plt.subplots(figsize=(14, 6))
     bars = ax.bar(labels, counts, color="#4C72B0", edgecolor="white", linewidth=0.8)
 
     for bar, count in zip(bars, counts):
@@ -106,7 +121,7 @@ def main():
     ax.set_xlabel("Semanas del mes", fontsize=12)
     ax.set_ylabel("Número de issues abiertas", fontsize=12)
     ax.set_title(
-        f"Issues abiertas por semana — {now.strftime('%B %Y')}",
+        f"Issues abiertas por semana activas a día de hoy",
         fontsize=14,
         fontweight="bold",
     )
@@ -114,7 +129,6 @@ def main():
 
     plt.tight_layout()
     plt.savefig("issues_histogram.png", dpi=150)
-    plt.show()
     print("Gráfica guardada como issues_histogram.png")
 
 if __name__ == "__main__":
