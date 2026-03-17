@@ -1,0 +1,50 @@
+name: Run Chart Action
+
+on:  
+  schedule:
+    - cron: '0 0 * * 2'
+  #push:
+  #  branches: master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+      issues: read
+  
+    steps:
+      - name: Cechout repo
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
+          # Value already defaults to true, but `persist-credentials` is required to push new commits to the repository.
+          persist-credentials: true
+
+      - name: Fetch all issues and their creation dates
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue list --state all --limit 10000 --json createdAt > IshikawaTools/issues.json
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && pip install matplotlib>=3.7.3
+  
+      - name: Run script
+        working-directory: ./IshikawaTools
+        
+        run: git pull && python ./runchart_prova.py
+
+      - name: Commit and Push changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "chore(run-chart): Update generated chart image"
+          commit_user_name: DenisLazarian [Github Actions]
+  
