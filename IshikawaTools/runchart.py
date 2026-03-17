@@ -1,10 +1,41 @@
 import json
 import os
+import requests
+from decouple import config
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 
 
+# ── Fetch con paginación ───────────────────────────────────────────────────────
+def fetch_all_issues(owner: str, repo: str, headers: dict) -> list[dict]:
+    issues, page = [], 1
+    while True:
+        resp = requests.get(
+            f"https://api.github.com/repos/{owner}/{repo}/issues",
+            headers=headers,
+            params={"state": "all", "per_page": 100, "page": page},
+        )
+        resp.raise_for_status()
+        batch = resp.json()
+        if not batch:
+            break
+        issues.extend(i for i in batch if "pull_request" not in i)
+        page += 1
+    return issues
+
+
 def main():
+    # ── Configuración ──────────────────────────────────────────────────────────────
+    REPO = "TralaleritosTralalas/SoftwareProject"
+    TOKEN = config("HISTOGRAM_TOKEN")
+    OWNER, REPO_NAME = REPO.split("/")
+
+    headers = {
+        "X-GitHub-Api-Version": "2022-11-28",
+        "Authorization": f"Bearer {TOKEN}",
+        "Accept": "application/vnd.github+json",
+    }
+
     # 1. Obtener la ruta exacta de la carpeta donde está este script (IshikawaTools/)
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -12,13 +43,13 @@ def main():
     json_path = os.path.join(SCRIPT_DIR, 'issues.json')
     img_path = os.path.join(SCRIPT_DIR, 'issue_runchart.png')
 
+    issues = fetch_all_issues(OWNER, REPO_NAME, headers)
+    with open(json_path, 'w', encoding='utf-8') as f:
+        f.write(json.dumps(issues, indent=2))
+
     try:
         # Intento 1: UTF-8 (El estándar que usará GitHub Actions)
         with open(json_path, 'r', encoding='utf-8') as f:
-            texto_crudo = f.read()
-    except UnicodeDecodeError:
-        # Intento 2: UTF-16 (El formato que usa PowerShell en Windows localmente)
-        with open(json_path, 'r', encoding='utf-16') as f:
             texto_crudo = f.read()
     except FileNotFoundError:
         print(f"Error: No se encontró el archivo en la ruta: {json_path}")
@@ -39,7 +70,7 @@ def main():
     # 4. Extraer fechas
     dates = []
     for issue in issues:
-        dt_str = issue['createdAt'].replace('Z', '+00:00')
+        dt_str = issue['created_at'].replace('Z', '+00:00')
         dates.append(datetime.fromisoformat(dt_str))
 
     # 5. Calcular semanas
