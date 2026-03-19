@@ -1,4 +1,4 @@
-name: Issues Histogram
+name: Histogram Action
 
 on:
   schedule:

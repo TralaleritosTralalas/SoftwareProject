@@ -1,4 +1,4 @@
-name: Pareto Diagram
+name: Pareto Diagram Action
 
 on:
   schedule:

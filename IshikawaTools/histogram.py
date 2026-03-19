@@ -84,7 +84,8 @@ def main():
     weeks = []
     weeks.extend(build_weeks(2026, 3))
     weeks.extend(build_weeks(2026, 4))
-    sprint_end_date = datetime(2026, 4, 24)
+    weeks.extend(build_weeks(2026, 5))
+    sprint_end_date = datetime(2026, 5, 5)
 
     weeks = [
         (label, start, end)

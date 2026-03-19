@@ -1,0 +1,98 @@
+name: Quality Control Aggregator
+
+on:
+  workflow_run:
+    workflows: ["CD Deploy to Render", "Django CI"]
+    types:
+      - completed
+  schedule:
+    # Roda as 23:00 de Seg a Sex (UTC)
+    - cron: '0 23 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+  issues: read
+
+jobs:
+  aggregate-quality-control:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Token customizado caso precise commitar por cima de protecoes de branch. Senão usar padrao.
+          # token: ${{ secrets.PAT_TOKEN }}
+          fetch-depth: 1
+
+      - name: Fetch Pipeline Results
+        id: fetch_results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let testFails = 0, secFails = 0, codeFails = 0;
+            const todayStart = new Date();
+            todayStart.setUTCHours(0, 0, 0, 0);
+            
+            core.info(`Scanning workflows for runs since: ${todayStart.toISOString()}`);
+
+            try {
+              // 1. Busca as pipelines/workflows do repositório automaticamente
+              const { data } = await github.rest.actions.listRepoWorkflows({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              });
+              
+              const activeWorkflows = data.workflows.filter(w => w.state === 'active');
+              core.info(`✅ Encontradas ${activeWorkflows.length} pipelines ativas no repositório.`);
+
+              for (const workflow of activeWorkflows) {
+                // Pular o próprio aggregator para evitar loop ou ruído
+                if (workflow.name === 'Quality Control Aggregator' || workflow.name === 'PR/Commit Checks Summary') continue;
+
+                const { data: { workflow_runs } } = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: workflow.id,
+                  per_page: 20
+                });
+
+                const failedToday = workflow_runs.filter(run => 
+                  run.conclusion === 'failure' && 
+                  new Date(run.created_at) >= todayStart
+                );
+
+                if (failedToday.length > 0) {
+                  core.info(`- ❌ Workflow '${workflow.name}' teve ${failedToday.length} falhas hoje.`);
+                  const nameLower = workflow.name.toLowerCase();
+                  
+                  if (nameLower.includes('django')) testFails += failedToday.length;
+                  else if (nameLower.includes('gitguardian') || nameLower.includes('security')) secFails += failedToday.length;
+                  else if (nameLower.includes('deploy') || nameLower.includes('code issue')) codeFails += failedToday.length;
+                } else {
+                   core.info(`- ✅ Workflow '${workflow.name}' sem falhas registradas hoje.`);
+                }
+              }
+            } catch (error) {
+              core.warning(`Erro ao buscar pipelines: ${error.message}`);
+            }
+            
+            core.exportVariable('TEST_ERRORS', testFails);
+            core.exportVariable('SECURITY_ISSUES', secFails);
+            core.exportVariable('CODE_SMELLS', codeFails);
+
+      - name: Execute QC Aggregator Script
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const script = require('./.github/scripts/generate_qc_report.js');
+            await script({github, context, core});
+
+      - name: Commit Updated Check Sheet
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(qc): Update Daily Quality Control Check Sheet"
+          file_pattern: .github/quality_control_data.json
