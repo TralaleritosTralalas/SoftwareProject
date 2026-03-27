@@ -23,7 +23,7 @@ jobs:
       uses: actions/checkout@v4
     - name: Get JSON
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+        HISTOGRAM_TOKEN: ${{ secrets.HISTOGRAM_TOKEN }}
       run: |
 
         gh issue list --state open --json title,body,labels > issues_data.json
@@ -35,7 +35,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pandas matplotlib
+        pip install pandas matplotlib python-decouple requests
     - name: get graphics
       working-directory: ./IshikawaTools
       run: |
