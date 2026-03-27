@@ -1,4 +1,4 @@
-name: Issues Histogram
+name: Histogram Action
 
 on:
   schedule:
@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
+      issues: read
       contents: read
 
     steps:
