@@ -37,6 +37,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pandas matplotlib
     - name: get graphics
+      working-directory: ./IshikawaTools
       run: |
         python chart.py
     - name: Upload chart
