@@ -37,4 +37,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: issues-histogram-graph
-          path: issues_histogram.png
+          path: IshikawaTools/issues_histogram.png
