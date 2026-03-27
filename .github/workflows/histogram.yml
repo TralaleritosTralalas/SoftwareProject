@@ -1,0 +1,39 @@
+name: Histogram Action
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # every monday at 6:00
+  workflow_dispatch:
+
+jobs:
+  generate-graph:
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: read
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests matplotlib
+
+      - name: Run issues histogram script
+        env:
+          HISTOGRAM_TOKEN: ${{ secrets.HISTOGRAM_TOKEN }}
+        run: python histogram.py
+
+      - name: Upload histogram artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: issues-histogram-graph
+          path: issues_histogram.png

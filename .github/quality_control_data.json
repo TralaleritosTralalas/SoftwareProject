@@ -1,0 +1,77 @@
+{
+  "document_type": "Check Sheet",
+  "purpose": "Quality Control - Defect/Event Tracking",
+  "title": "Check Sheet or Checklist",
+  "schema": {
+    "columns": [
+      "Defect/Event occurrence",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "TOTAL"
+    ],
+    "data_format": "Tally marks represented as integers for logic",
+    "total_calculation": "Sum of daily occurrences"
+  },
+  "records": [
+    {
+      "occurrence": "Test error",
+      "daily_counts": {
+        "Mon": 0,
+        "Tue": 0,
+        "Wed": 0,
+        "Thu": 2,
+        "Fri": 0
+      },
+      "total": 2
+    },
+    {
+      "occurrence": "Security vulnerability",
+      "daily_counts": {
+        "Mon": 0,
+        "Tue": 0,
+        "Wed": 0,
+        "Thu": 2,
+        "Fri": 0
+      },
+      "total": 2
+    },
+    {
+      "occurrence": "Code smells/Bugs",
+      "daily_counts": {
+        "Mon": 0,
+        "Tue": 0,
+        "Wed": 0,
+        "Thu": 0,
+        "Fri": 0
+      },
+      "total": 0
+    },
+    {
+      "occurrence": "Other/Miscellaneous",
+      "daily_counts": {
+        "Mon": 0,
+        "Tue": 0,
+        "Wed": 0,
+        "Thu": 0,
+        "Fri": 0
+      },
+      "total": 0
+    }
+  ],
+  "summary": {
+    "grand_total": 4,
+    "days_tracked": 5
+  },
+  "issues_tracking": {
+    "open_bugs": 0,
+    "open_features": 0,
+    "open_docs": 0,
+    "open_ux": 0,
+    "open_infra": 0,
+    "open_testing": 0,
+    "total_open": 0
+  }
+}
