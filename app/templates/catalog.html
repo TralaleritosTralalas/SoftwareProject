@@ -88,7 +88,7 @@
 
 <!-- Recommended For You -->
 <section class="mb-12">
-<h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Catalog</h2>
+<h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Movies</h2>
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
 
     {% for movie in movies %}
@@ -148,7 +148,41 @@
     
     </div>
 </section>
-
+<!-- Series -->
+<section class="mb-12">
+    <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Series</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+  
+      {% for serie in series %}
+      <div class="group relative cursor-pointer">
+        <div class="aspect-[2/3] rounded-xl overflow-hidden mb-3 relative shadow-md bg-surface-dark">
+          <img
+            src="https://via.placeholder.com/300x450?text=No+Image"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+          <div class="absolute top-2 left-2">
+            <span class="bg-black/60 text-white text-[10px] px-2 py-1 rounded">
+              {{ serie.start_year }}
+            </span>
+          </div>
+          <div class="absolute top-2 right-2">
+            <span class="bg-black/60 text-white text-[10px] px-2 py-1 rounded">
+              {{ serie.platform_name|default:"unknown" }}
+            </span>
+          </div>
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col justify-end p-4">
+            <button class="bg-primary text-white text-xs font-bold py-2 rounded">Play</button>
+          </div>
+        </div>
+        <h3 class="font-semibold text-sm truncate">{{ serie.title }}</h3>
+        <div class="text-xs text-slate-500 space-y-1">
+          <div>{{ serie.genre_name|default:"Unknown" }}</div>
+        </div>
+      </div>
+      {% endfor %}
+  
+    </div>
+  </section>
 
 <!-- Simple Footer -->
 <footer class="border-t border-border-light dark:border-border-dark mt-auto py-8">

@@ -33,6 +33,20 @@ def get_local_movies(url, api_key): #de una "plataforma" obtengo sus peliculas
         print(f"Error connecting to API: {e}")
         return []
 
+def get_local_series(url, api_key): #de una "plataforma" obtengo sus series
+    try:
+        response = requests.get(
+            f"{url}/series", 
+            headers={"X-API-KEY": api_key},
+            timeout=5
+        )
+        response.raise_for_status() 
+        print(response.status_code, response.text)
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error connecting to API: {e}")
+        return []
+
 def get_genre(url, api_key):
     try:
         response = requests.get(
@@ -67,4 +81,26 @@ def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
         all_movies.extend(movies)
     
     return all_movies
+
+def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
+    all_series = []
+    for url, key, platform_name in PLATFORMS:
+        
+        # mapa de generos x plataforma
+        genre_map = {}
+
+        genres = get_genre(url, key)
+        for g in genres:
+            genre_map[g["id"]] = g["name"]
+
+        series = get_local_series(url, key)
+        for serie in series:
+            genre_id = serie.get("genre_id") #tenemos el id que se asocia con su correspondente genero en string
+            serie["genre_name"] = genre_map.get(genre_id, "Unknown")
+            serie["platform_name"] = platform_name
+    
+        all_series.extend(series)
+    
+    return all_series
+
 
