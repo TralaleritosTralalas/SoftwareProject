@@ -10,3 +10,6 @@ def catalog(request):
     movies = get_all_movies()
     series = get_all_series()
     return render(request, 'catalog.html', {'movies': movies, 'series': series})
+
+def main(request):
+    return render(request, 'main.html')
