@@ -4,12 +4,12 @@ from .services import get_all_movies, get_all_series
 # Create your views here.
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'pages/home.html')
 
 def catalog(request):
     movies = get_all_movies()
     series = get_all_series()
-    return render(request, 'catalog.html', {'movies': movies, 'series': series})
+    return render(request, 'pages/catalog.html', {'movies': movies, 'series': series})
 
 def main(request):
     return render(request, 'pages/main.html')
