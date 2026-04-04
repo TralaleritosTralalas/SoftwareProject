@@ -11,5 +11,10 @@ def catalog(request):
     series = get_all_series()
     return render(request, 'pages/catalog.html', {'movies': movies, 'series': series})
 
+def movies(request):
+    movies = get_all_movies()
+    return render(request, 'pages/movies.html', {'movies': movies})
+
+
 def main(request):
     return render(request, 'pages/main.html')
