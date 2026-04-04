@@ -62,7 +62,9 @@ def get_genre(url, api_key):
 
 
 def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
-    all_movies = []
+    #all_movies = []
+    movies_dict = {}
+
     for url, key, platform_name in PLATFORMS:
         
         # mapa de generos x plataforma
@@ -74,13 +76,25 @@ def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
 
         movies = get_local_movies(url, key)
         for movie in movies:
-            genre_id = movie.get("genre_id") #tenemos el id que se asocia con su correspondente genero en string
-            movie["genre_name"] = genre_map.get(genre_id, "Unknown")
-            movie["platform_name"] = platform_name
+            #genre_id = movie.get("genre_id") #tenemos el id que se asocia con su correspondente genero en string
+            #movie["genre_name"] = genre_map.get(genre_id, "Unknown")
+            #movie["platform_name"] = platform_name
     
-        all_movies.extend(movies)
+        #all_movies.extend(movies)
+            identifier = f"{movie.get('title')}_{movie.get('year')}".lower().strip()
+            
+            if identifier not in movies_dict:
+                movie["genre_name"] = genre_map.get(movie.get('genre_id'), "Unknown")
+                movie["platforms"] = [platform_name]
+                movie.pop("platform_name", None)
+                movies_dict[identifier] = movie
+            else:
+                if platform_name not in movies_dict[identifier]["platforms"]:
+                    movies_dict[identifier]["platforms"].append(platform_name)
+    return list(movies_dict.values())
+
     
-    return all_movies
+    #return all_movies
 
 def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
     all_series = []
@@ -102,5 +116,7 @@ def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
         all_series.extend(series)
     
     return all_series
+
+
 
 
