@@ -116,9 +116,15 @@ def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
 
 
 def search_content(query): #buscar peli o serie segun titulo
-    results = []
+    results_dict = {}
 
     for url, key, platform_name in PLATFORMS:
+
+        genre_map = {}
+        genres = get_genre(url, key)
+        for g in genres:
+            genre_map[g["id"]] = g["name"]
+
         # Buscar en movies
         try:
             response = requests.get(
@@ -129,10 +135,16 @@ def search_content(query): #buscar peli o serie segun titulo
             )
             response.raise_for_status()
             for movie in response.json():
-                movie["platform_name"] = platform_name
                 movie["content_type"] = "movie"
                 movie.setdefault("start_year", None)
-                results.append(movie)
+                identifier = f"movie_{movie.get('title', '').lower().strip()}_{movie.get('year', '')}"
+                if identifier not in results_dict:
+                    movie["platforms"] = [platform_name]
+                    movie["genre_name"] = genre_map.get(movie.get("genre_id"), "Unknown")
+                    results_dict[identifier] = movie
+                else:
+                    if platform_name not in results_dict[identifier]["platforms"]:
+                        results_dict[identifier]["platforms"].append(platform_name)
         except requests.exceptions.RequestException:
             pass  # plataforma no disponible, se ignora
 
@@ -146,10 +158,16 @@ def search_content(query): #buscar peli o serie segun titulo
             )
             response.raise_for_status()
             for serie in response.json():
-                serie["platform_name"] = platform_name
                 serie["content_type"] = "series"
-                results.append(serie)
+                identifier = f"series_{serie.get('title', '').lower().strip()}_{serie.get('start_year', '')}"
+                if identifier not in results_dict:
+                    serie["platforms"] = [platform_name]
+                    serie["genre_name"] = genre_map.get(serie.get("genre_id"), "Unknown")
+                    results_dict[identifier] = serie
+                else:
+                    if platform_name not in results_dict[identifier]["platforms"]:
+                        results_dict[identifier]["platforms"].append(platform_name)
         except requests.exceptions.RequestException:
             pass
 
-    return results
+    return list(results_dict.values())
