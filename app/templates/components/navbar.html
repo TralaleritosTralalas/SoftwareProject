@@ -33,18 +33,31 @@
 
     </div>
 
-    <!-- Search Bar -->
-    <div class="hidden md:flex flex-1 max-w-xl mx-8">
-      <div class="relative w-full group">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-          <span class="material-symbols-outlined text-[20px]">search</span>
-        </div>
-        <input class="block w-full rounded-xl border-none bg-slate-100 dark:bg-[#1e293b] py-2.5 pl-10 pr-3 text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm" placeholder="Search movies, shows, or platforms..." type="text"/>
-        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-          <span class="text-xs text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 rounded px-1.5 py-0.5">⌘K</span>
-        </div>
+  <!-- Search Bar -->
+  <div class="hidden md:flex flex-1 max-w-xl mx-8">
+    <form action="{% url 'app:search' %}" method="GET" class="relative w-full group">
+      
+      <!-- Icono izquierda -->
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+        <span class="material-symbols-outlined text-[20px]">search</span>
       </div>
-    </div>
+
+      <!-- Input -->
+      <input 
+        type="text"
+        name="q"
+        value="{{ request.GET.q }}"
+        placeholder="Search movies, shows, or platforms..."
+        class="block w-full rounded-xl border-none bg-slate-100 dark:bg-[#1e293b] py-2.5 pl-10 pr-3 text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
+      />
+
+      <!-- Shortcut derecha -->
+      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+        <span class="text-xs text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 rounded px-1.5 py-0.5">⌘K</span>
+      </div>
+
+    </form>
+  </div>
 
     <!-- User Actions -->
     <div class="flex items-center gap-4">

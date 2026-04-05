@@ -115,5 +115,41 @@ def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
     return list(series_dict.values())
 
 
+def search_content(query): #buscar peli o serie segun titulo
+    results = []
 
+    for url, key, platform_name in PLATFORMS:
+        # Buscar en movies
+        try:
+            response = requests.get(
+                f"{url}/movies",
+                headers={"X-API-KEY": key},
+                params={"title": query},  # la API ya filtra por title con LIKE
+                timeout=5
+            )
+            response.raise_for_status()
+            for movie in response.json():
+                movie["platform_name"] = platform_name
+                movie["content_type"] = "movie"
+                movie.setdefault("start_year", None)
+                results.append(movie)
+        except requests.exceptions.RequestException:
+            pass  # plataforma no disponible, se ignora
 
+        # Buscar en series
+        try:
+            response = requests.get(
+                f"{url}/series",
+                headers={"X-API-KEY": key},
+                params={"title": query},
+                timeout=5
+            )
+            response.raise_for_status()
+            for serie in response.json():
+                serie["platform_name"] = platform_name
+                serie["content_type"] = "series"
+                results.append(serie)
+        except requests.exceptions.RequestException:
+            pass
+
+    return results
