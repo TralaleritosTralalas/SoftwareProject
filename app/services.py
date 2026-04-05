@@ -62,8 +62,8 @@ def get_genre(url, api_key):
 
 
 def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
-    #all_movies = []
-    movies_dict = {}
+
+    movies_dict = {} #diccionario para saber el contenido
 
     for url, key, platform_name in PLATFORMS:
         
@@ -76,46 +76,43 @@ def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
 
         movies = get_local_movies(url, key)
         for movie in movies:
-            #genre_id = movie.get("genre_id") #tenemos el id que se asocia con su correspondente genero en string
-            #movie["genre_name"] = genre_map.get(genre_id, "Unknown")
-            #movie["platform_name"] = platform_name
-    
-        #all_movies.extend(movies)
-            identifier = f"{movie.get('title')}_{movie.get('year')}".lower().strip()
+            identifier = f"{movie.get('title')}_{movie.get('year')}".lower().strip() #identificador del contenido
             
-            if identifier not in movies_dict:
-                movie["genre_name"] = genre_map.get(movie.get('genre_id'), "Unknown")
-                movie["platforms"] = [platform_name]
-                movie.pop("platform_name", None)
-                movies_dict[identifier] = movie
+            if identifier not in movies_dict: #el contenido no esta 
+                movie["genre_name"] = genre_map.get(movie.get('genre_id'), "Unknown") #agarramos su genero
+                movie["platforms"] = [platform_name]# lista de plataformas 
+                movie.pop("platform_name", None) 
+                movies_dict[identifier] = movie #guardamos en el diccionario
             else:
                 if platform_name not in movies_dict[identifier]["platforms"]:
                     movies_dict[identifier]["platforms"].append(platform_name)
     return list(movies_dict.values())
 
-    
-    #return all_movies
 
 def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
-    all_series = []
-    for url, key, platform_name in PLATFORMS:
-        
-        # mapa de generos x plataforma
-        genre_map = {}
+    series_dict = {}
 
+    for url, key, platform_name in PLATFORMS:
+        genre_map = {}
         genres = get_genre(url, key)
         for g in genres:
             genre_map[g["id"]] = g["name"]
 
         series = get_local_series(url, key)
+
         for serie in series:
-            genre_id = serie.get("genre_id") #tenemos el id que se asocia con su correspondente genero en string
-            serie["genre_name"] = genre_map.get(genre_id, "Unknown")
-            serie["platform_name"] = platform_name
+            identifier = f"{serie.get('title')}_{serie.get('start_year', '')}".lower().strip()
+
+            if identifier not in series_dict:
+                serie["genre_name"] = genre_map.get(serie.get("genre_id"), "Unknown")
+                serie["platforms"] = [platform_name]
+                serie.pop("platform_name", None)
+                series_dict[identifier] = serie
+            else:
+                if platform_name not in series_dict[identifier]["platforms"]:
+                    series_dict[identifier]["platforms"].append(platform_name)
     
-        all_series.extend(series)
-    
-    return all_series
+    return list(series_dict.values())
 
 
 
