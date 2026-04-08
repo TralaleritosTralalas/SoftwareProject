@@ -1,4 +1,4 @@
-name: Django CI
+name: CI Django Test
 
 on:
   push:
@@ -12,6 +12,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    env:
+      API_KEY_LOCAL_1: ${{ secrets.API_KEY_LOCAL_1 }}
+      API_KEY_LOCAL_2: ${{ secrets.API_KEY_LOCAL_2 }}
+      API_KEY_LOCAL_3: ${{ secrets.API_KEY_LOCAL_3 }}
+
     strategy:
       max-parallel: 4
       matrix:

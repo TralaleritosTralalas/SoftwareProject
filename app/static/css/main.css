@@ -1,0 +1,43 @@
+/* Hide scrollbar for horizontal scroll areas */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.cinematic-shadow {
+    box-shadow: 
+        0 10px 30px rgba(0,0,0,0.6), 
+        0 0 25px rgba(37,106,244,0.25);
+}
+.hover-electric:hover { box-shadow: 0 0 25px rgba(37, 106, 244, 0.6); }
+
+.card-enter {
+    animation: cardIn 0.4s ease both;
+}
+
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.unavailable-card {
+    opacity: 0.55;
+    filter: grayscale(1);
+    transition: filter 0.3s, opacity 0.3s;
+}
+
+.unavailable-card:hover {
+    opacity: 1;
+    filter: grayscale(0);
+}
+
+    /* Platform badge colors */
+.badge-p1 { background-color: #E50914; }
+.badge-p2 { background-color: #0073E6; }
+.badge-p3 { background-color: #5822b4; }
+
+.cinematic-shadow { box-shadow: 0 0 20px rgba(37, 106, 244, 0.2); }
+.hover-electric:hover { box-shadow: 0 0 25px rgba(37, 106, 244, 0.6); }

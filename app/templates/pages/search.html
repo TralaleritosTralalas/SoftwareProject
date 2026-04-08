@@ -1,0 +1,215 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Search — StreamSync{% endblock %}
+
+{% block content %}
+
+
+<!-- ── Search Header ─────────────────────────────────────────────────────── -->
+<header class="mb-10 mt-2">
+    {% if query %}
+        <p class="text-on-surface-variant text-xs uppercase tracking-widest font-bold mb-2">
+            Search Results for
+        </p>
+
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+            "{{ query }}"
+        </h1>
+
+        {% if results %}
+            <p class="text-on-surface-variant text-sm">
+                {{ result_count }} result{{ result_count|pluralize }} found{{ result_count|pluralize }} across your connected platforms.
+            </p>
+        {% endif %}
+
+    {% else %}
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Search</h1>
+        <p class="text-on-surface-variant text-sm">
+            Type in the search bar to find movies and TV shows.
+        </p>
+    {% endif %}
+</header>
+
+<!-- ── Search bar ───────────────────────────────────────────────────────── -->
+{% if not query %}
+<div class="flex justify-center mb-16">
+    <form action="{% url 'app:search' %}" method="GET" class="w-full max-w-lg">
+        <div class="relative">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
+
+            <input
+                name="q"
+                autofocus
+                placeholder="Search movies, series, genres..."
+                class="w-full rounded-2xl border border-outline bg-surface-container-low py-3.5 pl-12 pr-4 text-sm text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/60 transition-all"
+            />
+        </div>
+    </form>
+</div>
+{% endif %}
+
+<!-- ── Results Grid ─────────────────────────────────────────────────────── -->
+{% if results %}
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+
+    {% for item in results %}
+    <div class="group relative flex flex-col gap-3 transition-all duration-500 hover:scale-105 card-enter"
+         style="animation-delay: {{ forloop.counter0 }}00ms">
+
+        <div class="aspect-[2/3] rounded-xl overflow-hidden bg-surface-container relative cinematic-shadow hover-electric">
+
+            <!-- Placeholder image -->
+            <div class="w-full h-full bg-gradient-to-br from-surface-container-high to-surface-dim flex items-center justify-center">
+                <span class="material-symbols-outlined text-on-surface-variant opacity-30 text-6xl">
+                    {% if item.content_type == "series" %}live_tv{% else %}movie{% endif %}
+                </span>
+            </div>
+
+            <!-- Gradient -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent opacity-80"></div>
+
+            <!-- Platform badges -->
+            <div class="absolute top-3 right-3 flex flex-col gap-1.5">
+                {% for platform in item.platforms %}
+                <span class="bg-primary text-white text-[10px] px-2 py-0.5 rounded shadow">
+                    {{ platform }}
+                </span>
+                {% endfor %}
+            </div>
+
+            <!-- Hover overlay -->
+            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                <button class="bg-primary text-white text-xs font-bold py-2 rounded-lg tracking-wide hover:bg-primary/80 transition-colors">
+                    Watch now
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Info -->
+        <div class="px-1">
+            <h3 class="font-bold text-sm leading-tight group-hover:text-primary transition-colors truncate">
+                {{ item.title }}
+            </h3>
+
+            <div class="flex items-center gap-2 mt-1">
+                <span class="text-xs text-on-surface-variant">
+                    {{ item.year|default:item.start_year|default:"—" }}
+                </span>
+
+                <span class="w-1 h-1 rounded-full bg-on-surface-variant/40"></span>
+
+                <span class="text-xs text-on-surface-variant truncate">
+                    {{ item.genre_name|default:"—" }}
+                </span>
+            </div>
+
+            {% if item.rating %}
+            <div class="flex items-center gap-1 mt-1">
+                <span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="text-xs text-on-surface-variant">{{ item.rating }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+<!-- ── No results ───────────────────────────────────────────────────────── -->
+{% elif query %}
+
+<div class="text-center py-16">
+    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-surface-container mb-6">
+        <span class="material-symbols-outlined text-on-surface-variant text-4xl">search_off</span>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-2">
+        No results for "{{ query }}"
+    </h2>
+
+    <p class="text-on-surface-variant text-sm mb-2">
+        Try another search term or check the spelling.
+    </p>
+</div>
+
+{% if suggestions %}
+<div class="mt-8">
+
+    <div class="flex items-center gap-3 mb-6">
+        <div class="h-px flex-1 bg-outline/40"></div>
+
+        <p class="text-on-surface-variant text-xs uppercase tracking-widest font-bold px-2">
+            You might like
+        </p>
+
+        <div class="h-px flex-1 bg-outline/40"></div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
+
+        {% for item in suggestions %}
+        <div class="group relative flex flex-col gap-3 transition-all duration-500 hover:scale-105 card-enter"
+             style="animation-delay: {{ forloop.counter0 }}00ms">
+
+            <div class="aspect-[2/3] rounded-xl overflow-hidden bg-surface-container relative cinematic-shadow hover-electric">
+
+                <div class="w-full h-full bg-gradient-to-br from-surface-container-high to-surface-dim flex items-center justify-center">
+                    <span class="material-symbols-outlined text-on-surface-variant opacity-30 text-6xl">
+                        {% if item.content_type == "series" %}live_tv{% else %}movie{% endif %}
+                    </span>
+                </div>
+
+                <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent opacity-80"></div>
+
+                <!-- Platform badges -->
+                <div class="absolute top-3 left-3 flex flex-col gap-1.5">
+                    {% for platform in item.platforms %}
+                        {% if platform == "Platform 1" %}
+                            <div class="badge-p1 text-white px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase shadow-lg shadow-black/50">{{ platform }}</div>
+                        {% elif platform == "Platform 2" %}
+                            <div class="badge-p2 text-white px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase shadow-lg shadow-black/50">{{ platform }}</div>
+                        {% else %}
+                            <div class="badge-p3 text-white px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase shadow-lg shadow-black/50">{{ platform }}</div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                    <button class="bg-primary text-white text-xs font-bold py-2 rounded-lg tracking-wide">
+                        Watch now
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="px-1">
+                <h3 class="font-bold text-sm leading-tight group-hover:text-primary transition-colors truncate">
+                    {{ item.title }}
+                </h3>
+
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs text-on-surface-variant">
+                        {{ item.year|default:item.start_year|default:"—" }}
+                    </span>
+
+                    <span class="w-1 h-1 rounded-full bg-on-surface-variant/40"></span>
+
+                    <span class="text-xs text-on-surface-variant truncate">
+                        {{ item.genre_name|default:"—" }}
+                    </span>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+{% endif %}
+
+{% endif %}
+
+{% endblock %}
