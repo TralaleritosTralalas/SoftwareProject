@@ -1,0 +1,60 @@
+{% for serie in series %}
+        <div class="group flex flex-col gap-3 transition-all duration-500 hover:scale-105">
+
+            <div class="aspect-[2/3] rounded-xl overflow-hidden relative cinematic-shadow hover-electric">
+
+                <!-- Image -->
+                <img
+                    src="https://via.placeholder.com/300x450?text=No+Image"
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+
+                <!-- Gradient -->
+                <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent opacity-80"></div>
+
+                <!-- Year -->
+                <div class="absolute top-3 left-3">
+                    <span class="bg-black/60 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded">
+                        {{ serie.start_year }}
+                    </span>
+                </div>
+
+                <!-- Platforms -->
+                <div class="absolute top-3 right-3 flex flex-col gap-1.5 items-end">
+                    {% for platform in serie.platforms %}
+                        <span class="bg-primary text-white text-[10px] px-2 py-0.5 rounded shadow">
+                            {{ platform }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <!-- Hover -->
+                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-4">
+                    <button class="bg-primary text-white text-xs font-bold py-2 rounded-lg tracking-wide hover:bg-primary/80">
+                        Watch now
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Info -->
+            <div class="px-1">
+                <h3 class="font-bold text-sm truncate group-hover:text-primary transition-colors">
+                    {{ serie.title }}
+                </h3>
+
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs text-slate-400">
+                        {{ serie.start_year|default:"—" }}
+                    </span>
+
+                    <span class="w-1 h-1 bg-slate-500/40 rounded-full"></span>
+
+                    <span class="text-xs text-slate-400 truncate">
+                        {{ serie.genre_name|default:"Unknown" }}
+                    </span>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
