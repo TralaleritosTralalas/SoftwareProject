@@ -29,6 +29,17 @@ def search(request):
             'query' : query,
             'results' : results
         })
+    
+def content_detail(request, content_id):
+    movies = get_all_movies()
+    series = get_all_series()
+    content = next((item for item in movies + series if item['id'] == content_id), None)
+
+    if content:
+        return render(request, 'pages/content_detail.html', {'content': content})
+    else:
+        return render(request, 'pages/content_not_found.html', status=404)
+
 
 
 def main(request):

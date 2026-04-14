@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>StreamSync - Content Detail</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#256af4",
+            "background-light": "#f5f6f8",
+            "background-dark": "#101622",
+            "surface-dark": "#1a2333",
+          },
+          fontFamily: {
+            "display": ["Spline Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #101622; }
+    ::-webkit-scrollbar-thumb { background: #222f49; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #314368; }
+    .glass-panel {
+      background: rgba(26, 35, 51, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col overflow-x-hidden">
+
+  <!-- Top Navigation -->
+  <header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#222f49] bg-background-light/90 dark:bg-[#101623]/90 backdrop-blur-md px-10 py-3">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-4 text-slate-900 dark:text-white">
+        <div class="size-8 text-primary">
+          <span class="material-symbols-outlined !text-4xl">play_circle</span>
+        </div>
+        <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">StreamSync</h2>
+      </div>
+      <div class="hidden md:flex items-center gap-9">
+        <a class="text-slate-600 dark:text-white hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Movies</a>
+        <a class="text-slate-600 dark:text-white hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Series</a>
+        <a class="text-slate-600 dark:text-white hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">My List</a>
+      </div>
+    </div>
+    <div class="flex flex-1 justify-end gap-6">
+      <label class="hidden sm:flex flex-col min-w-40 !h-10 max-w-64">
+        <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+          <div class="text-slate-400 dark:text-[#90a4cb] flex border-none bg-slate-200 dark:bg-[#222f49] items-center justify-center pl-4 rounded-l-lg border-r-0">
+            <span class="material-symbols-outlined text-xl">search</span>
+          </div>
+          <input
+            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-slate-200 dark:bg-[#222f49] focus:border-none h-full placeholder:text-slate-400 dark:placeholder:text-[#90a4cb] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
+            placeholder="Search titles..."
+            value=""
+          />
+        </div>
+      </label>
+      <div class="flex items-center gap-4">
+        <button class="flex items-center justify-center rounded-full size-10 bg-slate-200 dark:bg-[#222f49] text-slate-600 dark:text-white hover:bg-slate-300 dark:hover:bg-[#314368] transition-colors">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <div class="size-10 rounded-full bg-gradient-to-tr from-primary to-purple-500 overflow-hidden border-2 border-white dark:border-[#222f49]">
+          <img
+            alt="User Avatar"
+            class="w-full h-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_N7fMliLsTQjdWP4RrFz7rqJ2kqy-ogoVRqzh6oq4yzZ_fBvb3TZzzrAd4cTs3eDuicZQhuXPaWd06OK3Gk5IKF2m5oiXykz-Ek4aQU261qL0KACAzvpSKc5wnUgNMl8_UFDZ-3jjSXbTQiLeFTzanML4FPQmJG0415Vpr5ObIIw-v2R2ymM2jdX_mSCiGpyYBSseJAxl080ThUo6e9NoruSIowApMzYfrU0ksmGu5BPMYw11TGYHBHQi-IN01sClae7k7nXzoe0T"
+          />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+
+    <!-- Hero Section -->
+    <div
+      class="relative w-full h-[60vh] min-h-[500px] bg-cover bg-center bg-no-repeat"
+      data-alt="Dark moody cinematic sci-fi scene with red lighting"
+      style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDIW9lvG0NM2LwiYLiHL359dc0EkYYmbp_6eAWWWXShXQSJO-N8trRVqz7aP7pNRelXwLl06drautO-xgd9TgDSDC4YNtnaFNw5AFz2tsDQAco3hEjisR0Go8J-FHRdu3lyiv-EDSGEVmzFG9UxJYI8lvZ2gI9-dwPo2rcgcPw5SozWDgDKva4yGdJEJ8HuIWiNfQsr7I42zvEP3y0KZih1fVWk70pST3K5PXGJ-tRBbql3rYHOZucHzGA2jR3emCHwAjNb2u6RNFOF");'
+    >
+      <!-- Gradient Overlays -->
+      <div class="absolute inset-0 bg-gradient-to-t from-background-light via-background-light/40 to-transparent dark:from-background-dark dark:via-background-dark/60 dark:to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-background-light/90 via-transparent to-transparent dark:from-background-dark/95 dark:via-background-dark/30 dark:to-transparent"></div>
+
+      <div class="relative h-full container mx-auto px-6 lg:px-12 flex items-end pb-12">
+        <div class="flex flex-col gap-6 max-w-3xl">
+
+          <!-- Badges -->
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="px-2 py-1 bg-red-600 text-white text-xs font-bold uppercase tracking-wider rounded">Netflix</span>
+            <span class="px-2 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium rounded">4K Ultra HD</span>
+            <span class="px-2 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium rounded">Dolby Atmos</span>
+          </div>
+
+          <!-- Title -->
+          <h1 class="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white leading-tight drop-shadow-lg">Stranger Things</h1>
+
+          <!-- Metadata Row -->
+          <div class="flex items-center gap-4 text-slate-700 dark:text-slate-300 text-sm md:text-base font-medium">
+            <span>2016</span>
+            <span class="w-1 h-1 rounded-full bg-current opacity-50"></span>
+            <span>TV-14</span>
+            <span class="w-1 h-1 rounded-full bg-current opacity-50"></span>
+            <span>4 Seasons</span>
+            <span class="w-1 h-1 rounded-full bg-current opacity-50"></span>
+            <span>Sci-Fi, Horror, Drama</span>
+          </div>
+
+          <!-- Rating -->
+          <div class="flex items-center gap-3">
+            <div class="flex text-yellow-400">
+              <span class="material-symbols-outlined !text-2xl fill-current">star</span>
+              <span class="material-symbols-outlined !text-2xl fill-current">star</span>
+              <span class="material-symbols-outlined !text-2xl fill-current">star</span>
+              <span class="material-symbols-outlined !text-2xl fill-current">star</span>
+              <span class="material-symbols-outlined !text-2xl">star_half</span>
+            </div>
+            <span class="text-2xl font-bold text-slate-900 dark:text-white">4.8</span>
+            <span class="text-slate-600 dark:text-slate-400 text-sm">(12k reviews)</span>
+          </div>
+
+          <!-- Description -->
+          <p class="text-slate-800 dark:text-slate-200 text-lg leading-relaxed line-clamp-3 max-w-2xl drop-shadow-sm">
+            When a young boy disappears, his mother, a police chief and his friends must confront terrifying supernatural forces in order to get him back. A love letter to the '80s classics that captivated a generation.
+          </p>
+
+          <!-- Actions -->
+          <div class="flex flex-wrap gap-4 mt-4">
+            <button class="flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-bold text-lg shadow-lg shadow-primary/30 transition-all hover:scale-105">
+              <span class="material-symbols-outlined">play_arrow</span>
+              Watch on Netflix
+            </button>
+            <button class="flex items-center gap-2 glass-panel hover:bg-white/10 text-white px-6 py-3 rounded-lg font-medium transition-all">
+              <span class="material-symbols-outlined">add</span>
+              Add to Watchlist
+            </button>
+            <button class="flex items-center justify-center glass-panel hover:bg-white/10 text-white size-12 rounded-lg font-medium transition-all" title="Mark as Watched">
+              <span class="material-symbols-outlined">check</span>
+            </button>
+            <button class="flex items-center justify-center glass-panel hover:bg-white/10 text-white size-12 rounded-lg font-medium transition-all" title="Share">
+              <span class="material-symbols-outlined">share</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Body -->
+    <div class="container mx-auto px-6 lg:px-12 py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+        <!-- Left Column: Episodes & Details -->
+        <div class="lg:col-span-2 space-y-12">
+
+          <!-- Episode Tracker -->
+          <section>
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Episodes</h3>
+              <div class="relative">
+                <select class="bg-slate-200 dark:bg-surface-dark text-slate-900 dark:text-white border-none rounded-lg py-2 pl-4 pr-10 focus:ring-1 focus:ring-primary cursor-pointer appearance-none font-medium">
+                  <option>Season 4</option>
+                  <option>Season 3</option>
+                  <option>Season 2</option>
+                  <option>Season 1</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-2 top-2.5 pointer-events-none text-slate-500">expand_more</span>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+
+              <!-- Episode 1 -->
+              <div class="group flex flex-col sm:flex-row gap-4 p-4 rounded-xl bg-slate-100 dark:bg-surface-dark hover:bg-slate-200 dark:hover:bg-[#222f49] transition-colors cursor-pointer border border-transparent dark:border-white/5">
+                <div class="relative sm:w-48 h-28 flex-shrink-0 rounded-lg overflow-hidden bg-slate-300 dark:bg-black">
+                  <img
+                    alt="Abstract dark scene representing a TV episode thumbnail"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuACgWBOiwg84r-mfJe-Q3i7YEI7m7QUvkPYC-7qbkOnSpD3ed7ugM170yxULykkyV0Ll-fKUrlzWEhHIMQA7x6TvIJ1nVTPxb9LdtxDo5zJWOlZjLVIenyTFg4NFFWv_BpcmKUMqVwkXfgIW9vZ1Al2o-Yc-uDe8Z2om5xgj4paJqpxvZh3aLiMVhhYE9eF7K2dUfdT5Z3r4KePyv725oTzgP89zYAmjtkJfe_cqJdwLtdOU8i3c3AMr0Q3xoJvxZie-dY3qXK_yrsr"
+                  />
+                  <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-outlined text-white !text-4xl">play_circle</span>
+                  </div>
+                  <div class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/80 text-white text-xs rounded font-medium">1h 18m</div>
+                </div>
+                <div class="flex flex-col flex-1 justify-center">
+                  <div class="flex justify-between items-start">
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
+                      1. Chapter One: The Hellfire Club
+                    </h4>
+                    <div class="hidden sm:block">
+                      <button class="text-slate-400 hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined">download</span>
+                      </button>
+                    </div>
+                  </div>
+                  <p class="text-slate-600 dark:text-slate-400 text-sm mt-2 line-clamp-2">
+                    Hawkins High stands on the precipice of change as the gang navigates high school, a new D&amp;D club, and a horrifying new threat.
+                  </p>
+                  <div class="mt-3 w-full bg-slate-300 dark:bg-slate-700 h-1 rounded-full overflow-hidden">
+                    <div class="bg-primary h-full rounded-full" style="width: 100%"></div>
+                  </div>
+                  <span class="text-xs text-primary mt-1 font-medium">Watched</span>
+                </div>
+              </div>
+
+              <!-- Episode 2 -->
+              <div class="group flex flex-col sm:flex-row gap-4 p-4 rounded-xl bg-slate-100 dark:bg-surface-dark hover:bg-slate-200 dark:hover:bg-[#222f49] transition-colors cursor-pointer border border-transparent dark:border-white/5">
+                <div class="relative sm:w-48 h-28 flex-shrink-0 rounded-lg overflow-hidden bg-slate-300 dark:bg-black">
+                  <img
+                    alt="Dark moody forest scene thumbnail"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdCgZV9zBVlK7IcicFbuGunuEU3xbvk_7Ru9MuwPCZT5W8b4HZQrYqF6NCbG_DiGDyPtttcNFRgHGnWHTCGFcTckTiay8s2I5DibLD791e49KxOY0SMPsZgT63KI0wkARtXLEpasCRQi9Mityuv7tMXy1ywbZMnkIJh37GCh3wqbDDuW0xAzdxLPou5_XFBSEl-zkYwyFYMAe6QStSnGoR857fcWR6Lef_gw4R6WYVv0ian9YMQKLzehV6nyjF5sRyTixPPLopS0XN"
+                  />
+                  <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-outlined text-white !text-4xl">play_circle</span>
+                  </div>
+                  <div class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/80 text-white text-xs rounded font-medium">1h 15m</div>
+                </div>
+                <div class="flex flex-col flex-1 justify-center">
+                  <div class="flex justify-between items-start">
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
+                      2. Chapter Two: Vecna's Curse
+                    </h4>
+                  </div>
+                  <p class="text-slate-600 dark:text-slate-400 text-sm mt-2 line-clamp-2">
+                    A plane crash brings unexpected visitors to Russia. Mike flies to California. A death in Hawkins sparks fear and confusion.
+                  </p>
+                  <div class="mt-3 w-full bg-slate-300 dark:bg-slate-700 h-1 rounded-full overflow-hidden">
+                    <div class="bg-primary h-full rounded-full" style="width: 45%"></div>
+                  </div>
+                  <span class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">34m remaining</span>
+                </div>
+              </div>
+
+              <!-- Episode 3 -->
+              <div class="group flex flex-col sm:flex-row gap-4 p-4 rounded-xl bg-transparent hover:bg-slate-100 dark:hover:bg-[#222f49] transition-colors cursor-pointer border border-slate-200 dark:border-white/10">
+                <div class="relative sm:w-48 h-28 flex-shrink-0 rounded-lg overflow-hidden bg-slate-300 dark:bg-black">
+                  <img
+                    alt="Red abstract pattern thumbnail"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg3DOzDxQZsFKaj400NDGVGaI0XFR_WhgjeaK_1kARJllxk2eqXsBZPNqH9BaT09T8yUSF8G9_1vCr9UhvfTdM8pMZOr-G8czIBLPHu_FDuNa19RHWaX0YoOkboCNRDtVhkhDS76J7Wvj8HboAGl3m1fn433-qJlSItRj_66zYgWLMn43GOTYOBHcSB8qHLHHkh4bv5kmqFEqHTLNMq-VbCKgSWYHdx4zipRc7Viua3-4wbMrj_ml3nnus7XrSzra1Fj-XByFn8hNx"
+                  />
+                  <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-outlined text-white !text-4xl">play_circle</span>
+                  </div>
+                  <div class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/80 text-white text-xs rounded font-medium">1h 03m</div>
+                </div>
+                <div class="flex flex-col flex-1 justify-center">
+                  <div class="flex justify-between items-start">
+                    <h4 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">
+                      3. Chapter Three: The Monster and the Superhero
+                    </h4>
+                  </div>
+                  <p class="text-slate-600 dark:text-slate-400 text-sm mt-2 line-clamp-2">
+                    Murray and Joyce fly to Alaska, and El faces serious consequences. Robin and Nancy investigate Hawkins' demons.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Cast & Crew -->
+          <section>
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">Cast</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+
+              <!-- Cast Member 1 -->
+              <div class="flex flex-col items-center text-center gap-3 group cursor-pointer">
+                <div class="size-24 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors">
+                  <img
+                    alt="Actor headshot"
+                    class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ5Mw8naiJ4WCPPyUeYRRHeyBHA5uASmRclhkvSR4qAnHgyMzWKpirSnBWUeTEphupr8bG_sb0fpJHnuDMcVHf1TKTZ-Wq8CzbQScf5ci1j6fFDsNZ-dFoJh06ZJXun2Kl-AbXEu5XZC3Xg9-rWgyys2nX8ZtzvoItkBfaAtxx0T5rtTaP8GJoSKqiofMQPQMsywahYStuyoFgAb99UZg0ka36Zr8tLnYbH3NBQ3dbDBT_AYqKr80ZELtk9aQ5gxLKunAssYgmZ-7b"
+                  />
+                </div>
+                <div>
+                  <h5 class="text-slate-900 dark:text-white font-bold text-sm">Millie B. Brown</h5>
+                  <p class="text-slate-500 dark:text-slate-400 text-xs">Eleven</p>
+                </div>
+              </div>
+
+              <!-- Cast Member 2 -->
+              <div class="flex flex-col items-center text-center gap-3 group cursor-pointer">
+                <div class="size-24 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors">
+                  <img
+                    alt="Actor headshot"
+                    class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVm4F2-8ONAwAN8l4tfqqPUmqhQog8HhP9veZ5iGSGvkvHYA3VeX6HpZDa13mUz0j2-07L3ZUq4ySKZZTnv4dHDy0OxWY0TOLGJpZIPxtURe2RLx9edCFIEosjN-CkkrZ8Rj_5MXy7ngRxPzevhrXtmqKT3W-qzrlm99HQ-1K68zzJ10Gxr1YyedIYDIVn_Jhu8sOS4nA2qQvW87reBeal3Ft8oiBMidxgSXjRTpn7tACcR8uZQg_DCAqIlaiRGX3_7OGK6i0oJz7J"
+                  />
+                </div>
+                <div>
+                  <h5 class="text-slate-900 dark:text-white font-bold text-sm">Finn Wolfhard</h5>
+                  <p class="text-slate-500 dark:text-slate-400 text-xs">Mike Wheeler</p>
+                </div>
+              </div>
+
+              <!-- Cast Member 3 -->
+              <div class="flex flex-col items-center text-center gap-3 group cursor-pointer">
+                <div class="size-24 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors">
+                  <img
+                    alt="Actor headshot"
+                    class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-p1qM1Hq7NZzDtDhuwVgOynZznpe8fS7XMkdl9C94xIy4uny6pPyTJkJdfgypvn9FCiznQW6TaVp5f2fomTSfBUrn3931ghMHEzI-k15JnhCr22RMUgXN_Bm7Isr_9SsukojG-GbXbXiqJp8JWJVhnWnDAUZgga6yFqOiRYDicXr-D4K0wHo03bcK5_VItZU0cnrxozRaBnY6heDOw2tvWG-ix11tMSfZaHvrlESMncJUhhnXro5tci3EIVwux4zq1OvnSHO75shJ"
+                  />
+                </div>
+                <div>
+                  <h5 class="text-slate-900 dark:text-white font-bold text-sm">Winona Ryder</h5>
+                  <p class="text-slate-500 dark:text-slate-400 text-xs">Joyce Byers</p>
+                </div>
+              </div>
+
+              <!-- Cast Member 4 -->
+              <div class="flex flex-col items-center text-center gap-3 group cursor-pointer">
+                <div class="size-24 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors">
+                  <img
+                    alt="Actor headshot"
+                    class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCe9kZkdYIkwNT9lJFmrqnN3OGrBq6RK-hpJEkzvP-yLGGXfBlNfYJruf0eIwmq_BUjRDP50HetJL_Yi-C7T4EzpHXxetiD8fJ_yES-xh7GAyt3i4eqoIJd-7xSSqOrJIIOzQofV1ZHn_3xYbrh8ZSyJIHuuAI5rRrW3Ws2LFp5pE38Cy7az-y9znn_lz1DUM3974Oqoqn3AQ8nSscvdrciU3mjdtCBY6AxHYYfXl0ZbXHBYHPA0E8RWJ5waTrQo7Fo5WJQlqgTGBsO"
+                  />
+                </div>
+                <div>
+                  <h5 class="text-slate-900 dark:text-white font-bold text-sm">David Harbour</h5>
+                  <p class="text-slate-500 dark:text-slate-400 text-xs">Jim Hopper</p>
+                </div>
+              </div>
+
+              <!-- Cast Member 5 -->
+              <div class="flex flex-col items-center text-center gap-3 group cursor-pointer">
+                <div class="size-24 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors">
+                  <img
+                    alt="Actor headshot"
+                    class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNYu7d-cWtjHOVqN8yYQroWfeCpS8McMYx9rFLGcfh41Zs3vGFDTtftxiJIVFoX4SpLkvv3kEK7aRqWMtUROQRN9jGyVNKGLXQ6JcFn2aS7o4zoZgDxqi9EPTavDafLQn9akFLqjs9IqMfzBOWayWtPOxfTgiYzSYxwoWoF9apJm3IrTRR86-yT_fPG6raqI0V4d0nwgPStuny3XkxzUNjozO3N_Dhy2jFV4PtkCQSo3XulRjaqMgLtU2RCzpJit53qeGAI6-4VN1n"
+                  />
+                </div>
+                <div>
+                  <h5 class="text-slate-900 dark:text-white font-bold text-sm">Gaten M.</h5>
+                  <p class="text-slate-500 dark:text-slate-400 text-xs">Dustin Henderson</p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Right Column: Sidebar Stats & Similar -->
+        <div class="space-y-8">
+
+          <!-- Rating Breakdown -->
+          <div class="p-6 rounded-xl bg-slate-100 dark:bg-surface-dark border border-slate-200 dark:border-white/5">
+            <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Audience Rating</h4>
+            <div class="grid grid-cols-[20px_1fr_40px] items-center gap-y-3">
+              <p class="text-slate-900 dark:text-white text-sm font-medium">5</p>
+              <div class="flex h-2 flex-1 overflow-hidden rounded-full bg-slate-200 dark:bg-[#314368]">
+                <div class="rounded-full bg-primary" style="width: 80%;"></div>
+              </div>
+              <p class="text-slate-500 dark:text-[#90a4cb] text-sm text-right">80%</p>
+
+              <p class="text-slate-900 dark:text-white text-sm font-medium">4</p>
+              <div class="flex h-2 flex-1 overflow-hidden rounded-full bg-slate-200 dark:bg-[#314368]">
+                <div class="rounded-full bg-primary" style="width: 12%;"></div>
+              </div>
+              <p class="text-slate-500 dark:text-[#90a4cb] text-sm text-right">12%</p>
+
+              <p class="text-slate-900 dark:text-white text-sm font-medium">3</p>
+              <div class="flex h-2 flex-1 overflow-hidden rounded-full bg-slate-200 dark:bg-[#314368]">
+                <div class="rounded-full bg-primary" style="width: 5%;"></div>
+              </div>
+              <p class="text-slate-500 dark:text-[#90a4cb] text-sm text-right">5%</p>
+
+              <p class="text-slate-900 dark:text-white text-sm font-medium">2</p>
+              <div class="flex h-2 flex-1 overflow-hidden rounded-full bg-slate-200 dark:bg-[#314368]">
+                <div class="rounded-full bg-primary" style="width: 2%;"></div>
+              </div>
+              <p class="text-slate-500 dark:text-[#90a4cb] text-sm text-right">2%</p>
+
+              <p class="text-slate-900 dark:text-white text-sm font-medium">1</p>
+              <div class="flex h-2 flex-1 overflow-hidden rounded-full bg-slate-200 dark:bg-[#314368]">
+                <div class="rounded-full bg-primary" style="width: 1%;"></div>
+              </div>
+              <p class="text-slate-500 dark:text-[#90a4cb] text-sm text-right">1%</p>
+            </div>
+            <button class="w-full mt-6 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm font-medium">
+              Write a Review
+            </button>
+          </div>
+
+          <!-- Where to Watch -->
+          <div class="p-6 rounded-xl bg-slate-100 dark:bg-surface-dark border border-slate-200 dark:border-white/5">
+            <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Available On</h4>
+            <div class="space-y-3">
+              <a class="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-[#101622] hover:bg-gray-50 dark:hover:bg-[#1a2333] border border-slate-200 dark:border-slate-800 transition-colors" href="#">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded bg-red-600 flex items-center justify-center text-white font-bold text-xs">N</div>
+                  <span class="text-slate-900 dark:text-white font-medium">Netflix</span>
+                </div>
+                <span class="text-xs text-slate-500 dark:text-slate-400">4K HDR</span>
+              </a>
+              <a class="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-[#101622] hover:bg-gray-50 dark:hover:bg-[#1a2333] border border-slate-200 dark:border-slate-800 transition-colors" href="#">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded bg-blue-500 flex items-center justify-center text-white font-bold text-xs">P</div>
+                  <span class="text-slate-900 dark:text-white font-medium">Prime Video</span>
+                </div>
+                <span class="text-xs text-slate-500 dark:text-slate-400">Buy/Rent</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Information -->
+          <div>
+            <h4 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Information</h4>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                <span class="text-slate-500 dark:text-slate-400">Original Title</span>
+                <span class="text-slate-900 dark:text-white font-medium">Stranger Things</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                <span class="text-slate-500 dark:text-slate-400">Status</span>
+                <span class="text-slate-900 dark:text-white font-medium">Returning Series</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                <span class="text-slate-500 dark:text-slate-400">Network</span>
+                <span class="text-slate-900 dark:text-white font-medium">Netflix</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                <span class="text-slate-500 dark:text-slate-400">Language</span>
+                <span class="text-slate-900 dark:text-white font-medium">English</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Similar Content Row -->
+      <div class="mt-16 pb-12">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-2xl font-bold text-slate-900 dark:text-white">You Might Also Like</h3>
+          <div class="flex gap-2">
+            <button class="p-2 rounded-full border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-900 dark:text-white transition-colors">
+              <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <button class="p-2 rounded-full border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-900 dark:text-white transition-colors">
+              <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+
+          <!-- Card 1 -->
+          <div class="group relative cursor-pointer">
+            <div class="aspect-[2/3] rounded-lg overflow-hidden relative">
+              <img
+                alt="Dark movie poster with silhouettes"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYm3NWVfq7leHvo_U8i3lzO-A6ifTaVDvwfSzmVdvvawCVVZbZD3rKH3TvxiBFZ225YOJbTHXFLyRpe0xmrH4dDzo_n2EIDRPCJXIrrvUeyUCwgGjskgvimmFG494vJ6q_2SJMsZvkDq3PT5Wt_4RJEp-GrJfMgXdh7ItSIPw23NyIQSBif6t_SnzLwIHOWIajEnFXgwreuKdyGpGVVg1K2fjZOi28TZBV-9FtGMdbRMFt9nZ9uzn2q1DSz3UOl7XPbDbU_zG8qa4O"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                <button class="w-full py-2 bg-primary text-white rounded font-bold text-sm">View Details</button>
+              </div>
+              <div class="absolute top-2 left-2 px-2 py-1 bg-black/60 backdrop-blur-sm rounded text-[10px] text-white font-bold uppercase">98% Match</div>
+            </div>
+            <h4 class="mt-2 text-slate-900 dark:text-white font-bold truncate">Dark</h4>
+            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span>2017</span>
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined !text-xs text-yellow-400 fill-current">star</span>
+                8.8
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="group relative cursor-pointer">
+            <div class="aspect-[2/3] rounded-lg overflow-hidden relative">
+              <img
+                alt="Abstract sci-fi poster"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCI4PwAM4b8ap4cC0vn-qKbHSF-KWPujlpV2qGuAGcp67LOneDL1dzbCwT2cqBQLJKBGRGMDGg4-nmRId5pqa22Wd9qjz7FfWmO-7MrNZpcShOZR4Lb11d855d3ibhjp0dDMs2rSGkpahHOKItEjeiuj5DuhodEh1og9n2OxbgY4YIB7tTl-uDWxjy3HMMVKfZkaNVVFnpCB87IUAj4TJBtdHpViE6D30u68BblycCIRKB5CmImcccIsZf5HOSljHwzl-c1_uFFNXPI"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                <button class="w-full py-2 bg-primary text-white rounded font-bold text-sm">View Details</button>
+              </div>
+            </div>
+            <h4 class="mt-2 text-slate-900 dark:text-white font-bold truncate">Black Mirror</h4>
+            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span>2011</span>
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined !text-xs text-yellow-400 fill-current">star</span>
+                8.7
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="group relative cursor-pointer">
+            <div class="aspect-[2/3] rounded-lg overflow-hidden relative">
+              <img
+                alt="Mysterious forest poster"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzpxOui7rvRL92p6gsD80-W8b8OyRyofSUyopXU5Tis3w7gzG5muw37lEJ4Fa-grWVrkXTHqjFj0CfJ9LYIL9meyreCUyGuX-ZiJmYdgtrBbxLgOdplyi5ORzf10fiDlaqRnI-GWu3qDoUGb3uTrOr5GDw6Pu8OZDlHlu3LLCY-T6fHM8tmIIW0_s2GrqPf-xCGCsNWbHW4PJh2V4s5krZpPbhc9t-oVj8t8_i87kco7Ic-c-_iO0uNh_cAlTLgjUR-tJrK6c1T0UZ"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                <button class="w-full py-2 bg-primary text-white rounded font-bold text-sm">View Details</button>
+              </div>
+            </div>
+            <h4 class="mt-2 text-slate-900 dark:text-white font-bold truncate">Twin Peaks</h4>
+            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span>1990</span>
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined !text-xs text-yellow-400 fill-current">star</span>
+                8.8
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="group relative cursor-pointer">
+            <div class="aspect-[2/3] rounded-lg overflow-hidden relative">
+              <img
+                alt="Futuristic city poster"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAzKPgWoN5SVZnbbB5llv8Hry6Zt87squMlQ2jBsiBuCNFTHJac-dFgbJ6K2Vaq1vw20GfcvF8-mTWuw1gG4GAA82G0hM1AYnH3fBbW7D_U5-eRMwdVwNJpxjtDP1Ec6vPLV4zVlnHol6vDRkG1yrVnc4og5iqENkurbepblm9prKzBVRCm0qV6zkjOLvDUSgV8lP_UD3_Il3_KTGzM9Emx3U5UEvFrVE9qNMGAU29dsN_u-SqfMz_BIsjbYnUIWeFr8-2oc5FbQqS"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                <button class="w-full py-2 bg-primary text-white rounded font-bold text-sm">View Details</button>
+              </div>
+            </div>
+            <h4 class="mt-2 text-slate-900 dark:text-white font-bold truncate">Altered Carbon</h4>
+            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span>2018</span>
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined !text-xs text-yellow-400 fill-current">star</span>
+                7.9
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="group relative cursor-pointer hidden lg:block">
+            <div class="aspect-[2/3] rounded-lg overflow-hidden relative">
+              <img
+                alt="Eerie book cover style poster"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYO89MMHHrywzQIoQaIs1Pf6Fwu23d8CO4wZwkipGwtV_VQc8aRs6ze43hH5292L_HqFOIX8st9wiB46r9zETit7l1ddCxagmWnDMK0-9z5Wh2gCM6zTGfhG2x0-Kfwt83UZ9EytjelG5nwTqQ6VBReusGXQ4paHRlUgP9miJdfjAnMtwSRFPjwfvGM2CejTzJ65sgaeXykjZEGKHu5aD2wAkYAyejp44S4BtJkwJJ0ZeaNAhdou1kgZ1Np0WjxMZcUhFbyghJx42n"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                <button class="w-full py-2 bg-primary text-white rounded font-bold text-sm">View Details</button>
+              </div>
+            </div>
+            <h4 class="mt-2 text-slate-900 dark:text-white font-bold truncate">Locke &amp; Key</h4>
+            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span>2020</span>
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined !text-xs text-yellow-400 fill-current">star</span>
+                7.3
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
