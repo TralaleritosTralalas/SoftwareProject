@@ -30,15 +30,22 @@ def search(request):
             'results' : results
         })
     
-def content_detail(request, content_id):
+def get_content_by_id(content_id):
     movies = get_all_movies()
     series = get_all_series()
-    content = next((item for item in movies + series if item['id'] == content_id), None)
+    all_content = movies + series
 
+    for content in all_content:
+        if str(content.get('id')) == str(content_id):
+            return content
+    return None
+
+def content_detail(request, content_id):   
+    content = get_content_by_id(content_id)
     if content:
-        return render(request, 'pages/content_detail.html', {'content': content})
+        return render(request, 'pages/content_view.html', {'content': content})
     else:
-        return render(request, 'pages/content_not_found.html', status=404)
+        return render(request, 'pages/home.html', status=404)
 
 
 
