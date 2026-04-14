@@ -1,11 +1,8 @@
-<!-- Top Navigation -->
 <header class="sticky top-0 z-50 w-full border-b border-solid border-border-light dark:border-border-dark bg-surface-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-4">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
-    
-    <!-- Left Section (Logo + Nav) -->
+
     <div class="flex items-center gap-8">
-      
-      <!-- Logo -->
+
       <a href="{% url 'app:main' %}" class="flex items-center gap-3 text-primary">
         <div class="size-8 rounded-lg bg-primary/20 flex items-center justify-center">
           <span class="material-symbols-outlined text-primary text-2xl">play_circle</span>
@@ -15,7 +12,6 @@
         </h2>
       </a>
 
-      <!-- Navigation Links -->
       <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
         <a href="{% url 'app:catalog' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
           Discover
@@ -33,44 +29,56 @@
 
     </div>
 
-  <!-- Search Bar -->
-  <div class="hidden md:flex flex-1 max-w-xl mx-8">
-    <form action="{% url 'app:search' %}" method="GET" class="relative w-full group">
-      
-      <!-- Icono izquierda -->
-      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-        <span class="material-symbols-outlined text-[20px]">search</span>
-      </div>
+    <div class="hidden md:flex flex-1 max-w-xl mx-8">
+      <form action="{% url 'app:search' %}" method="GET" class="relative w-full group">
 
-      <!-- Input -->
-      <input 
-        type="text"
-        name="q"
-        value="{{ request.GET.q }}"
-        placeholder="Search movies, shows, or platforms..."
-        class="block w-full rounded-xl border-none bg-slate-100 dark:bg-[#1e293b] py-2.5 pl-10 pr-3 text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
-      />
-
-      <!-- Shortcut derecha -->
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-        <span class="text-xs text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 rounded px-1.5 py-0.5">⌘K</span>
-      </div>
-
-    </form>
-  </div>
-
-    <!-- User Actions -->
-    <div class="flex items-center gap-4">
-      <button class="relative p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400">
-        <span class="material-symbols-outlined">notifications</span>
-        <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-surface-light dark:border-background-dark"></span>
-      </button>
-      <div class="h-8 w-[1px] bg-border-light dark:bg-border-dark mx-1"></div>
-      <button class="flex items-center gap-3 rounded-full pl-1 pr-1 py-1 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-        <div class="size-9 rounded-full bg-cover bg-center border border-slate-200 dark:border-slate-700" 
-          style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDDIAQ90IxsinjXM6PKvOAaLRDc7SY_R-7MVZ7vKDplBK7950nw55ZsHlVjzpNJ8O2lOn4dzlyKwejQm-g1R1zTQ-yZAJh8gKj7DDUaFAjgMlw4f_G4wKHpDUU5KvzD1qk71kCOaHNW-DXrAhGOeBQGxvzYQeMW70BVbPqVRfxLbQuAyoV2zIfQjweJuxtG5gg4Nr-3nsr2ETbHgYaZBmzIGdzCM9pS9q1rVq1DLjeAigarT-PPxUa7ZeXqXbs6yqL6JUmGOnKS_X36");'>
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+          <span class="material-symbols-outlined text-[20px]">search</span>
         </div>
-      </button>
+
+        <input
+          type="text"
+          name="q"
+          value="{{ request.GET.q }}"
+          placeholder="Search movies, shows, or platforms..."
+          class="block w-full rounded-xl border-none bg-slate-100 dark:bg-[#1e293b] py-2.5 pl-10 pr-3 text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
+        />
+
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <span class="text-xs text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 rounded px-1.5 py-0.5">⌘K</span>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="flex items-center gap-4">
+      {% if user.is_authenticated %}
+        <button class="relative p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-surface-light dark:border-background-dark"></span>
+        </button>
+
+        <div class="h-8 w-[1px] bg-border-light dark:bg-border-dark mx-1"></div>
+
+        <div class="flex items-center gap-2">
+          <button class="flex items-center gap-3 rounded-full pl-1 pr-1 py-1 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <div class="size-9 rounded-full bg-cover bg-center border border-slate-200 dark:border-slate-700"
+              style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDDIAQ90IxsinjXM6PKvOAaLRDc7SY_R-7MVZ7vKDplBK7950nw55ZsHlVjzpNJ8O2lOn4dzlyKwejQm-g1R1zTQ-yZAJh8gKj7DDUaFAjgMlw4f_G4wKHpDUU5KvzD1qk71kCOaHNW-DXrAhGOeBQGxvzYQeMW70BVbPqVRfxLbQuAyoV2zIfQjweJuxtG5gg4Nr-3nsr2ETbHgYaZBmzIGdzCM9pS9q1rVq1DLjeAigarT-PPxUa7ZeXqXbs6yqL6JUmGOnKS_X36");'>
+            </div>
+          </button>
+
+          <form action="{% url 'logout' %}" method="post" class="flex items-center">
+            {% csrf_token %}
+            <button type="submit" class="p-2 rounded-full text-slate-500 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Logout">
+              <span class="material-symbols-outlined">logout</span>
+            </button>
+          </form>
+        </div>
+      {% else %}
+        <a href="{% url 'login' %}" class="text-sm font-bold text-primary px-4 py-2 rounded-xl hover:bg-primary/10 transition-colors">
+          Sign In
+        </a>
+      {% endif %}
     </div>
 
   </div>
