@@ -105,25 +105,29 @@
 
           <!-- Badges -->
           <div class="flex flex-wrap items-center gap-3">
-            <span class="px-2 py-1 bg-red-600 text-white text-xs font-bold uppercase tracking-wider rounded">Netflix</span>
+            {% for platform in content.platforms %}
+              <span class="px-2 py-1 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded">{{ platform }}</span>
+            {% endfor %}
             <span class="px-2 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium rounded">4K Ultra HD</span>
             <span class="px-2 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-medium rounded">Dolby Atmos</span>
           </div>
 
           <!-- Title -->
-          <h1 class="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white leading-tight drop-shadow-lg">Stranger Things</h1>
+          <h1 class="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white leading-tight drop-shadow-lg">{{ content.title }}</h1>
 
           <!-- Metadata Row -->
           <div class="flex items-center gap-4 text-slate-700 dark:text-slate-300 text-sm md:text-base font-medium">
-            <span>2016</span>
+            <span>{{ content.year|default:content.year }}</span>
             <span class="w-1 h-1 rounded-full bg-current opacity-50"></span>
-            <span>TV-14</span>
+            <span>{{ content.genre_name|default:"Unknown Genre" }}</span>
             <span class="w-1 h-1 rounded-full bg-current opacity-50"></span>
-            <span>4 Seasons</span>
-            <span class="w-1 h-1 rounded-full bg-current opacity-50"></span>
-            <span>Sci-Fi, Horror, Drama</span>
+            {% if content.start_year %}
+              <span>TV Series</span>
+            {% else %}
+              <span>Movie</span>
+            {% endif %}
           </div>
-
+          {% if content.rating %}
           <!-- Rating -->
           <div class="flex items-center gap-3">
             <div class="flex text-yellow-400">
@@ -133,20 +137,20 @@
               <span class="material-symbols-outlined !text-2xl fill-current">star</span>
               <span class="material-symbols-outlined !text-2xl">star_half</span>
             </div>
-            <span class="text-2xl font-bold text-slate-900 dark:text-white">4.8</span>
+            <span class="text-2xl font-bold text-slate-900 dark:text-white">{{ content.rating }}</span>
             <span class="text-slate-600 dark:text-slate-400 text-sm">(12k reviews)</span>
           </div>
-
+          {% endif %}
           <!-- Description -->
           <p class="text-slate-800 dark:text-slate-200 text-lg leading-relaxed line-clamp-3 max-w-2xl drop-shadow-sm">
-            When a young boy disappears, his mother, a police chief and his friends must confront terrifying supernatural forces in order to get him back. A love letter to the '80s classics that captivated a generation.
+            {{ content.synopsis|default:"No description available at this moment. Grab your popcorn and enjoy the show!" }}
           </p>
 
           <!-- Actions -->
           <div class="flex flex-wrap gap-4 mt-4">
             <button class="flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-bold text-lg shadow-lg shadow-primary/30 transition-all hover:scale-105">
               <span class="material-symbols-outlined">play_arrow</span>
-              Watch on Netflix
+              Watch on {% if content.platforms %}{{ content.platforms|join:", " }}{% else %}Platform{% endif %}
             </button>
             <button class="flex items-center gap-2 glass-panel hover:bg-white/10 text-white px-6 py-3 rounded-lg font-medium transition-all">
               <span class="material-symbols-outlined">add</span>
@@ -433,16 +437,16 @@
             <div class="space-y-3 text-sm">
               <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
                 <span class="text-slate-500 dark:text-slate-400">Original Title</span>
-                <span class="text-slate-900 dark:text-white font-medium">Stranger Things</span>
+                <span class="text-slate-900 dark:text-white font-medium">{{ content.title }}</span>
+              </div>
               </div>
               <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
-                <span class="text-slate-500 dark:text-slate-400">Status</span>
-                <span class="text-slate-900 dark:text-white font-medium">Returning Series</span>
+                <span class="text-slate-500 dark:text-slate-400">Content Type</span>
+                <span class="text-slate-900 dark:text-white font-medium capitalize">{% if content.start_year %}Series{% else %}Movie{% endif %}</span>
               </div>
               <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
                 <span class="text-slate-500 dark:text-slate-400">Network</span>
-                <span class="text-slate-900 dark:text-white font-medium">Netflix</span>
-              </div>
++               <span class="text-slate-900 dark:text-white font-medium">{% if content.platforms %}{{ content.platforms|join:", " }}{% else %}Unknown{% endif %}</span>              </div>
               <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
                 <span class="text-slate-500 dark:text-slate-400">Language</span>
                 <span class="text-slate-900 dark:text-white font-medium">English</span>
