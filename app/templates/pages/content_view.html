@@ -60,11 +60,6 @@
             
           </button>
           {% endfor %}
-          <button
-            class="glass-panel border border-white/5 hover:bg-white/10 text-white px-10 py-4 rounded-xl font-bold flex items-center gap-3 active:scale-95 transition-all">
-            <span class="material-symbols-outlined">add</span>
-            Add to Watchlist
-          </button>
         </div>
         <!-- Synopsis Section -->
         <section class="space-y-4 pt-8">
@@ -103,6 +98,11 @@
             {{ content.genre_description|default:"No genre description available." }}
           </p>
         </div>
+        <button
+            class="glass-panel border border-white/5 hover:bg-white/10 text-white px-10 py-4 rounded-xl font-bold flex items-center gap-3 active:scale-95 transition-all">
+            <span class="material-symbols-outlined">add</span>
+            Add to Watchlist
+          </button>
       </div>
     </div>
   </div>
