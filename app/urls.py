@@ -10,4 +10,5 @@ urlpatterns = [
     path('movies/', views.movies, name='movies'),
     path('series/', views.series, name='series'),
     path('search/', views.search, name='search'),
+    path('redirect/',views.login_redirect, name='login_redirect'  )
 ]

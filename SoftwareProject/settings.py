@@ -127,5 +127,5 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = [BASE_DIR / 'app' / 'static']
 
-LOGIN_REDIRECT_URL = "app:main"
+LOGIN_REDIRECT_URL = "/redirect/"
 LOGOUT_REDIRECT_URL = "app:home"
