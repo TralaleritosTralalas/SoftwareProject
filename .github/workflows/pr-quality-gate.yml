@@ -16,7 +16,7 @@ jobs:
       - name: Validate that all commits are conventional commits
         uses: wagoid/commitlint-github-action@v6
         with:
-          configFile: '.github/scripts/commitlint.config.js'
+          configFile: '.github/scripts/commitlint.config.mjs'
           failOnWarnings: true
 
       - name: Validate pull request body (text length and image)
