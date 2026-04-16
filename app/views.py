@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from .services import get_all_movies, get_all_series, search_content
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 # Create your views here.
 
@@ -41,3 +42,9 @@ def login(request):
 
 def main(request):
     return render(request, 'pages/main.html')
+
+
+@login_required
+@user_passes_test(lambda u: u.profile.role == 'Tech' or u.profile.role == 'Admin')
+def tech(request):
+    return render(request, 'pages/tech.html')
