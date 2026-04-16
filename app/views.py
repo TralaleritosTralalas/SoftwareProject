@@ -46,7 +46,6 @@ def main(request):
     return render(request, 'pages/main.html')
 
 @login_required
-
 def login_redirect(request):
     user = request.user
 
@@ -60,4 +59,4 @@ def login_redirect(request):
         return redirect('app:series') #provisional redirect
 
     else:
-        return redirect('app:home')
+        return redirect('app:main')
