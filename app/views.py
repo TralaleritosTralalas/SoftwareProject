@@ -29,6 +29,24 @@ def search(request):
             'query' : query,
             'results' : results
         })
+    
+def get_content_by_id(content_id):
+    movies = get_all_movies()
+    series = get_all_series()
+    all_content = movies + series
+
+    for content in all_content:
+        if str(content.get('id')) == str(content_id):
+            return content
+    return None
+
+def content_detail(request, content_id):   
+    content = get_content_by_id(content_id)
+    if content:
+        return render(request, 'pages/content_view.html', {'content': content})
+    else:
+        return render(request, 'pages/home.html', status=404)
+
 
 
 def main(request):

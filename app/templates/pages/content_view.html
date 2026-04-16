@@ -1,0 +1,133 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<!-- Content Canvas -->
+<main class="relative min-h-screen">
+
+  <!-- Detail Content -->
+  <div class="relative z-10 pt-64 px-8 md:px-24 pb-24 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <!-- Main Info Col -->
+      <div class="lg:col-span-8 space-y-12">
+        <section>
+          <h1 class="text-6xl md:text-8xl font-black tracking-tighter text-on-surface mb-6 leading-none">
+            {{ content.title }}
+          </h1>
+          <!-- Metadata Row -->
+          <div class="flex flex-wrap items-center gap-6 text-[#90a4cb] font-medium tracking-wide">
+            {% for platform in content.platforms %}
+              <span class="px-2 py-1 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded">{{ platform }}</span>
+            {% endfor %}
+            <span class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-lg">calendar_today</span>
+              {{ content.year}}
+            </span>
+            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+              <span class="material-symbols-outlined text-primary text-lg">event</span>
+              {{ content.release_date}}
+            </span>
+            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+              <span class="material-symbols-outlined text-primary text-lg">schedule</span>
+              {{ content.duration_minutes }} min
+            </span>
+            <span
+              class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
+              {{ content.age_rating }}
+            </span>
+            <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface">
+              <span class="material-symbols-outlined text-primary text-lg">movie</span>
+              {{ content.genre_name|default:"Unknown Genre" }}
+            </span>
+            {% if content.start_year %}
+              <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface"> 
+                TV Series
+              </span>
+            {% else %}
+              <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface">
+                Movie
+              </span>
+            {% endif %}
+          </div>
+        </section>
+        <!-- CTA Buttons -->
+        <div class="flex flex-wrap gap-4 pt-4">
+          {% for platform in content.platforms %}
+          <button
+            class="bg-[#256af4] hover:bg-blue-500 text-white px-10 py-4 rounded-xl font-bold flex items-center gap-3 shadow-lg shadow-primary/30 active:scale-95 transition-all">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+            
+              {{ platform }}
+            
+          </button>
+          {% endfor %}
+        </div>
+        <!-- Synopsis Section -->
+        <section class="space-y-4 pt-8">
+          <h2 class="text-xl font-bold tracking-tight text-white uppercase tracking-[0.2em] text-primary">Synopsis</h2>
+          <p class="text-lg text-[#90a4cb] leading-relaxed max-w-3xl">
+            {{ content.synopsis }}
+          </p>
+        </section>
+      </div>
+      <!-- Secondary Info Col -->
+      <div class="lg:col-span-4 flex flex-col gap-8">
+        <!-- Director Card -->
+        <div class="glass-panel border border-white/5 p-8 rounded-full">
+          <h3 class="text-xs font-bold text-[#90a4cb] uppercase tracking-widest mb-6">Directed By</h3>
+          <div class="flex items-center gap-5">
+            <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20">
+              <img alt="Director Profile" class="w-full h-full object-cover"
+                data-alt="Professional headshot of a film director with graying hair in a dark turtleneck against a moody blue background"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjnvAPY6qgA6yHuXKHrqtvsy2emspZ-UM482wOZLhf7904tFkORqIHEMtb8SqXCkucBSuxFv7otqPbkVCQe3DbEI9ynd5Ci8JGX1CyKsyRszYkOzxnP3buEB39QxiczkWHTbD7zBPkghxebW9WyTfSQdOO57OfBnwMDg7l6yhti7h61rfym8V4-BW0qYh7_gSYGzAaGhPu-LMBLIO7GmFPPIIHkkaaJiZFesTqAERm0d-r3C9VYmeVoE4aqZKoahCv0lF-HROr3FNY" />
+            </div>
+            <div>
+              <p class="text-xl font-bold text-white leading-tight">
+                {{ content.director|default:"Unknown Director" }}
+              </p>
+              <p class="text-[#90a4cb] text-sm flex items-center gap-1.5 mt-1">
+                <span class="material-symbols-outlined text-xs">public</span>
+                {{ content.director_nationality|default:"Unknown Nationality" }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Genre Spotlight -->
+        <div class="bg-surface-container-high/40 p-8 rounded-full border border-white/5">
+          <h3 class="text-xs font-bold text-[#90a4cb] uppercase tracking-widest mb-4"></h3>
+          <p class="text-on-surface leading-relaxed text-sm">
+            {{ content.genre_description|default:"No genre description available." }}
+          </p>
+        </div>
+        <button
+            class="glass-panel border border-white/5 hover:bg-white/10 text-white px-10 py-4 rounded-xl font-bold flex items-center gap-3 active:scale-95 transition-all">
+            <span class="material-symbols-outlined">add</span>
+            Add to Watchlist
+          </button>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- BottomNavBar (Shared Component - Mobile Only) -->
+<nav
+  class="md:hidden fixed bottom-0 w-full z-50 bg-[#1a2333]/60 backdrop-blur-md flex justify-around items-center py-4 px-6 border-t border-white/5">
+  <button class="flex flex-col items-center gap-1 text-[#256af4] font-bold">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+    <span class="text-[10px]">Home</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
+    <span class="material-symbols-outlined">explore</span>
+    <span class="text-[10px]">Discovery</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
+    <span class="material-symbols-outlined">bookmark</span>
+    <span class="text-[10px]">Watchlist</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
+    <span class="material-symbols-outlined">settings</span>
+    <span class="text-[10px]">Settings</span>
+  </button>
+</nav>
+</body>
+
+</html>
+{% endblock %}
