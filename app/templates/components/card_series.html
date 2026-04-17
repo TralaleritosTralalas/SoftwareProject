@@ -36,8 +36,7 @@
 
                     <!-- Hover -->
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-4">
-                        <a href="{% url 'app:content_detail' serie.id %}" class="bg-primary text-white text-center text-xs font-bold py-2 rounded-lg tracking-wide hover:bg-primary/80 block">
-                            Watch now
+                        <a href="{% url 'app:content_detail' 'series' serie.id %}" class="bg-primary text-white text-center text-xs font-bold py-2 rounded-lg tracking-wide hover:bg-primary/80 block">                            Watch now
                         </a>
                     </div>
 
@@ -46,7 +45,7 @@
                 <!-- Info -->
                 <div class="px-1">
                     <h3 class="font-bold text-sm truncate group-hover:text-primary transition-colors">
-                        <a href="{% url 'app:content_detail' serie.id %}"></a>{{ serie.title }}</a>
+                        <a href="{% url 'app:content_detail' 'series' serie.id %}">{{ serie.title }}</a>                    
                     </h3>
 
                     <div class="flex items-center gap-2 mt-1">
