@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts.apps.AccountsConfig',
     'app.apps.AppConfig',
 ]
 
@@ -61,8 +62,7 @@ ROOT_URLCONF = 'SoftwareProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'app' / 'templates']
-        ,
+        "DIRS": [BASE_DIR / "app" / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,3 +125,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_DIRS = [BASE_DIR / 'app' / 'static']
+
+LOGIN_REDIRECT_URL = "/redirect/"
+LOGOUT_REDIRECT_URL = "app:home"

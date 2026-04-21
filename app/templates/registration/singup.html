@@ -1,0 +1,66 @@
+{% extends "base/initial.html" %} {% block content %}
+<div class="flex items-center justify-center min-h-[calc(100vh-80px)] bg-slate-50 dark:bg-background-dark px-4">
+    <div class="max-w-md w-full bg-white dark:bg-[#1e293b] p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800">
+
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white">Join StreamSync</h2>
+            <p class="text-slate-500 dark:text-slate-400 mt-2">Create your account to start watching</p>
+        </div>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="flex flex-col gap-1">
+                    <label class="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">
+                        {{ field.label }}
+                    </label>
+                    <div class="relative">
+                        {{ field }}
+                    </div>
+                    {% if field.help_text %}
+                        <p class="text-[11px] text-slate-400 ml-1 leading-tight">{{ field.help_text }}</p>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="text-xs text-red-500 ml-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-primary/20 mt-4">
+                Sign Up
+            </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <p class="text-sm text-slate-500">
+                Already have an account?
+                <a href="{% url 'login' %}" class="text-primary font-semibold hover:underline">Log in</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Esto inyecta estilos a los inputs que genera Django automáticamente */
+    input {
+        width: 100%;
+        border-radius: 0.75rem;
+        border: 1px solid #e2e8f0;
+        background-color: #f8fafc;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+    }
+    .dark input {
+        background-color: #1e293b;
+        border-color: #334155;
+        color: white;
+    }
+    input:focus {
+        outline: none;
+        ring: 2px;
+        border-color: #3b82f6; /* Tu color primary */
+    }
+</style>
+{% endblock %}
