@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>StreamSync - Premium Streaming Aggregator</title>
-<!-- Fonts -->
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<!-- Icons -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Tailwind Config -->
-<script id="tailwind-config">
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>StreamSync - Premium Streaming Aggregator</title>
+    <!-- Fonts -->
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -37,7 +44,7 @@
             },
         }
     </script>
-<style>
+    <style>
         /* Custom Glassmorphism Utilities */
         .glass-card {
             background: rgba(24, 34, 52, 0.4);
@@ -45,7 +52,7 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
+
         .glass-btn {
             background: rgba(37, 106, 244, 0.2);
             backdrop-filter: blur(8px);
@@ -53,180 +60,240 @@
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen overflow-x-hidden selection:bg-primary selection:text-white">
-<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
-<div class="layout-container flex h-full grow flex-col">
-<!-- Navbar -->
-<div class="w-full flex justify-center sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-<div class="w-full max-w-[1280px] px-6 py-4">
-<header class="flex items-center justify-between whitespace-nowrap">
-<div class="flex items-center gap-3 text-slate-900 dark:text-white group cursor-pointer">
-<div class="size-8 rounded bg-gradient-to-tr from-primary to-blue-400 flex items-center justify-center text-white shadow-lg shadow-primary/20">
-<span class="material-symbols-outlined text-xl">play_arrow</span>
-</div>
-<h2 class="text-lg font-bold leading-tight tracking-tight">StreamSync</h2>
-</div>
-<div class="hidden md:flex flex-1 justify-end gap-8 items-center">
-<div class="flex items-center gap-8">
-</div>
-<div class="flex gap-3">
-<button class="h-10 px-5 rounded-lg text-slate-900 dark:text-white text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen overflow-x-hidden selection:bg-primary selection:text-white">
+    <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <!-- Navbar -->
+            <div
+                class="w-full flex justify-center sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+                <div class="w-full max-w-[1280px] px-6 py-4">
+                    <header class="flex items-center justify-between whitespace-nowrap">
+                        <div class="flex items-center gap-3 text-slate-900 dark:text-white group cursor-pointer">
+                            <div
+                                class="size-8 rounded bg-gradient-to-tr from-primary to-blue-400 flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                                <span class="material-symbols-outlined text-xl">play_arrow</span>
+                            </div>
+                            <h2 class="text-lg font-bold leading-tight tracking-tight">StreamSync</h2>
+                        </div>
+                        <div class="hidden md:flex flex-1 justify-end gap-8 items-center">
+                            <div class="flex items-center gap-8">
+                            </div>
+                            <div class="flex gap-3">
+                                <button
+                                    class="h-10 px-5 rounded-lg text-slate-900 dark:text-white text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
                                     Log In
                                 </button>
-<button class="h-10 px-5 rounded-lg bg-primary text-white text-sm font-bold hover:bg-blue-600 shadow-lg shadow-primary/25 transition-all">
+                                <button
+                                    class="h-10 px-5 rounded-lg bg-primary text-white text-sm font-bold hover:bg-blue-600 shadow-lg shadow-primary/25 transition-all">
                                     Sign Up
                                 </button>
-</div>
-</div>
-<div class="md:hidden text-slate-900 dark:text-white cursor-pointer">
-<span class="material-symbols-outlined">menu</span>
-</div>
-</header>
-</div>
-</div>
-<div class="flex flex-1 justify-center w-full">
-<div class="flex flex-col w-full max-w-[1280px]">
-<!-- Hero Section -->
-<div class="w-full p-4 md:p-6 lg:p-8">
-<div class="relative w-full rounded-2xl overflow-hidden min-h-[600px] flex flex-col items-center justify-center text-center p-8 md:p-16 isolate group" data-alt="Cinematic abstract dark background with blurred lights suggesting a movie theater or streaming interface" style="background-image: linear-gradient(rgba(16, 22, 34, 0.7), rgba(16, 22, 34, 0.9)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuB-Bj8k031UvDGluEh-Ip27Av30W7cX8wGrhKzpVgW1q_gj9WIjRXrw9m3uWt_Qot3ryseaq0Ef6KN2R1HM2QymJQ-CeRIBWH-5HY8h-f-o0XLCH07S9foil70ZfWM30jRReMJs7ictepzGIoYQedcDY8Tvle0kwVOViD_BYSRft3OesavfhBOQyfC2ASI-mN65x9FrpQp5F81FwJUUd3UpSV_9IyRvPOuHv0NngMQphqzqFZZZ6Dl1Kwi7h-BbFeExtAMiRYC-PVdl'); background-size: cover; background-position: center;">
-<!-- Hero Content -->
-<div class="relative z-10 flex flex-col gap-6 max-w-4xl mx-auto">
-<div class="inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 w-fit mx-auto">
-<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-<span class="text-xs font-medium text-white tracking-wide uppercase">The Future of Streaming</span>
-</div>
-<h1 class="text-white text-5xl md:text-7xl font-black leading-[1.1] tracking-tight drop-shadow-2xl">
-                                    All your streaming platforms in <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-300">one place</span>
-</h1>
-<h2 class="text-slate-300 text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto">
-                                    Experience entertainment management reimagined. StreamSync unifies Netflix, Hulu, HBO, and more into a single, seamless cinematic interface.
+                            </div>
+                        </div>
+                        <div class="md:hidden text-slate-900 dark:text-white cursor-pointer">
+                            <span class="material-symbols-outlined">menu</span>
+                        </div>
+                    </header>
+                </div>
+            </div>
+            <div class="flex flex-1 justify-center w-full">
+                <div class="flex flex-col w-full max-w-[1280px]">
+                    <!-- Hero Section -->
+                    <div class="w-full p-4 md:p-6 lg:p-8">
+                        <div class="relative w-full rounded-2xl overflow-hidden min-h-[600px] flex flex-col items-center justify-center text-center p-8 md:p-16 isolate group"
+                            data-alt="Cinematic abstract dark background with blurred lights suggesting a movie theater or streaming interface"
+                            style="background-image: linear-gradient(rgba(16, 22, 34, 0.7), rgba(16, 22, 34, 0.9)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuB-Bj8k031UvDGluEh-Ip27Av30W7cX8wGrhKzpVgW1q_gj9WIjRXrw9m3uWt_Qot3ryseaq0Ef6KN2R1HM2QymJQ-CeRIBWH-5HY8h-f-o0XLCH07S9foil70ZfWM30jRReMJs7ictepzGIoYQedcDY8Tvle0kwVOViD_BYSRft3OesavfhBOQyfC2ASI-mN65x9FrpQp5F81FwJUUd3UpSV_9IyRvPOuHv0NngMQphqzqFZZZ6Dl1Kwi7h-BbFeExtAMiRYC-PVdl'); background-size: cover; background-position: center;">
+                            <!-- Hero Content -->
+                            <div class="relative z-10 flex flex-col gap-6 max-w-4xl mx-auto">
+                                <div
+                                    class="inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 w-fit mx-auto">
+                                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                    <span class="text-xs font-medium text-white tracking-wide uppercase">The Future of
+                                        Streaming</span>
+                                </div>
+                                <h1
+                                    class="text-white text-5xl md:text-7xl font-black leading-[1.1] tracking-tight drop-shadow-2xl">
+                                    All your streaming platforms in <span
+                                        class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-300">one
+                                        place</span>
+                                </h1>
+                                <h2
+                                    class="text-slate-300 text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto">
+                                    Experience entertainment management reimagined. StreamSync unifies Netflix, Hulu,
+                                    HBO, and more into a single, seamless cinematic interface.
                                 </h2>
-<div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
 
-</div>
-</div>
-<!-- Decorative blur -->
-<div class="absolute -bottom-1/2 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/20 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-</div>
-</div>
-<!-- Stats Section -->
-<div class="px-6 py-10 w-full">
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<div class="glass-card p-6 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:border-primary/30 transition-colors">
-<p class="text-primary text-4xl font-bold tracking-tighter">50+</p>
-<p class="text-slate-400 font-medium text-sm uppercase tracking-wider">Services Integrated</p>
-</div>
-<div class="glass-card p-6 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:border-primary/30 transition-colors">
-<p class="text-primary text-4xl font-bold tracking-tighter">1M+</p>
-<p class="text-slate-400 font-medium text-sm uppercase tracking-wider">Movies Indexed</p>
-</div>
-<div class="glass-card p-6 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:border-primary/30 transition-colors">
-<p class="text-primary text-4xl font-bold tracking-tighter">500k+</p>
-<p class="text-slate-400 font-medium text-sm uppercase tracking-wider">Active Users</p>
-</div>
-</div>
-</div>
-<!-- Features Section -->
-<div class="flex flex-col gap-12 px-6 py-16 w-full">
-<div class="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-slate-800 pb-8">
-<div class="flex flex-col gap-3 max-w-2xl">
-<h3 class="text-primary font-bold text-sm tracking-widest uppercase">Premium Tools</h3>
-<h2 class="text-slate-900 dark:text-white text-3xl md:text-5xl font-bold tracking-tight">
+                                </div>
+                            </div>
+                            <!-- Decorative blur -->
+                            <div
+                                class="absolute -bottom-1/2 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/20 rounded-full blur-[120px] -z-10 pointer-events-none">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Stats Section -->
+                    <div class="px-6 py-10 w-full">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div
+                                class="glass-card p-6 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:border-primary/30 transition-colors">
+                                <p class="text-primary text-4xl font-bold tracking-tighter">50+</p>
+                                <p class="text-slate-400 font-medium text-sm uppercase tracking-wider">Services
+                                    Integrated</p>
+                            </div>
+                            <div
+                                class="glass-card p-6 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:border-primary/30 transition-colors">
+                                <p class="text-primary text-4xl font-bold tracking-tighter">1M+</p>
+                                <p class="text-slate-400 font-medium text-sm uppercase tracking-wider">Movies Indexed
+                                </p>
+                            </div>
+                            <div
+                                class="glass-card p-6 rounded-xl flex flex-col items-center justify-center text-center gap-2 hover:border-primary/30 transition-colors">
+                                <p class="text-primary text-4xl font-bold tracking-tighter">500k+</p>
+                                <p class="text-slate-400 font-medium text-sm uppercase tracking-wider">Active Users</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Features Section -->
+                    <div class="flex flex-col gap-12 px-6 py-16 w-full">
+                        <div
+                            class="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-slate-800 pb-8">
+                            <div class="flex flex-col gap-3 max-w-2xl">
+                                <h3 class="text-primary font-bold text-sm tracking-widest uppercase">Premium Tools</h3>
+                                <h2
+                                    class="text-slate-900 dark:text-white text-3xl md:text-5xl font-bold tracking-tight">
                                     Unlock your full viewing potential
                                 </h2>
-<p class="text-slate-600 dark:text-slate-400 text-lg">Powerful features designed to save you time and help you discover your next obsession.</p>
-</div>
-<button class="hidden md:flex items-center gap-2 text-primary font-bold hover:text-blue-400 transition-colors">
+                                <p class="text-slate-600 dark:text-slate-400 text-lg">Powerful features designed to save
+                                    you time and help you discover your next obsession.</p>
+                            </div>
+                            <button
+                                class="hidden md:flex items-center gap-2 text-primary font-bold hover:text-blue-400 transition-colors">
                                 Explore all features
                                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
-</button>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-<!-- Feature 1 -->
-<div class="glass-card p-6 rounded-2xl flex flex-col gap-4 group hover:-translate-y-1 transition-transform duration-300">
-<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-<span class="material-symbols-outlined text-3xl">search</span>
-</div>
-<div>
-<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Unified Search</h3>
-<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                                        Stop jumping between tabs. Search across Netflix, Hulu, HBO, and Disney+ instantly from one bar.
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <!-- Feature 1 -->
+                            <div
+                                class="glass-card p-6 rounded-2xl flex flex-col gap-4 group hover:-translate-y-1 transition-transform duration-300">
+                                <div
+                                    class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <span class="material-symbols-outlined text-3xl">search</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Unified Search
+                                    </h3>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                                        Stop jumping between tabs. Search across Netflix, Hulu, HBO, and Disney+
+                                        instantly from one bar.
                                     </p>
-</div>
-</div>
-<!-- Feature 2 -->
-<div class="glass-card p-6 rounded-2xl flex flex-col gap-4 group hover:-translate-y-1 transition-transform duration-300">
-<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-<span class="material-symbols-outlined text-3xl">checklist</span>
-</div>
-<div>
-<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Series Tracking</h3>
-<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                                        Never forget which episode you're on. Keep track of every season and episode automatically.
+                                </div>
+                            </div>
+                            <!-- Feature 2 -->
+                            <div
+                                class="glass-card p-6 rounded-2xl flex flex-col gap-4 group hover:-translate-y-1 transition-transform duration-300">
+                                <div
+                                    class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <span class="material-symbols-outlined text-3xl">checklist</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Series Tracking
+                                    </h3>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                                        Never forget which episode you're on. Keep track of every season and episode
+                                        automatically.
                                     </p>
-</div>
-</div>
-<!-- Feature 3 -->
-<div class="glass-card p-6 rounded-2xl flex flex-col gap-4 group hover:-translate-y-1 transition-transform duration-300">
-<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-<span class="material-symbols-outlined text-3xl">auto_awesome</span>
-</div>
-<div>
-<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Smart Recs</h3>
-<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                                        AI-driven suggestions that understand your unique taste better than any single platform algorithm.
+                                </div>
+                            </div>
+                            <!-- Feature 3 -->
+                            <div
+                                class="glass-card p-6 rounded-2xl flex flex-col gap-4 group hover:-translate-y-1 transition-transform duration-300">
+                                <div
+                                    class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <span class="material-symbols-outlined text-3xl">auto_awesome</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Smart Recs</h3>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                                        AI-driven suggestions that understand your unique taste better than any single
+                                        platform algorithm.
                                     </p>
-</div>
-</div>
-<!-- Feature 4 -->
-<div class="glass-card p-6 rounded-2xl flex flex-col gap-4 group hover:-translate-y-1 transition-transform duration-300">
-<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-<span class="material-symbols-outlined text-3xl">notifications_active</span>
-</div>
-<div>
-<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Availability Alerts</h3>
-<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                                        Get notified the second a movie on your watchlist becomes available on your subscribed services.
+                                </div>
+                            </div>
+                            <!-- Feature 4 -->
+                            <div
+                                class="glass-card p-6 rounded-2xl flex flex-col gap-4 group hover:-translate-y-1 transition-transform duration-300">
+                                <div
+                                    class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                                    <span class="material-symbols-outlined text-3xl">notifications_active</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-slate-900 dark:text-white text-lg font-bold mb-2">Availability
+                                        Alerts</h3>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                                        Get notified the second a movie on your watchlist becomes available on your
+                                        subscribed services.
                                     </p>
-</div>
-</div>
-</div>
-<button class="md:hidden w-full h-12 rounded-lg border border-slate-700 text-slate-300 font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
+                                </div>
+                            </div>
+                        </div>
+                        <button
+                            class="md:hidden w-full h-12 rounded-lg border border-slate-700 text-slate-300 font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
                             Explore all features
                             <span class="material-symbols-outlined text-sm">arrow_forward</span>
-</button>
-</div>
+                        </button>
+                    </div>
 
-<!-- Footer -->
-<footer class="w-full border-t border-slate-200 dark:border-slate-800 py-10 px-6">
-<div class="flex flex-col md:flex-row justify-between items-center gap-6">
-<div class="flex items-center gap-2 text-slate-900 dark:text-white">
-<div class="size-6 rounded bg-primary flex items-center justify-center text-white">
-<span class="material-symbols-outlined text-sm">play_arrow</span>
-</div>
-<span class="font-bold">StreamSync</span>
-</div>
-<div class="flex flex-wrap justify-center gap-8">
-<a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Privacy Policy</a>
-<a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Terms of Service</a>
-<a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Help Center</a>
-<a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Contact</a>
-</div>
-<div class="flex gap-4">
-<a class="text-slate-400 hover:text-white transition-colors" href="#">
-<svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24"><path clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill-rule="evenodd"></path></svg>
-</a>
-<a class="text-slate-400 hover:text-white transition-colors" href="#">
-<svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
-</a>
-<a class="text-slate-400 hover:text-white transition-colors" href="#">
-<svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24"><path clip-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.588 3.32c.636-.247 1.363-.416 2.427-.465C10.051 2.013 10.406 2 12.315 2zm-4.755 8.461c-1.57 0-2.841 1.272-2.841 2.841 0 1.57 1.271 2.841 2.841 2.841 1.57 0 2.841-1.271 2.841-2.841 0-1.57-1.272-2.841-2.841-2.841zm6.617-3.26c-.724 0-1.312.588-1.312 1.312 0 .724.588 1.312 1.312 1.312.724 0 1.312-.588 1.312-1.312 0-.724-.588-1.312-1.312-1.312zm-4.305 6.1c1.514 0 2.744 1.23 2.744 2.744 0 1.514-1.23 2.744-2.744 2.744-1.514 0-2.744-1.23-2.744-2.744 0-1.514 1.23-2.744 2.744-2.744z" fill-rule="evenodd"></path></svg>
-</a>
-</div>
-</div>
-</footer>
-</div>
-</div>
-</div>
-</div>
-</body></html>
+                    <!-- Footer -->
+                    <footer class="w-full border-t border-slate-200 dark:border-slate-800 py-10 px-6">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                            <div class="flex items-center gap-2 text-slate-900 dark:text-white">
+                                <div class="size-6 rounded bg-primary flex items-center justify-center text-white">
+                                    <span class="material-symbols-outlined text-sm">play_arrow</span>
+                                </div>
+                                <span class="font-bold">StreamSync</span>
+                            </div>
+                            <div class="flex flex-wrap justify-center gap-8">
+                                <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Privacy
+                                    Policy</a>
+                                <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Terms of
+                                    Service</a>
+                                <a class="text-sm text-slate-500 hover:text-primary transition-colors" href="#">Help
+                                    Center</a>
+                                <a class="text-sm text-slate-500 hover:text-primary transition-colors"
+                                    href="#">Contact</a>
+                            </div>
+                            <div class="flex gap-4">
+                                <a class="text-slate-400 hover:text-white transition-colors" href="#">
+                                    <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
+                                        <path clip-rule="evenodd"
+                                            d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                                            fill-rule="evenodd"></path>
+                                    </svg>
+                                </a>
+                                <a class="text-slate-400 hover:text-white transition-colors" href="#">
+                                    <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
+                                        <path
+                                            d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84">
+                                        </path>
+                                    </svg>
+                                </a>
+                                <a class="text-slate-400 hover:text-white transition-colors" href="#">
+                                    <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
+                                        <path clip-rule="evenodd"
+                                            d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.588 3.32c.636-.247 1.363-.416 2.427-.465C10.051 2.013 10.406 2 12.315 2zm-4.755 8.461c-1.57 0-2.841 1.272-2.841 2.841 0 1.57 1.271 2.841 2.841 2.841 1.57 0 2.841-1.271 2.841-2.841 0-1.57-1.272-2.841-2.841-2.841zm6.617-3.26c-.724 0-1.312.588-1.312 1.312 0 .724.588 1.312 1.312 1.312.724 0 1.312-.588 1.312-1.312 0-.724-.588-1.312-1.312-1.312zm-4.305 6.1c1.514 0 2.744 1.23 2.744 2.744 0 1.514-1.23 2.744-2.744 2.744-1.514 0-2.744-1.23-2.744-2.744 0-1.514 1.23-2.744 2.744-2.744z"
+                                            fill-rule="evenodd"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

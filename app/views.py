@@ -21,13 +21,18 @@ def movies(request):
 
 def search(request):
     query = request.GET.get('q', '').strip()
-    results = []
+    movie_results = []
+    series_results = []
 
     if query:
         results = search_content(query)
+        movie_results = [item for item in results if item.get('content_type') == 'movie']
+        series_results = [item for item in results if item.get('content_type') == 'series']
         return render(request, 'pages/search.html', {
             'query' : query,
-            'results' : results
+            'movie' : movie_results,
+            'series' : series_results,
+            'result_count': len(results)
         })
 
 
