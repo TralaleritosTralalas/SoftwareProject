@@ -34,6 +34,7 @@ def search(request):
             'series' : series_results,
             'result_count': len(results)
         })
+    
     return render(request, 'pages/search.html', {'query': ''})
 
 
