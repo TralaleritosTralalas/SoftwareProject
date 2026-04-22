@@ -12,4 +12,5 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('redirect/',views.login_redirect, name='login_redirect'),
     path('content/<str:ctype>/<int:cid>/', views.content_detail, name='content_detail'),
+  
 ]
