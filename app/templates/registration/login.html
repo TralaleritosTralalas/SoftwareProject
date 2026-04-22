@@ -1,0 +1,68 @@
+{% extends "base/initial.html" %}
+
+{% block content %}
+<style>
+    .glass-panel {
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(16, 22, 35, 0.6);
+    }
+</style>
+
+<div class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+    <div class="relative min-h-screen w-full flex items-center justify-center cinematic-bg overflow-hidden">
+
+        <div class="z-10 w-full max-w-[540px] px-8 py-12">
+            <div class="flex flex-col items-center mb-10">
+                <div class="flex items-center gap-4 mb-4">
+                    <h1 class="text-4xl font-bold tracking-tight">Login to StreamSync</h1> </div>
+                <p class="text-slate-400 text-center text-lg">Enter your credentials to continue</p>
+            </div>
+
+            <div class="glass-panel rounded-2xl p-10 shadow-2xl"> {% if form.errors %}
+                <div class="mb-6 flex items-center gap-3 bg-red-500/10 border border-red-500/20 p-4 rounded-lg text-red-400 text-base">
+                    <span class="material-symbols-outlined text-xl">error</span>
+                    <span>Invalid username or password.</span>
+                </div>
+                {% endif %}
+
+                <form method="post" class="space-y-6"> {% csrf_token %}
+
+                    <div>
+                        <label class="block text-base font-medium text-slate-300 mb-2" for="id_username">Username or Email</label>
+                        <input name="username" id="id_username" required
+                               class="w-full bg-slate-900/50 border border-slate-700 rounded-lg h-14 px-5 text-lg text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-slate-600"
+                               placeholder="name@example.com" type="text" />
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-base font-medium text-slate-300" for="id_password">Password</label>
+                            <a class="text-sm text-primary hover:underline font-medium" href="#">Forgot password?</a>
+                        </div>
+                        <div class="relative">
+                            <input name="password" id="id_password" required
+                                   class="w-full bg-slate-900/50 border border-slate-700 rounded-lg h-14 px-5 pr-12 text-lg text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-slate-600"
+                                   placeholder="Enter your password" type="password" />
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 px-6 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-3 group text-xl" type="submit">
+                            Sign In
+                            <span class="material-symbols-outlined text-2xl transition-transform">arrow_forward</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-10 pt-8 border-t border-slate-800/50 flex flex-col items-center gap-5">
+                    <p class="text-base text-slate-400">
+                        Don't have an account?
+                        <a class="text-primary font-semibold hover:text-blue-400 ml-1" href="{% url 'signup' %}">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

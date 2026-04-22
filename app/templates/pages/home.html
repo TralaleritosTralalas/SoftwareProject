@@ -60,68 +60,57 @@
         }
     </style>
 </head>
-
-<body
-    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen overflow-x-hidden selection:bg-primary selection:text-white">
-    <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
-        <div class="layout-container flex h-full grow flex-col">
-            <!-- Navbar -->
-            <div
-                class="w-full flex justify-center sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-                <div class="w-full max-w-[1280px] px-6 py-4">
-                    <header class="flex items-center justify-between whitespace-nowrap">
-                        <div class="flex items-center gap-3 text-slate-900 dark:text-white group cursor-pointer">
-                            <div
-                                class="size-8 rounded bg-gradient-to-tr from-primary to-blue-400 flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                                <span class="material-symbols-outlined text-xl">play_arrow</span>
-                            </div>
-                            <h2 class="text-lg font-bold leading-tight tracking-tight">StreamSync</h2>
-                        </div>
-                        <div class="hidden md:flex flex-1 justify-end gap-8 items-center">
-                            <div class="flex items-center gap-8">
-                            </div>
-                            <div class="flex gap-3">
-                                <button
-                                    class="h-10 px-5 rounded-lg text-slate-900 dark:text-white text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-                                    Log In
-                                </button>
-                                <button
-                                    class="h-10 px-5 rounded-lg bg-primary text-white text-sm font-bold hover:bg-blue-600 shadow-lg shadow-primary/25 transition-all">
-                                    Sign Up
-                                </button>
-                            </div>
-                        </div>
-                        <div class="md:hidden text-slate-900 dark:text-white cursor-pointer">
-                            <span class="material-symbols-outlined">menu</span>
-                        </div>
-                    </header>
-                </div>
-            </div>
-            <div class="flex flex-1 justify-center w-full">
-                <div class="flex flex-col w-full max-w-[1280px]">
-                    <!-- Hero Section -->
-                    <div class="w-full p-4 md:p-6 lg:p-8">
-                        <div class="relative w-full rounded-2xl overflow-hidden min-h-[600px] flex flex-col items-center justify-center text-center p-8 md:p-16 isolate group"
-                            data-alt="Cinematic abstract dark background with blurred lights suggesting a movie theater or streaming interface"
-                            style="background-image: linear-gradient(rgba(16, 22, 34, 0.7), rgba(16, 22, 34, 0.9)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuB-Bj8k031UvDGluEh-Ip27Av30W7cX8wGrhKzpVgW1q_gj9WIjRXrw9m3uWt_Qot3ryseaq0Ef6KN2R1HM2QymJQ-CeRIBWH-5HY8h-f-o0XLCH07S9foil70ZfWM30jRReMJs7ictepzGIoYQedcDY8Tvle0kwVOViD_BYSRft3OesavfhBOQyfC2ASI-mN65x9FrpQp5F81FwJUUd3UpSV_9IyRvPOuHv0NngMQphqzqFZZZ6Dl1Kwi7h-BbFeExtAMiRYC-PVdl'); background-size: cover; background-position: center;">
-                            <!-- Hero Content -->
-                            <div class="relative z-10 flex flex-col gap-6 max-w-4xl mx-auto">
-                                <div
-                                    class="inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 w-fit mx-auto">
-                                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                                    <span class="text-xs font-medium text-white tracking-wide uppercase">The Future of
-                                        Streaming</span>
-                                </div>
-                                <h1
-                                    class="text-white text-5xl md:text-7xl font-black leading-[1.1] tracking-tight drop-shadow-2xl">
-                                    All your streaming platforms in <span
-                                        class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-300">one
-                                        place</span>
-                                </h1>
-                                <h2
-                                    class="text-slate-300 text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto">
-                                    Experience entertainment management reimagined. StreamSync unifies Netflix, Hulu,
-                                    HBO, and more into a single, seamless cinematic interface.
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen overflow-x-hidden selection:bg-primary selection:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Navbar -->
+<div class="w-full flex justify-center sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<div class="w-full max-w-[1280px] px-6 py-4">
+<header class="flex items-center justify-between whitespace-nowrap">
+<div class="flex items-center gap-3 text-slate-900 dark:text-white group cursor-pointer">
+<div class="size-8 rounded bg-gradient-to-tr from-primary to-blue-400 flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-xl">play_arrow</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">StreamSync</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-end gap-8 items-center">
+<div class="flex items-center gap-8">
+</div>
+<div class="flex gap-3">
+    <a href="/accounts/login">
+        <button class="h-10 px-5 rounded-lg text-slate-900 dark:text-white text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all" >
+            Log In
+        </button>
+    </a>
+    <a href="/accounts/signup">
+        <button class="h-10 px-5 rounded-lg bg-primary text-white text-sm font-bold hover:bg-blue-600 shadow-lg shadow-primary/25 transition-all" >
+            Sign Up
+        </button>
+    </a>
+</div>
+</div>
+<div class="md:hidden text-slate-900 dark:text-white cursor-pointer">
+<span class="material-symbols-outlined">menu</span>
+</div>
+</header>
+</div>
+</div>
+<div class="flex flex-1 justify-center w-full">
+<div class="flex flex-col w-full max-w-[1280px]">
+<!-- Hero Section -->
+<div class="w-full p-4 md:p-6 lg:p-8">
+<div class="relative w-full rounded-2xl overflow-hidden min-h-[600px] flex flex-col items-center justify-center text-center p-8 md:p-16 isolate group" data-alt="Cinematic abstract dark background with blurred lights suggesting a movie theater or streaming interface" style="background-image: linear-gradient(rgba(16, 22, 34, 0.7), rgba(16, 22, 34, 0.9)), url('https://lh3.googleusercontent.com/aida-public/AB6AXuB-Bj8k031UvDGluEh-Ip27Av30W7cX8wGrhKzpVgW1q_gj9WIjRXrw9m3uWt_Qot3ryseaq0Ef6KN2R1HM2QymJQ-CeRIBWH-5HY8h-f-o0XLCH07S9foil70ZfWM30jRReMJs7ictepzGIoYQedcDY8Tvle0kwVOViD_BYSRft3OesavfhBOQyfC2ASI-mN65x9FrpQp5F81FwJUUd3UpSV_9IyRvPOuHv0NngMQphqzqFZZZ6Dl1Kwi7h-BbFeExtAMiRYC-PVdl'); background-size: cover; background-position: center;">
+<!-- Hero Content -->
+<div class="relative z-10 flex flex-col gap-6 max-w-4xl mx-auto">
+<div class="inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 w-fit mx-auto">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-medium text-white tracking-wide uppercase">The Future of Streaming</span>
+</div>
+<h1 class="text-white text-5xl md:text-7xl font-black leading-[1.1] tracking-tight drop-shadow-2xl">
+                                    All your streaming platforms in <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-300">one place</span>
+</h1>
+<h2 class="text-slate-300 text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto">
+                                    Experience entertainment management reimagined. StreamSync unifies Netflix, Hulu, HBO, and more into a single, seamless cinematic interface.
                                 </h2>
                                 <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
 
