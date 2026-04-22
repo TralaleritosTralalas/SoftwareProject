@@ -30,8 +30,8 @@ def search(request):
         series_results = [item for item in results if item.get('content_type') == 'series']
         return render(request, 'pages/search.html', {
             'query' : query,
-            'movie' : movie_results,
-            'series' : series_results,
+            'movies': movie_results,
+            'series': series_results,
             'result_count': len(results)
         })
     

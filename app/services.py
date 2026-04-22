@@ -59,7 +59,19 @@ def get_genre(url, api_key):
     except requests.exceptions.RequestException as e:
         print(f"Error connecting to API: {e}")
         return []
-
+    
+def get_directors(url, api_key):
+    try:
+        response = requests.get(
+            f"{url}/directors", 
+            headers={"X-API-KEY": api_key}, 
+            timeout=5
+        )
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error connecting to API: {e}")
+        return []
 
 def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
 
@@ -69,20 +81,38 @@ def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
         
         # mapa de generos x plataforma
         genre_map = {}
+        director_map = {}
 
         genres = get_genre(url, key)
         for g in genres:
             genre_map[g["id"]] = g["name"]
 
+        directors = get_directors(url, key)
+        for d in directors:
+            director_map[d["id"]] = {
+                "name": d.get("name", "Unknown Director"),
+                "nationality": d.get("country", {}).get("name") if isinstance(d.get("country"), dict) else "Unknown"
+            }
+
         movies = get_local_movies(url, key)
         for movie in movies:
             identifier = f"{movie.get('title')}_{movie.get('year')}".lower().strip() #identificador del contenido
             
-            if identifier not in movies_dict: #el contenido no esta 
-                movie["genre_name"] = genre_map.get(movie.get('genre_id'), "Unknown") #agarramos su genero
-                movie["platforms"] = [platform_name]# lista de plataformas 
-                movie.pop("platform_name", None) 
-                movies_dict[identifier] = movie #guardamos en el diccionario
+            if identifier not in movies_dict:
+                # Género y descripción
+                movie["genre_name"] = genre_map.get(movie.get('genre_id'), "Unknown")
+                dir_info = director_map.get(movie.get("director_id"), {})
+                movie["director"] = dir_info.get("name", "Unknown Director")
+                movie["director_nationality"] = dir_info.get("nationality", "Unknown")             
+                # Otros datos
+                movie["age_rating"] = movie.get("age_rating", {}).get("title", "NR")
+                movie["duration_minutes"] = movie.get("duration_minutes", "—")
+
+                movie["platforms"] = [platform_name]
+                movie.pop("platform_name", None)
+                movies_dict[identifier] = movie
+                print(f"DEBUG MOVIE DATA: {movie}")
+                
             else:
                 if platform_name not in movies_dict[identifier]["platforms"]:
                     movies_dict[identifier]["platforms"].append(platform_name)
@@ -104,7 +134,15 @@ def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
             identifier = f"{serie.get('title')}_{serie.get('start_year', '')}".lower().strip()
 
             if identifier not in series_dict:
-                serie["genre_name"] = genre_map.get(serie.get("genre_id"), "Unknown")
+                serie["genre_name"] = serie.get("genre", {}).get("name") or genre_map.get(serie.get("genre_id"), "Unknown")
+                serie["synopsis"] = serie.get("synopsis", "No synopsis available.")
+                
+                director_data = serie.get("director", {})
+                serie["director"] = director_data.get("name", "Unknown Director")
+                serie["director_nationality"] = director_data.get("country", {}).get("name", "Unknown")
+                serie["genre_description"] = serie.get("genre", {}).get("description", "")
+                serie["age_rating"] = serie.get("age_rating", {}).get("title", "NR")
+
                 serie["platforms"] = [platform_name]
                 serie.pop("platform_name", None)
                 series_dict[identifier] = serie

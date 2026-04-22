@@ -15,10 +15,7 @@
           </h1>
           <!-- Metadata Row -->
           <div class="flex flex-wrap items-center gap-6 text-[#90a4cb] font-medium tracking-wide">
-            {% for platform in content.platforms %}
-            <span class="px-2 py-1 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded">{{ platform }}
-              </span>
-            {% endfor %}
+
             <span class="flex items-center gap-2">
               <span class="material-symbols-outlined text-primary text-lg">calendar_today</span>
               {{ content.year}}
@@ -31,15 +28,19 @@
               <span class="material-symbols-outlined text-primary text-lg">schedule</span>
               {{ content.duration_minutes }} min
             </span>
-            <span
-              class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
-              <span class="material-symbols-outlined text-amber-400 text-sm"
-                style="font-variation-settings: 'FILL' 1;">star </span>
+            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+              <span
+                class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
+                <span class="material-symbols-outlined text-amber-400 text-sm"
+                  style="font-variation-settings: 'FILL' 1;">star </span>
                 {{ content.rating }}
+              </span>
             </span>
-            <span
-              class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
+            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+              <span
+                class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
                 {{ content.age_rating|default:"NR" }}
+              </span>
             </span>
             <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface">
               <span class="material-symbols-outlined text-primary text-lg">movie</span>
@@ -79,7 +80,7 @@
       <!-- Secondary Info Col -->
       <div class="lg:col-span-4 flex flex-col gap-8">
         <!-- Director Card -->
-        <div class="glass-panel border border-white/5 p-8 rounded-full">
+        <div class="glass-panel border border-white/5 p-8 rounded-2xl">
           <h3 class="text-xs font-bold text-[#90a4cb] uppercase tracking-widest mb-6">Directed By</h3>
           <div class="flex items-center gap-5">
             <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20">
@@ -99,7 +100,7 @@
           </div>
         </div>
         <!-- Genre Spotlight -->
-        <div class="bg-surface-container-high/40 p-8 rounded-full border border-white/5">
+        <div class="bg-surface-container-high/40 p-8 rounded-2xl border border-white/5">
           <h3 class="text-xs font-bold text-[#90a4cb] uppercase tracking-widest mb-4"></h3>
           <p class="text-on-surface leading-relaxed text-sm">
             {{ content.genre_description|default:"No genre description available." }}

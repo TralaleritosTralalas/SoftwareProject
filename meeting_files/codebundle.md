@@ -1,5 +1,5 @@
 # CodeBundle: SoftwareProject
-Generated: 2026-04-21T07:25:39.035Z
+Generated: 2026-04-22T08:05:58.034Z
 Root: /home/toni/Documentos/GitHub/SoftwareProject
 Files: 51
 
@@ -91,14 +91,14 @@ Files: 51
 - `.github/workflows/quality-control-aggregator.yml` (3826 bytes)
 - `.github/workflows/runchart.yml` (1258 bytes)
 - `.github/workflows/test.yml` (766 bytes)
-- `.gitignore` (48 bytes)
+- `.gitignore` (62 bytes)
 - `.gitmodules` (119 bytes)
 - `app/__init__.py` (0 bytes)
 - `app/admin.py` (63 bytes)
 - `app/apps.py` (81 bytes)
 - `app/migrations/__init__.py` (0 bytes)
 - `app/models.py` (57 bytes)
-- `app/services.py` (6386 bytes)
+- `app/services.py` (7758 bytes)
 - `app/static/css/main.css` (1053 bytes)
 - `app/static/js/tailwind.config.js` (713 bytes)
 - `app/templates/base/base.html` (1321 bytes)
@@ -107,15 +107,15 @@ Files: 51
 - `app/templates/components/footer.html` (616 bytes)
 - `app/templates/components/navbar.html` (3962 bytes)
 - `app/templates/pages/catalog.html` (240 bytes)
-- `app/templates/pages/content_view.html` (6904 bytes)
+- `app/templates/pages/content_view.html` (6898 bytes)
 - `app/templates/pages/home.html` (21163 bytes)
 - `app/templates/pages/main.html` (27320 bytes)
 - `app/templates/pages/movies.html` (131 bytes)
-- `app/templates/pages/search.html` (9347 bytes)
+- `app/templates/pages/search.html` (5822 bytes)
 - `app/templates/pages/series.html` (128 bytes)
 - `app/tests.py` (60 bytes)
 - `app/urls.py` (459 bytes)
-- `app/views.py` (1361 bytes)
+- `app/views.py` (1726 bytes)
 - `docker-compose.yml` (938 bytes)
 - `Dockerfile` (390 bytes)
 - `entrypoint.sh` (173 bytes)
@@ -825,6 +825,7 @@ __pycache__/
 *.pyc
 staticfiles/
 .idea
+codebundle.md
 
 ```
 <!-- END_FILE -->
@@ -984,11 +985,27 @@ def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
         for movie in movies:
             identifier = f"{movie.get('title')}_{movie.get('year')}".lower().strip() #identificador del contenido
             
-            if identifier not in movies_dict: #el contenido no esta 
-                movie["genre_name"] = genre_map.get(movie.get('genre_id'), "Unknown") #agarramos su genero
-                movie["platforms"] = [platform_name]# lista de plataformas 
-                movie.pop("platform_name", None) 
-                movies_dict[identifier] = movie #guardamos en el diccionario
+            if identifier not in movies_dict:
+                # Género y descripción
+                genre_obj = movie.get("genre", {})
+                movie["genre_name"] = genre_obj.get("name") or genre_map.get(movie.get('genre_id'), "Unknown")
+                movie["genre_description"] = genre_obj.get("description", "No description available.")
+                
+                # Director y Nacionalidad
+                dir_obj = movie.get("directors", {})
+                movie["directors"] = dir_obj.get("name", "Unknown Director")
+                country_obj = dir_obj.get("country_id", {})
+
+                # Intentamos sacar el nombre del país, si country es un dict o un string
+                movie["director_nationality"] = country_obj.get("name") if isinstance(country_obj, dict) else country_obj or "Unknown"
+                
+                # Otros datos
+                movie["age_rating"] = movie.get("age_rating", {}).get("title", "NR")
+                movie["duration_minutes"] = movie.get("duration_minutes", "—")
+
+                movie["platforms"] = [platform_name]
+                movie.pop("platform_name", None)
+                movies_dict[identifier] = movie
             else:
                 if platform_name not in movies_dict[identifier]["platforms"]:
                     movies_dict[identifier]["platforms"].append(platform_name)
@@ -1010,7 +1027,15 @@ def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
             identifier = f"{serie.get('title')}_{serie.get('start_year', '')}".lower().strip()
 
             if identifier not in series_dict:
-                serie["genre_name"] = genre_map.get(serie.get("genre_id"), "Unknown")
+                serie["genre_name"] = serie.get("genre", {}).get("name") or genre_map.get(serie.get("genre_id"), "Unknown")
+                serie["synopsis"] = serie.get("synopsis", "No synopsis available.")
+                
+                director_data = serie.get("director", {})
+                serie["director"] = director_data.get("name", "Unknown Director")
+                serie["director_nationality"] = director_data.get("country", {}).get("name", "Unknown")
+                serie["genre_description"] = serie.get("genre", {}).get("description", "")
+                serie["age_rating"] = serie.get("age_rating", {}).get("title", "NR")
+
                 serie["platforms"] = [platform_name]
                 serie.pop("platform_name", None)
                 series_dict[identifier] = serie
@@ -1528,10 +1553,7 @@ tailwind.config = {
           </h1>
           <!-- Metadata Row -->
           <div class="flex flex-wrap items-center gap-6 text-[#90a4cb] font-medium tracking-wide">
-            {% for platform in content.platforms %}
-            <span class="px-2 py-1 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded">{{ platform }}
-              </span>
-            {% endfor %}
+
             <span class="flex items-center gap-2">
               <span class="material-symbols-outlined text-primary text-lg">calendar_today</span>
               {{ content.year}}
@@ -1544,15 +1566,19 @@ tailwind.config = {
               <span class="material-symbols-outlined text-primary text-lg">schedule</span>
               {{ content.duration_minutes }} min
             </span>
-            <span
-              class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
-              <span class="material-symbols-outlined text-amber-400 text-sm"
-                style="font-variation-settings: 'FILL' 1;">star </span>
+            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+              <span
+                class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
+                <span class="material-symbols-outlined text-amber-400 text-sm"
+                  style="font-variation-settings: 'FILL' 1;">star </span>
                 {{ content.rating }}
+              </span>
             </span>
-            <span
-              class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
+            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+              <span
+                class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
                 {{ content.age_rating|default:"NR" }}
+              </span>
             </span>
             <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface">
               <span class="material-symbols-outlined text-primary text-lg">movie</span>
@@ -1592,7 +1618,7 @@ tailwind.config = {
       <!-- Secondary Info Col -->
       <div class="lg:col-span-4 flex flex-col gap-8">
         <!-- Director Card -->
-        <div class="glass-panel border border-white/5 p-8 rounded-full">
+        <div class="glass-panel border border-white/5 p-8 rounded-2xl">
           <h3 class="text-xs font-bold text-[#90a4cb] uppercase tracking-widest mb-6">Directed By</h3>
           <div class="flex items-center gap-5">
             <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20">
@@ -1612,7 +1638,7 @@ tailwind.config = {
           </div>
         </div>
         <!-- Genre Spotlight -->
-        <div class="bg-surface-container-high/40 p-8 rounded-full border border-white/5">
+        <div class="bg-surface-container-high/40 p-8 rounded-2xl border border-white/5">
           <h3 class="text-xs font-bold text-[#90a4cb] uppercase tracking-widest mb-4"></h3>
           <p class="text-on-surface leading-relaxed text-sm">
             {{ content.genre_description|default:"No genre description available." }}
@@ -2367,95 +2393,22 @@ tailwind.config = {
     {% endif %}
 </header>
 
-<!-- ── Search bar ───────────────────────────────────────────────────────── -->
-{% if not query %}
-<div class="flex justify-center mb-16">
-    <form action="{% url 'app:search' %}" method="GET" class="w-full max-w-lg">
-        <div class="relative">
-            <span
-                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
-
-            <input name="q" autofocus placeholder="Search movies, series, genres..."
-                class="w-full rounded-2xl border border-outline bg-surface-container-low py-3.5 pl-12 pr-4 text-sm text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/60 transition-all" />
-        </div>
-    </form>
-</div>
-{% endif %}
-
 <!-- ── Results Grid ─────────────────────────────────────────────────────── -->
-{% if results %}
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+{% if movies or series %}
+        {% if movies %}
 
-    {% for item in results %}
-    <div class="group relative flex flex-col gap-3 transition-all duration-500 hover:scale-105 card-enter"
-        style="animation-delay: {{ forloop.counter0 }}00ms">
+            {% include "components/card_movies.html" with movies=movies %}
+            
+        {% endif %}
 
-        <div
-            class="aspect-[2/3] rounded-xl overflow-hidden bg-surface-container relative cinematic-shadow hover-electric">
+        {% if series %}
 
-            <!-- Placeholder image -->
-            <div
-                class="w-full h-full bg-gradient-to-br from-surface-container-high to-surface-dim flex items-center justify-center">
-                <span class="material-symbols-outlined text-on-surface-variant opacity-30 text-6xl">
-                    {% if item.content_type == "series" %}live_tv{% else %}movie{% endif %}
-                </span>
-            </div>
+            {% include "components/card_series.html" with series=series %}
+            
+        {% endif %}
 
-            <!-- Gradient -->
-            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent opacity-80">
-            </div>
+{% elif query %}
 
-            <!-- Platform badges -->
-            <div class="absolute top-3 right-3 flex flex-col gap-1.5">
-                {% for platform in item.platforms %}
-                <span class="bg-primary text-white text-[10px] px-2 py-0.5 rounded shadow">
-                    {{ platform }}
-                </span>
-                {% endfor %}
-            </div>
-
-            <!-- Hover overlay -->
-            <div
-                class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-4">
-                <a href="{% url 'app:content_detail' 'movie' item.id %}"
-                    class="bg-primary text-white text-center text-xs font-bold py-2 rounded-lg tracking-wide hover:bg-primary/80 block">
-                    Watch now
-                </a>
-            </div>
-
-        </div>
-
-        <!-- Info -->
-        <div class="px-1">
-            <h3 class="font-bold text-sm leading-tight group-hover:text-primary transition-colors truncate">
-                {{ item.title }}
-            </h3>
-
-            <div class="flex items-center gap-2 mt-1">
-                <span class="text-xs text-slate-400">
-                    {{ item.year|default:"—" }}
-                </span>
-
-                <span class="w-1 h-1 bg-slate-500/40 rounded-full"></span>
-
-                <span class="text-xs text-slate-400 truncate">
-                    {{ item.genre_name|default:"Unknown" }}
-                </span>
-            </div>
-
-            {% if item.rating %}
-            <div class="flex items-center gap-1 mt-1">
-                <span class="material-symbols-outlined text-amber-400 text-sm"
-                    style="font-variation-settings: 'FILL' 1;">star</span>
-                <span class="text-xs text-on-surface-variant">{{ item.rating }}</span>
-            </div>
-            {% endif %}
-        </div>
-
-    </div>
-    {% endfor %}
-
-</div>
 
 <!-- ── No results ───────────────────────────────────────────────────────── -->
 {% elif query %}
@@ -2491,7 +2444,7 @@ tailwind.config = {
 
         {% for item in suggestions %}
         <div class="group relative flex flex-col gap-3 transition-all duration-500 hover:scale-105 card-enter"
-            style="animation-delay: {{ forloop.counter0 }}00ms">
+            style="animation-delay: {{ forloop.counter0 }} 00ms">
 
             <div
                 class="aspect-[2/3] rounded-xl overflow-hidden bg-surface-container relative cinematic-shadow hover-electric">
@@ -2641,14 +2594,21 @@ def movies(request):
 
 def search(request):
     query = request.GET.get('q', '').strip()
-    results = []
+    movie_results = []
+    series_results = []
 
     if query:
         results = search_content(query)
+        movie_results = [item for item in results if item.get('content_type') == 'movie']
+        series_results = [item for item in results if item.get('content_type') == 'series']
         return render(request, 'pages/search.html', {
             'query' : query,
-            'results' : results
+            'movie' : movie_results,
+            'series' : series_results,
+            'result_count': len(results)
         })
+    
+    return render(request, 'pages/search.html', {'query': ''})
 
 
 
