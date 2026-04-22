@@ -11,5 +11,5 @@ urlpatterns = [
     path('series/', views.series, name='series'),
     path('search/', views.search, name='search'),
     path('redirect/',views.login_redirect, name='login_redirect'),
-    path('content/<int:content_id>/', views.content_detail, name='content_detail'),
+    path('content/<str:ctype>/<int:cid>/', views.content_detail, name='content_detail'),
 ]
