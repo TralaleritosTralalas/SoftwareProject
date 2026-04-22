@@ -109,7 +109,7 @@ _Below are the steps to install and configure the application. It does not rely 
 
 1. Clone the repository
    ```sh
-   git clone https://github.com/your-username/SoftwareProject.git
+   git clone https://github.com/TralaleritosTralalas/SoftwareProject.git
    cd SoftwareProject
    ```
 2. Sync the virtual environment and dependencies
@@ -118,9 +118,10 @@ _Below are the steps to install and configure the application. It does not rely 
    ```
 3. Run database migrations
    ```sh
+   uv run python manage.py makemigrations
    uv run python manage.py migrate
    ```
-4. Start the development server
+5. Start the development server
    ```sh
    uv run python manage.py runserver
    ```
@@ -142,6 +143,7 @@ Once the server is running, open `http://127.0.0.1:8000/` in your browser. The l
 
 You can also generate the repository issues analytics histogram by running:
 ```sh
+cd IshikawaTools/
 uv run python histogram.py
 ```
 
@@ -158,9 +160,6 @@ _For more examples, please refer to the [Documentation](https://github.com/your-
 - [x] Issues analytics script (`histogram.py`)
 - [ ] Expanded test coverage
 - [ ] API documentation
-- [ ] Multi-language support
-    - [ ] Spanish
-    - [ ] Catalan
 
 See the [open issues](https://github.com/TralaleritosTralalas/SoftwareProject/issues) for a full list of proposed features and known issues.
 
