@@ -6,7 +6,6 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![License][license-shield]][license-url]
 [![Python][python-shield]][python-url]
 [![Django][django-shield]][django-url]
 [![Deploy][deploy-shield]][deploy-url]
@@ -54,8 +53,6 @@
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -121,7 +118,7 @@ _Below are the steps to install and configure the application. It does not rely 
    uv run python manage.py makemigrations
    uv run python manage.py migrate
    ```
-5. Start the development server
+4. Start the development server
    ```sh
    uv run python manage.py runserver
    ```
@@ -147,7 +144,7 @@ cd IshikawaTools/
 uv run python histogram.py
 ```
 
-_For more examples, please refer to the [Documentation](https://github.com/your-username/SoftwareProject)_
+_For more examples, please refer to the [Documentation](https://github.com/TralaleritosTralalas/SoftwareProject)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -159,7 +156,7 @@ _For more examples, please refer to the [Documentation](https://github.com/your-
 - [x] Automatic deployment to Render
 - [x] Issues analytics script (`histogram.py`)
 - [ ] Expanded test coverage
-- [ ] API documentation
+- [ ] Project documentation
 
 See the [open issues](https://github.com/TralaleritosTralalas/SoftwareProject/issues) for a full list of proposed features and known issues.
 
@@ -181,7 +178,7 @@ If you have a suggestion that would make this better, please fork the repo and c
 ### Top contributors:
 
 <a href="https://github.com/TralaleritosTralalas/SoftwareProject/graphs/contributors">
-  <img src="https://contrib.rocks/image?TralaleritosTralalas/SoftwareProject" alt="contrib.rocks image" />
+  <img src="https://contrib.rocks/image?repo=TralaleritosTralalas/SoftwareProject" alt="contrib.rocks image" />
 </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -203,16 +200,14 @@ Resources and tools that have been helpful in this project.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/your-username/SoftwareProject.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/TralaleritosTralalas/SoftwareProject.svg?style=for-the-badge
 [contributors-url]: https://github.com/TralaleritosTralalas/SoftwareProject/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/your-username/SoftwareProject.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/TralaleritosTralalas/SoftwareProject.svg?style=for-the-badge
 [forks-url]: https://github.com/TralaleritosTralalas/SoftwareProject/network/members
-[stars-shield]: https://img.shields.io/github/stars/your-username/SoftwareProject.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/TralaleritosTralalas/SoftwareProject.svg?style=for-the-badge
 [stars-url]: https://github.com/TralaleritosTralalas/SoftwareProject/stargazers
-[issues-shield]: https://img.shields.io/github/issues/your-username/SoftwareProject.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/TralaleritosTralalas/SoftwareProject.svg?style=for-the-badge
 [issues-url]: https://github.com/TralaleritosTralalas/SoftwareProject/issues
-[license-shield]: https://img.shields.io/github/license/your-username/SoftwareProject.svg?style=for-the-badge
-[license-url]: https://github.com/your-username/SoftwareProject/blob/master/LICENSE.txt
 [product-screenshot]: images/screenshot.png
 [python-shield]: https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white
 [python-url]: https://www.python.org/
