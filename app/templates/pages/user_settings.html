@@ -1,0 +1,135 @@
+{% extends "base/base.html" %}
+
+{% block title %}StreamSync Dashboard{% endblock %}
+
+{% block content %}
+
+<main class="flex-1 flex flex-col">
+
+    <section class="relative w-full h-[320px] overflow-hidden rounded-3xl group">
+        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+             style='background-image:url("https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=2069&auto=format&fit=crop")'>
+        </div>
+        
+        <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20"></div>
+
+        <button class="absolute top-4 right-4 p-2 bg-black/40 backdrop-blur-md rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity">
+            <span class="material-symbols-outlined">edit_square</span>
+        </button>
+
+        <div class="relative max-w-7xl mx-auto px-6 h-full flex items-end pb-12">
+            <div class="flex flex-col md:flex-row items-end gap-6">
+                
+                <div class="relative group/avatar">
+                    <img class="w-32 h-32 md:w-40 md:h-40 rounded-2xl border-4 border-background-dark object-cover shadow-2xl"
+                         src="https://randomuser.me/api/portraits/men/32.jpg" id="profile-preview"/>
+                    
+                    <label for="avatar-upload" class="absolute inset-0 flex items-center justify-center bg-black/60 rounded-2xl opacity-0 group-hover/avatar:opacity-100 transition-opacity cursor-pointer">
+                        <span class="material-symbols-outlined text-white text-3xl">add_a_photo</span>
+                        <input type="file" id="avatar-upload" class="hidden" accept="image/*" onchange="previewImage(event)">
+                    </label>
+                </div>
+
+                <div class="mb-2">
+                    <h2 class="text-4xl font-bold text-white">Alex Morgan</h2>
+                    <p class="text-on-surface-variant flex items-center gap-2">
+                        <span class="size-2 bg-green-500 rounded-full"></span>
+                        Premium Subscriber
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-6 py-12 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <div class="lg:col-span-8 space-y-6">
+                <div class="bg-surface-container-low p-8 rounded-2xl border border-outline-variant">
+                    <h3 class="text-xl font-bold mb-6">Account Settings</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="space-y-2">
+                            <label class="text-sm text-on-surface-variant">First Name</label>
+                            <input class="w-full p-4 rounded-xl bg-background-dark border border-outline-variant focus:ring-2 focus:ring-primary/50 outline-none transition-all" value="Alex"/>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm text-on-surface-variant">Last Name</label>
+                            <input class="w-full p-4 rounded-xl bg-background-dark border border-outline-variant focus:ring-2 focus:ring-primary/50 outline-none transition-all" value="Morgan"/>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 mb-6">
+                        <label class="text-sm text-on-surface-variant">Bio</label>
+                        <textarea rows="4" class="w-full p-4 rounded-xl bg-background-dark border border-outline-variant focus:ring-2 focus:ring-primary/50 outline-none transition-all">Streaming Experience Designer and movie marathon enthusiast.</textarea>
+                    </div>
+
+                    <div class="flex justify-end gap-4">
+                        <button class="px-6 py-3 text-on-surface-variant hover:text-white transition-colors">Discard</button>
+                        <button class="px-8 py-3 bg-primary hover:bg-blue-600 text-white rounded-xl font-bold shadow-lg shadow-primary/20 transition-all">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 space-y-6">
+                
+                <div class="bg-surface-container-low p-6 rounded-2xl border border-outline-variant">
+                    <h4 class="font-bold mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">analytics</span>
+                        Your Activity
+                    </h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-background-dark rounded-xl border border-outline-variant text-center">
+                            <p class="text-2xl font-bold">142</p>
+                            <p class="text-[10px] uppercase tracking-wider text-on-surface-variant">Watched</p>
+                        </div>
+                        <div class="p-4 bg-background-dark rounded-xl border border-outline-variant text-center">
+                            <p class="text-2xl font-bold">24</p>
+                            <p class="text-[10px] uppercase tracking-wider text-on-surface-variant">Reviews</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-primary/20 to-purple-500/20 p-6 rounded-2xl border border-primary/20">
+                    <h4 class="font-bold mb-2">StreamSync Pro</h4>
+                    <p class="text-sm text-on-surface-variant mb-4">Your plan expires in 12 days. Renew now to keep 4K access.</p>
+                    <button class="w-full py-3 bg-white text-black rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors">
+                        Manage Plan
+                    </button>
+                </div>
+
+                <div class="space-y-2">
+                    <a href="#" class="flex items-center justify-between p-4 bg-surface-container-low border border-outline-variant rounded-xl hover:bg-surface-container-high transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-on-surface-variant">history</span>
+                            <span class="text-sm">Watch History</span>
+                        </div>
+                        <span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </a>
+                    <a href="#" class="flex items-center justify-between p-4 bg-surface-container-low border border-outline-variant rounded-xl hover:bg-surface-container-high transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-on-surface-variant">devices</span>
+                            <span class="text-sm">Connected Devices</span>
+                        </div>
+                        <span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+        const output = document.getElementById('profile-preview');
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
+
+{% endblock %}

@@ -41,3 +41,10 @@
 
 .cinematic-shadow { box-shadow: 0 0 20px rgba(37, 106, 244, 0.2); }
 .hover-electric:hover { box-shadow: 0 0 25px rgba(37, 106, 244, 0.6); }
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400;
+}
+.glass-panel {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(12px);
+}

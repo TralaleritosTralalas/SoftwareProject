@@ -9,6 +9,9 @@ from django.shortcuts import render, redirect
 def home(request):
     return render(request, 'pages/home.html')
 
+def user_settings(request):
+    return render(request, 'pages/user_settings.html')
+
 def catalog(request):
     movies = get_all_movies()
     series = get_all_series()
@@ -63,6 +66,8 @@ def content_detail(request, ctype, cid):
     else:
         return render(request, 'pages/home.html', status=404)
 
+def personal_library(request):
+    return render(request, 'pages/personal_library.html')
 
 
 def main(request):
