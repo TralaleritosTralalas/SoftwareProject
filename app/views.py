@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from .services import get_all_movies, get_all_series, search_content
@@ -73,7 +74,7 @@ def login_redirect(request):
     user = request.user
 
     if user.is_superuser or user.groups.filter(name='administrator').exists():
-        return redirect('app:movies') #provisional redirect
+        return redirect('app:direction_dashboard')
 
     elif user.groups.filter(name='technical').exists():
         return redirect('app:series') #provisional redirect
@@ -83,3 +84,11 @@ def login_redirect(request):
 
     else:
         return redirect('app:main')
+
+
+@login_required
+def direction_dashboard(request):
+    if not request.user.groups.filter(name='administrator').exists():
+        raise PermissionDenied
+
+    return render(request, 'pages/direction_dashboard.html')
