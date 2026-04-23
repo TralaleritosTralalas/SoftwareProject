@@ -14,5 +14,5 @@ urlpatterns = [
     path('redirect/',views.login_redirect, name='login_redirect'),
     path('content/<str:ctype>/<int:cid>/', views.content_detail, name='content_detail'),
     path('personal_library/',views.personal_library, name='personal_library'),
-    path('user_settings/',views.user_settings, name='user account settings'),
+    path('user_settings/',views.user_settings, name='user_settings'),
 ]
