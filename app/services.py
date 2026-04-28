@@ -73,11 +73,13 @@ def get_directors(url, api_key):
         print(f"Error connecting to API: {e}")
         return []
 
-def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
+def get_all_movies(plataform_filters= None):  # obtener todas las peliculas de todas las "plataformas"
 
     movies_dict = {} #diccionario para saber el contenido
 
     for url, key, platform_name in PLATFORMS:
+        if plataform_filters and platform_name != plataform_filters:
+            continue
         
         # mapa de generos x plataforma
         genre_map = {}
@@ -119,10 +121,12 @@ def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
     return list(movies_dict.values())
 
 
-def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
+def get_all_series(plataform_filter = None):  # obtener todas las peliculas de todas las "plataformas"
     series_dict = {}
 
     for url, key, platform_name in PLATFORMS:
+        if plataform_filter and platform_name != plataform_filter:
+            continue
         genre_map = {}
         genres = get_genre(url, key)
         for g in genres:
@@ -153,10 +157,12 @@ def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
     return list(series_dict.values())
 
 
-def search_content(query): #buscar peli o serie segun titulo
+def search_content(query, plataform=None, genre=None, director=None): #buscar peli o serie segun titulo
     results_dict = {}
 
     for url, key, platform_name in PLATFORMS:
+        if plataform and platform_name != plataform:
+            continue
 
         genre_map = {}
         genres = get_genre(url, key)
@@ -173,6 +179,9 @@ def search_content(query): #buscar peli o serie segun titulo
             )
             response.raise_for_status()
             for movie in response.json():
+                movie_genre = genre_map.get(movie.get("genre_id"), "Unknown")
+                if genre and genre.lower() not in movie_genre.lower(): continue
+
                 movie["content_type"] = "movie"
                 movie.setdefault("start_year", None)
                 identifier = f"movie_{movie.get('title', '').lower().strip()}_{movie.get('year', '')}"
