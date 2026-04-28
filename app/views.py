@@ -27,6 +27,23 @@ def search(request):
     query = request.GET.get('q', '').strip()
     movie_results = []
     series_results = []
+    results = []
+
+    if query:
+        
+        results = search_content(query)
+       
+        movie_results = [item for item in results if item.get('content_type') == 'movie']
+        series_results = [item for item in results if item.get('content_type') == 'series']
+        
+        return render(request, 'pages/search.html', {
+            'query': query,
+            'movies': movie_results,
+            'series': series_results,
+            'result_count': len(results)
+        })
+    
+    return render(request, 'pages/search.html', {'query': ''})
 
 def register(request):
     return render(request, 'streamsync_register.html',{
