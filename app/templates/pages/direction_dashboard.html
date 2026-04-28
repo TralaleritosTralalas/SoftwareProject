@@ -1,169 +1,162 @@
 {% extends "base/base.html" %}
 
 {% block content %}
-<main class="flex-1 w-full px-4 md:px-8 lg:px-12 py-8 max-w-[1440px] mx-auto bg-[#101622] min-h-screen font-display text-slate-100">
+<div class="flex min-h-screen font-display text-slate-100 bg-transparent">
 
-    <div class="mb-10 mt-12">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div>
-                <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight mb-2">Platform Performance Analytics</h1>
-                <p class="text-slate-400 text-sm">Unified analytics and content engagement.</p>
+    <aside class="w-80 bg-slate-900/40 border-r border-slate-800 p-6 flex flex-col gap-8 backdrop-blur-md sticky top-0 h-screen overflow-y-auto">
+
+        <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">tune</span>
+                Filter Settings
+            </h2>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Adjust your strategic view</p>
+        </div>
+
+        <div class="space-y-3">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Quick Range</label>
+            <div class="grid grid-cols-3 gap-2 bg-slate-950/50 p-1 rounded-xl border border-slate-800">
+                <button onclick="setActive(this)" class="time-btn py-2 rounded-lg text-[10px] font-bold bg-primary text-white shadow-lg transition-all">24H</button>
+                <button onclick="setActive(this)" class="time-btn py-2 rounded-lg text-[10px] font-bold text-slate-500 hover:text-slate-300">7D</button>
+                <button onclick="setActive(this)" class="time-btn py-2 rounded-lg text-[10px] font-bold text-slate-500 hover:text-slate-300">30D</button>
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Custom Period</label>
+            <div class="space-y-4">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Custom Period</label>
+                <div class="grid grid-cols-1 gap-5">
+                    <div class="relative group">
+                        <input type="date" id="start_date" name="start_date" class="w-full bg-slate-950/40 border border-slate-800 text-xs text-slate-300 rounded-2xl px-4 py-3.5 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all">
+                        <span class="text-[9px] text-slate-500 absolute -top-2 left-4 bg-[#101622] px-2 py-0.5 rounded-full border border-slate-800 font-black uppercase tracking-tighter">
+                            From
+                        </span>
+                    </div>
+
+                    <div class="relative group">
+                        <input type="date" id="end_date" name="end_date" class="w-full bg-slate-950/40 border border-slate-800 text-xs text-slate-300 rounded-2xl px-4 py-3.5 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all">
+                        <span class="text-[9px] text-slate-500 absolute -top-2 left-4 bg-[#101622] px-2 py-0.5 rounded-full border border-slate-800 font-black uppercase tracking-tighter">
+                            To
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Streaming Platform</label>
+                <div class="relative">
+                    <select id="platform-filter" class="w-full bg-slate-950/50 border border-slate-800 text-xs font-bold text-slate-300 rounded-xl px-4 py-3 appearance-none focus:ring-2 focus:ring-primary/50 outline-none">
+                        <option value="all">All Platforms</option>
+                        {% for p in platforms %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+                    </select>
+                </div>
             </div>
 
-            <div class="flex flex-wrap items-center gap-4">
-                <div class="flex bg-slate-950 rounded-xl p-1 border border-slate-800" id="time-filters">
-                    <button onclick="setActive(this)" class="time-btn px-4 py-2 rounded-lg text-xs font-bold bg-primary text-white shadow-lg transition-all">24H</button>
-                    <button onclick="setActive(this)" class="time-btn px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-300 transition-all">7D</button>
-                    <button onclick="setActive(this)" class="time-btn px-4 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-300 transition-all">30D</button>
-                </div>
-
-                <div class="relative min-w-[160px]">
-                    <select id="main-filter" class="w-full bg-slate-900 border border-slate-800 text-xs font-bold text-slate-300 rounded-xl px-4 py-2.5 appearance-none focus:ring-2 focus:ring-primary/50 outline-none cursor-pointer uppercase tracking-wider">
-                        <option value="all">All Content</option>
-                        <option value="movies">Movies Only</option>
-                        <option value="series">TV Series</option>
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Content Genre</label>
+                <div class="relative">
+                    <select id="genre-filter" class="w-full bg-slate-950/50 border border-slate-800 text-xs font-bold text-slate-300 rounded-xl px-4 py-3 appearance-none focus:ring-2 focus:ring-primary/50 outline-none">
+                        <option value="all">All Genres</option>
+                        {% for g in genres %}<option value="{{ g.id }}">{{ g.name }}</option>{% endfor %}
                     </select>
-                    <span class="material-symbols-outlined absolute right-3 top-2.5 text-slate-500 pointer-events-none text-sm">expand_more</span>
                 </div>
+            </div>
+        </div>
+    </aside>
 
-                <button class="flex items-center gap-2.5 px-6 py-2.5 bg-primary hover:bg-primary-dark rounded-xl text-sm font-bold text-white transition-all shadow-lg shadow-primary/20 active:scale-95">
-                    <span class="material-symbols-outlined text-lg">file_download</span>
-                    <span>Export Report</span>
+    <main class="flex-1 p-8 lg:p-12 max-w-[1300px]">
+
+        <header class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-4xl font-black text-white tracking-tight mb-2">Direction Dashboard</h1>
+                <p class="text-slate-400 text-sm">Insights of the data from StreamSync S.A. platform</p>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button class="flex items-center gap-3 px-9 py-3 bg-primary hover:bg-primary-dark text-white rounded-2xl text-xs font-black transition-all shadow-lg shadow-primary/30 active:scale-[0.95]">
+                    <span class="material-symbols-outlined text-xl">file_download</span>
+                    <span class="tracking-widest">EXPORT CSV</span>
                 </button>
             </div>
-        </div>
-    </div>
+        </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 p-6 shadow-xl backdrop-blur-sm hover:border-primary/50 transition-all duration-300">
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-40 transition-all duration-500">
-                <span class="material-symbols-outlined text-6xl text-primary">ads_click</span>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-slate-900/30 border border-slate-800/50 p-8 rounded-3xl flex flex-col justify-between min-h-[140px] hover:border-primary/30 transition-colors">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Total Engagement</p>
+                <h3 class="text-3xl font-black text-white">
+                    {{ total_clicks|default:"0" }}
+                    <span class="text-xs text-slate-600 ml-1">clicks</span>
+                </h3>
             </div>
-            <div class="relative z-10">
-                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em] mb-2">Total Engagement</p>
-                <h3 class="text-3xl font-bold text-white group-hover:text-primary transition-colors duration-300">{{ total_clicks|default:"0" }} <span class="text-xs font-medium text-slate-500 ml-1">clicks</span></h3>
-            </div>
-        </div>
 
-        <div class="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 p-6 shadow-xl backdrop-blur-sm hover:border-emerald-500/50 transition-all duration-300">
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-40 transition-all duration-500">
-                <span class="material-symbols-outlined text-6xl text-emerald-500">local_fire_department</span>
+            <div class="bg-slate-900/30 border border-slate-800/50 p-8 rounded-3xl flex flex-col justify-between min-h-[140px] hover:border-primary/30 transition-colors">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Interest Score (Favorites)</p>
+                <h3 class="text-3xl font-black text-white">
+                    {{ total_favorites|default:"0" }}
+                </h3>
             </div>
-            <div class="relative z-10">
-                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em] mb-2">Top Trending</p>
-                <h3 class="text-2xl font-bold text-white truncate group-hover:text-emerald-400 transition-colors duration-300">{{ most_followed.title|default:"--" }}</h3>
-            </div>
-        </div>
 
-        <div class="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/50 p-6 shadow-xl backdrop-blur-sm hover:border-purple-500/50 transition-all duration-300">
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-40 transition-all duration-500">
-                <span class="material-symbols-outlined text-6xl text-purple-500">layers</span>
-            </div>
-            <div class="relative z-10">
-                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em] mb-2">Top Platform</p>
-                <h3 class="text-2xl font-bold text-white truncate group-hover:text-purple-400 transition-colors duration-300">{{ top_platform.platform_name|default:"--" }}</h3>
-            </div>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div class="lg:col-span-2 rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-            <h3 class="text-lg font-bold text-white mb-6">Engagement History</h3>
-            <div class="h-[320px] w-full bg-slate-950/40 rounded-xl border border-slate-800/50 flex flex-col items-center justify-center border-dashed">
-                <span class="material-symbols-outlined text-slate-800 text-5xl mb-3">query_stats</span>
-                <p class="text-xs text-slate-500 font-medium">Data visualization will load here</p>
+            <div class="bg-slate-900/30 border border-slate-800/50 p-8 rounded-3xl flex flex-col justify-between min-h-[140px] hover:border-primary/30 transition-colors">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Dominant Platform</p>
+                <h3 class="text-3xl font-black text-primary truncate uppercase">
+                    {{ top_platform.platform_name|default:"--" }}
+                </h3>
             </div>
         </div>
 
-        <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl flex flex-col">
-            <h3 class="text-lg font-bold text-white mb-6">Market Share</h3>
-            <div class="flex-1 flex items-center justify-center relative">
-                {% if platforms %}
-                    <div class="relative size-44">
-                        <svg class="size-full -rotate-90" viewbox="0 0 36 36">
-                            <circle cx="18" cy="18" r="15.9155" fill="none" class="text-slate-800" stroke="currentColor" stroke-width="3"></circle>
-                            {% for p in platforms %}
-                            <path class="{{ p.color_text }}" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="{{ p.percentage }}, 100" stroke-dashoffset="{{ p.offset }}" stroke-width="3.5" stroke-linecap="round"></path>
+        <div class="flex flex-col gap-8">
+
+            <section class="bg-slate-900/20 border border-slate-800/50 rounded-3xl p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="font-bold text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">analytics</span>
+                        Industry Trends & Market Share
+                    </h3>
+                </div>
+                <div class="h-80 flex items-center justify-center border border-dashed border-slate-800/50 rounded-2xl bg-slate-950/10">
+                    <p class="text-xs text-slate-600 font-mono italic">No data record for this filter range.</p>
+                </div>
+            </section>
+
+            <section class="bg-slate-900/20 border border-slate-800/50 rounded-3xl overflow-hidden">
+                <div class="p-8 pb-4">
+                    <h3 class="font-bold text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">star</span>
+                        Content Performance Leaderboard
+                    </h3>
+                </div>
+                <div class="px-8 pb-8">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-[10px] font-bold text-slate-500 uppercase border-b border-slate-800">
+                            <tr>
+                                <th class="py-4">Title</th>
+                                <th class="py-4">Genre</th>
+                                <th class="py-4 text-right">User Interest (Favs)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/40">
+                            {% for content in trending_content|slice:":10" %}
+                            <tr class="group hover:bg-slate-800/20 transition-colors">
+                                <td class="py-4 font-semibold text-slate-200">{{ content.title }}</td>
+                                <td class="py-4">
+                                    <span class="px-2 py-1 rounded bg-slate-800/50 text-[10px] text-slate-400">{{ content.genre.name|default:"General" }}</span>
+                                </td>
+                                <td class="py-4 text-right font-mono font-bold text-primary group-hover:scale-105 transition-transform">{{ content.fav_count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="py-20 text-center text-slate-600 italic">No data record for this filter range.</td></tr>
                             {% endfor %}
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="text-2xl font-bold text-white">{{ platforms.0.percentage }}%</span>
-                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">{{ platforms.0.name }}</span>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="text-center py-10">
-                        <span class="material-symbols-outlined text-slate-800 text-5xl mb-3">donut_large</span>
-                        <p class="text-xs text-slate-600 italic">No platform metrics recorded</p>
-                    </div>
-                {% endif %}
-            </div>
-            <div class="mt-6 space-y-2">
-                {% for p in platforms %}
-                <div class="flex items-center justify-between p-2 bg-slate-950/30 rounded-lg">
-                    <div class="flex items-center gap-2">
-                        <span class="size-2 rounded-full {{ p.color_bg }}"></span>
-                        <span class="text-xs text-slate-400">{{ p.name }}</span>
-                    </div>
-                    <span class="text-xs font-bold text-white">{{ p.percentage }}%</span>
+                        </tbody>
+                    </table>
                 </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+            </section>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="rounded-2xl border border-slate-800 bg-slate-900 shadow-xl overflow-hidden">
-            <div class="p-6 border-b border-slate-800 bg-slate-800/10">
-                <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Trending Catalog</h3>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-950/50 text-slate-500 text-[10px] font-bold uppercase tracking-tighter">
-                        <tr>
-                            <th class="px-6 py-4">Content</th>
-                            <th class="px-6 py-4">Genre</th>
-                            <th class="px-6 py-4 text-right">Engagement</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-800/50">
-                        {% for content in trending_content %}
-                        <tr class="hover:bg-slate-800/30 transition-colors">
-                            <td class="px-6 py-4 font-bold text-slate-200">{{ content.title }}</td>
-                            <td class="px-6 py-4 text-xs text-slate-500">{{ content.genre.name|default:"--" }}</td>
-                            <td class="px-6 py-4 text-right font-mono font-bold text-primary">{{ content.fav_count }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr><td colspan="3" class="text-center py-20 text-slate-600 text-xs italic">Awaiting content data...</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
         </div>
-
-        <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
-            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8">Viewer Geography</h3>
-            <div class="space-y-6">
-                {% for country in top_countries %}
-                <div class="space-y-2 group">
-                    <div class="flex justify-between text-xs">
-                        <span class="text-slate-400 font-bold group-hover:text-white transition-colors">{{ country.country__iso_code|upper }}</span>
-                        <span class="text-white font-mono">{{ country.user_count }} users</span>
-                    </div>
-                    <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
-                        <div class="h-full bg-primary" style="width: {{ country.user_count }}%"></div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="flex flex-col items-center justify-center py-12 opacity-20">
-                    <span class="material-symbols-outlined text-4xl mb-2">public</span>
-                    <p class="text-xs font-bold uppercase tracking-widest">No regional data available</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-</main>
+    </main>
+</div>
 
 <script>
 function setActive(button) {
