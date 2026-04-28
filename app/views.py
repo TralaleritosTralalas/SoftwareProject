@@ -112,6 +112,7 @@ def tech_add_user_view(request):
             return redirect(request.path)
 
         try:
+
             user = User.objects.create_user(
                 username=username, 
                 email=email, 
@@ -120,7 +121,8 @@ def tech_add_user_view(request):
                 last_name=last_name
             )   
             
-            profile = user.profile
+            profile, created = Profile.objects.get_or_create(user=user)
+            
             if role_id:
                 group = Group.objects.get(id=role_id)
                 profile.role = group
@@ -128,6 +130,7 @@ def tech_add_user_view(request):
                 profile.image = profile_img
             
             profile.save()
+            
             messages.success(request, f"User {username} created successfully!")
             return redirect('tech_admin:index')
             
@@ -157,18 +160,20 @@ def tech_edit_user_view(request, user_id):
                 messages.error(request, "Las contraseñas no coinciden.")
                 return redirect(request.path)
 
+        profile, created = Profile.objects.get_or_create(user=user_to_edit)
+        
         role_id = request.POST.get('role')
         profile_img = request.FILES.get('profile_image')
         
         if role_id:
-            user_to_edit.profile.role = Group.objects.get(id=role_id)
+            profile.role = Group.objects.get(id=role_id)
         
         if profile_img:
-            user_to_edit.profile.image = profile_img
+            profile.image = profile_img
         
         try:
             user_to_edit.save()
-            user_to_edit.profile.save()
+            profile.save()
             messages.success(request, f"Usuario {user_to_edit.username} actualizado correctamente.")
             return redirect('tech_admin:index')
         except Exception as e:
