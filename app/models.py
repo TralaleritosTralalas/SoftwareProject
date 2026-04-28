@@ -13,16 +13,19 @@ class Profile(models.Model):
         return f"{self.user.username} - {self.role.name if self.role else 'Sin Rol'}"
     
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        
+        # Determine staff status based on role
         if self.role and self.role.name.lower() == 'technical':
-            if not self.user.is_staff:
-                self.user.is_staff = True
-                self.user.save()
+            new_staff_status = True
         else:
-            if self.user.is_staff and not self.user.is_superuser:
-                self.user.is_staff = False
-                self.user.save()
+            new_staff_status = False
+
+        # Only save the User if the status actually changed
+        if self.user.is_staff != new_staff_status and not self.user.is_superuser:
+            self.user.is_staff = new_staff_status
+            # Use update_fields to prevent triggering unrelated signals
+            self.user.save(update_fields=['is_staff'])
+            
+        super().save(*args, **kwargs)
 
 # SIGNALS
 
