@@ -7,9 +7,9 @@ services:
     build: .
 
     environment:
-      SECRET_KEY: django-insecure-e@p&465=fx5(a#@t7q!1*-3z@3@-&1ar-v29!zr1hvn+fj$8g$
-      DEBUG: False
-      ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
 
     # Map port 8000 on your machine to port 8000 in the container
     # Access the app at http://localhost:8000
@@ -20,8 +20,11 @@ services:
     # This means code changes on your machine are reflected instantly (live reload)
     volumes:
       - .:/app  # "." = your project folder, "/app" = where it goes inside the container
+      - django_static:/app/staticfiles # Map static files for production-readiness
+      - django_media:/app/media        # Map media files for uploads
 
 # Named volumes (folders managed by Docker that live outside the containers)
 # They keep data even if you delete and recreate the containers
 volumes:
-  pgdata:
+  django_media:
+  django_static:
