@@ -10,6 +10,9 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       DEBUG: ${DEBUG}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+      API_KEY_LOCAL_1: ${API_KEY_LOCAL_1}
+      API_KEY_LOCAL_2: ${API_KEY_LOCAL_2}
+      API_KEY_LOCAL_3: ${API_KEY_LOCAL_3}
 
     # Map port 8000 on your machine to port 8000 in the container
     # Access the app at http://localhost:8000
@@ -20,11 +23,4 @@ services:
     # This means code changes on your machine are reflected instantly (live reload)
     volumes:
       - .:/app  # "." = your project folder, "/app" = where it goes inside the container
-      - django_static:/app/staticfiles # Map static files for production-readiness
-      - django_media:/app/media        # Map media files for uploads
-
-# Named volumes (folders managed by Docker that live outside the containers)
-# They keep data even if you delete and recreate the containers
-volumes:
-  django_media:
-  django_static:
+      - /app/.venv
