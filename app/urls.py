@@ -15,4 +15,6 @@ urlpatterns = [
     path('content/<str:ctype>/<int:cid>/', views.content_detail, name='content_detail'),
     path('personal_library/',views.personal_library, name='personal_library'),
     path('user_settings/',views.user_settings, name='user_settings'),
+    path('onboarding/', views.onboarding, name='onboarding'),
+    path('onboarding-complete/', views.onboarding_complete, name='onboarding_complete'),
 ]

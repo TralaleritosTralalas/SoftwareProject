@@ -1,0 +1,102 @@
+{% extends "base/initial.html" %}
+{% block content %}
+<div class="bg-background dark:bg-background-dark min-h-screen selection:bg-primary/30 font-display relative overflow-hidden">
+    
+    <div class="fixed inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-br from-surface-dark via-background-dark to-background-dark"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/60 to-transparent"></div>
+    </div>
+
+    <main class="relative z-10 flex min-h-[calc(100vh-80px)] flex-col items-center justify-center p-6 md:p-12">
+        
+        <header class="w-full max-w-4xl mb-12 text-center">
+            <div class="flex items-center justify-center mb-6">
+                <span class="text-3xl font-extrabold tracking-tighter text-primary">StreamSync</span>
+            </div>
+            
+            <div class="flex justify-between items-end mb-3 px-1">
+                <h1 class="text-3xl font-bold text-white leading-tight">Complete Your Profile</h1>
+                <span class="text-sm font-medium text-slate-400 mb-1">Step 1 of 2</span>
+            </div>
+            
+            <div class="w-full h-1 bg-surface-dark rounded-full overflow-hidden">
+                <div class="w-1/2 h-full bg-primary shadow-[0_0_15px_rgba(37,106,244,0.6)] transition-all duration-1000 ease-out"></div>
+            </div>
+        </header>
+
+        <form method="post" class="w-full max-w-4xl space-y-8" novalidate>
+            {% csrf_token %}
+
+            {% if errors %}
+            <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400">
+                <ul class="list-disc list-inside space-y-1">
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-surface-dark/50 backdrop-blur-sm p-6 rounded-xl border border-border-dark flex flex-col group hover:border-primary/50 transition-colors">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">
+                        Date of Birth <span class="text-red-400">*</span>
+                    </label>
+                    <div class="relative mt-auto">
+                        <input type="date" name="birth_date" id="id_birth_date" required
+                               class="w-full bg-surface-dark border border-border-dark text-white rounded-lg py-3 px-4 focus:ring-2 focus:ring-primary/50 cursor-pointer [color-scheme:dark]">
+                    </div>
+                </div>
+
+                <div class="bg-surface-dark/50 backdrop-blur-sm p-6 rounded-xl border border-border-dark flex flex-col group hover:border-primary/50 transition-colors">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">
+                        Country <span class="text-red-400">*</span>
+                    </label>
+                    <div class="relative mt-auto group">
+                        <select name="country" id="id_country" required
+                                class="w-full bg-surface-dark border border-border-dark text-white rounded-lg py-3 px-4 appearance-none focus:ring-2 focus:ring-primary/50 cursor-pointer">
+                            <option value="" class="bg-surface-dark">Select country</option>
+                            {% for country in countries %}
+                            <option value="{{ country.id }}" class="bg-surface-dark">{{ country.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-slate-400">
+                            expand_more
+                        </span>
+                    </div>
+                </div>
+
+                <div class="bg-surface-dark/50 backdrop-blur-sm p-6 rounded-xl border border-border-dark flex flex-col group hover:border-primary/50 transition-colors">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">
+                        Gender
+                    </label>
+                    <div class="relative mt-auto group">
+                        <select name="gender" id="id_gender"
+                                class="w-full bg-surface-dark border border-border-dark text-white rounded-lg py-3 px-4 appearance-none focus:ring-2 focus:ring-primary/50 cursor-pointer">
+                            <option value="" class="bg-surface-dark">Select gender</option>
+                            <option value="male" class="bg-surface-dark">Male</option>
+                            <option value="female" class="bg-surface-dark">Female</option>
+                            <option value="non-binary" class="bg-surface-dark">Non-binary</option>
+                            <option value="other" class="bg-surface-dark">Other / Prefer not to say</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-slate-400">
+                            expand_more
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="w-full pt-4 flex justify-end gap-6">
+                <button type="submit" 
+                        class="w-full md:w-auto md:px-16 py-4 bg-primary text-white font-bold rounded-xl hover:brightness-110 hover:scale-105 active:scale-95 transition-all">
+                    Continue
+                </button>
+            </footer>
+        </form>
+
+        <div class="fixed bottom-10 left-10 pointer-events-none opacity-[0.03] select-none hidden lg:block">
+            <span class="text-[12rem] font-black leading-none tracking-tighter uppercase">Profile</span>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -77,6 +77,9 @@ def main(request):
 def login_redirect(request):
     user = request.user
 
+    if not user.onboarding_completed:
+        return redirect('app:onboarding')
+
     if user.is_superuser or user.groups.filter(name='administrator').exists():
         return redirect('app:movies') #provisional redirect
 
@@ -88,3 +91,50 @@ def login_redirect(request):
 
     else:
         return redirect('app:main')
+
+
+@login_required
+def onboarding(request):
+    from app.models import Country
+    
+    if request.user.onboarding_completed:
+        return redirect('app:main')
+    
+    if request.method == 'POST':
+        birth_date = request.POST.get('birth_date')
+        country_id = request.POST.get('country')
+        gender = request.POST.get('gender')
+        errors = []
+        
+        if not birth_date:
+            errors.append('Date of birth is required')
+        if not country_id:
+            errors.append('Country is required')
+        
+        if errors:
+            countries = Country.objects.all()
+            return render(request, 'registration/onboarding.html', {
+                'countries': countries,
+                'errors': errors
+            })
+        
+        user = request.user
+        user.birth_date = birth_date
+        user.country_id = country_id
+        user.gender = gender if gender else None
+        user.onboarding_completed = True
+        user.save()
+        
+        return redirect('app:onboarding_complete')
+    
+    countries = Country.objects.all()
+    return render(request, 'registration/onboarding.html', {
+        'countries': countries
+    })
+
+
+@login_required
+def onboarding_complete(request):
+    if not request.user.onboarding_completed:
+        return redirect('app:onboarding')
+    return render(request, 'registration/onboarding_complete.html')

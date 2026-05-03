@@ -11,10 +11,18 @@ class User(AbstractUser):
         ('director', 'Direction'),
         ('admin', 'Administrator'),
     ]
+    GENDER_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('non-binary', 'Non-binary'),
+        ('other', 'Other'),
+    ]
     role = models.CharField(max_length=30, choices=ROLE_CHOICES, default='normal')
+    gender = models.CharField(max_length=20, choices=GENDER_CHOICES, null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True, verbose_name="Fecha de Nacimiento")
     country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="País")
     profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True, verbose_name="Foto de Perfil")
+    onboarding_completed = models.BooleanField(default=False)
 
     @property
     def age(self):

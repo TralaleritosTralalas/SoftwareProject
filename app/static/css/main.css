@@ -1,3 +1,13 @@
+:root {
+    --primary: #256af4;
+    --background: #101622;
+    --surface-container: #1d2a44;
+    --surface-container-low: #182234;
+    --on-background: #f8fafc;
+    --on-surface-variant: #94a3b8;
+    --on-surface: #f1f5f9;
+}
+
 /* Hide scrollbar for horizontal scroll areas */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -48,3 +58,12 @@
     background: rgba(30, 41, 59, 0.4);
     backdrop-filter: blur(12px);
 }
+
+
+    .bg-background { background-color: var(--background); }
+    .text-primary { color: var(--primary); }
+    .bg-primary { background-color: var(--primary); }
+    .text-on-background { color: var(--on-background); }
+    .text-on-surface-variant { color: var(--on-surface-variant); }
+    .bg-surface-container { background-color: var(--surface-container); }
+
