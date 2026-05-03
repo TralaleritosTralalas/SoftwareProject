@@ -1,0 +1,60 @@
+{% extends "base/initial.html" %} {% block content %}
+<div class="min-h-[calc(100vh-80px)] bg-slate-50 dark:bg-background-dark px-4 py-8">
+    <div class="max-w-3xl mx-auto bg-white dark:bg-[#1e293b] p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800">
+        
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-6">Privacy Policy</h1>
+        
+        <div class="prose dark:prose-invert max-w-none">
+            <p class="text-slate-600 dark:text-slate-400">
+                At StreamSync, we take your privacy seriously. This Privacy Policy explains how we collect, use, and protect your information.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">1. Information We Collect</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                We collect information you provide when creating an account, including your name, email address, and other profile information.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">2. How We Use Your Information</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                We use your information to provide and improve our services, communicate with you, and personalize your experience.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">3. Data Protection</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                We implement appropriate security measures to protect your personal information against unauthorized access, alteration, or disclosure.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">4. Third-Party Services</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                We may share information with third-party service providers who assist us in operating our service, under strict confidentiality obligations.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">5. Cookies</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                We use cookies to enhance your user experience. You can control cookies through your browser settings.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">6. Your Rights</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                You have the right to access, correct, or delete your personal information. Contact us to exercise these rights.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">7. Changes to Policy</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                We may update this policy periodically. We will notify you of any material changes.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">8. Contact</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                If you have questions about this Privacy Policy, please contact us.
+            </p>
+        </div>
+        
+        <div class="mt-8 text-center">
+            <a href="{% url 'signup' %}" class="inline-block bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all">
+                Back to
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

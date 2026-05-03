@@ -1,0 +1,50 @@
+{% extends "base/initial.html" %} {% block content %}
+<div class="min-h-[calc(100vh-80px)] bg-slate-50 dark:bg-background-dark px-4 py-8">
+    <div class="max-w-3xl mx-auto bg-white dark:bg-[#1e293b] p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800">
+        
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-6">Terms of Service</h1>
+        
+        <div class="prose dark:prose-invert max-w-none">
+            <p class="text-slate-600 dark:text-slate-400">
+                Welcome to StreamSync. By accessing and using our service, you agree to be bound by these Terms of Service.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">1. Acceptance of Terms</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                By creating an account or accessing StreamSync, you acknowledge that you have read, understood, and agree to be bound by these terms.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">2. Use of Service</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                You agree to use StreamSync only for lawful purposes and in accordance with these Terms of Service.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">3. Account Responsibilities</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">4. Privacy</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                Your privacy is important to us. Please review our Privacy Policy to understand how we collect and use your information.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">5. Changes to Terms</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                We reserve the right to modify these terms at any time. Continued use of the service constitutes acceptance of any changes.
+            </p>
+            
+            <h2 class="text-xl font-semibold text-slate-900 dark:text-white mt-6 mb-3">6. Contact</h2>
+            <p class="text-slate-600 dark:text-slate-400">
+                If you have any questions about these Terms of Service, please contact us.
+            </p>
+        </div>
+        
+        <div class="mt-8 text-center">
+            <a href="{% url 'signup' %}" class="inline-block bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all">
+                Back to Sign Up
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

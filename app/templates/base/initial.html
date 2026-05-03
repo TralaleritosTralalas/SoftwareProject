@@ -21,6 +21,7 @@
 </head>
 <body class="bg-background-dark dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col overflow-x-hidden antialiased">
 
+     {% include "components/navbar-init.html" %}
     <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-8">
         {% block content %}{% endblock %}
     </main>
