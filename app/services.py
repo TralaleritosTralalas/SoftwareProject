@@ -73,12 +73,12 @@ def get_directors(url, api_key):
         print(f"Error connecting to API: {e}")
         return []
 
-def get_all_movies(platform_filters= None):  # obtener todas las peliculas de todas las "plataformas"
+def get_all_movies(platform_filter= None):  # obtener todas las peliculas de todas las "plataformas"
 
     movies_dict = {} #diccionario para saber el contenido
 
     for url, key, platform_name in PLATFORMS:
-        if platform_filters and platform_name != platform_filter:
+        if platform_filter and platform_name != platform_filter:
             continue
         
         # mapa de generos x plataforma

@@ -10,9 +10,10 @@ def home(request):
     return render(request, 'pages/home.html')
 
 def catalog(request):
-    movies = get_all_movies()
-    series = get_all_series()
-    return render(request, 'pages/catalog.html', {'movies': movies, 'series': series})
+    p = request.GET.get('platform')
+    movies = get_all_movies(platform_filter=p)
+    series = get_all_series(platform_filter=p)
+    return render(request, 'pages/catalog.html', {'movies': movies, 'series': series, 'selected_platform': p})
 
 def series(request):
     p = request.GET.get('platform')
