@@ -67,3 +67,96 @@
     .text-on-surface-variant { color: var(--on-surface-variant); }
     .bg-surface-container { background-color: var(--surface-container); }
 
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.genre-animate {
+    opacity: 0;
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+.genre-card:active {
+    transform: scale(0.98);
+}
+
+.genre-card input:checked + div {
+    animation: pulseSelect 0.3s ease;
+}
+
+@keyframes pulseSelect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+#count {
+    transition: transform 0.15s ease, color 0.3s ease;
+}
+
+#selection-counter {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#continue-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+#continue-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+#continue-btn:hover::before {
+    opacity: 1;
+}
+
+@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .field-animate {
+        opacity: 0;
+        animation: slideInUp 0.5s ease forwards;
+    }
+
+    .btn-continue {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-continue::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .btn-continue:hover::before {
+        opacity: 1;
+    }
+
+    .btn-continue:active {
+        transform: scale(0.98);
+    }
