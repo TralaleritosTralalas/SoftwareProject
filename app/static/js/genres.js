@@ -29,14 +29,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     checkboxes.forEach(cb => {
         cb.addEventListener('change', function () {
-            // Togglear clase en el label padre
             const label = this.closest('.genre-card');
             label.classList.toggle('is-selected', this.checked);
             updateCounter();
         });
     });
 
-    // Sincronizar estado inicial (por si hay checkboxes pre-seleccionados)
+    
     checkboxes.forEach(cb => {
         if (cb.checked) {
             cb.closest('.genre-card').classList.add('is-selected');
