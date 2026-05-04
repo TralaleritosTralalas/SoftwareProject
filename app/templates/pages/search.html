@@ -23,20 +23,7 @@
 
 <!-- ── Filter Bar ────────────────────────────────────────────────────────── -->
 <form method="GET" action="{% url 'app:search' %}" class="flex flex-wrap gap-4 mb-8 p-4 bg-surface-dark rounded-xl border border-white/5">
-    <input type="hidden" name="q" value="{{ query }}">
-
-    <select name="platform" class="bg-background-dark border-slate-700 rounded-lg text-sm text-white">
-        <option value="">All Platforms</option>
-        <option value="Platform 1" {% if request.GET.platform == "Platform 1" %}selected{% endif %}>Platform 1</option>
-        <option value="Platform 2" {% if request.GET.platform == "Platform 2" %}selected{% endif %}>Platform 2</option>
-        <option value="Platform 3" {% if request.GET.platform == "Platform 3" %}selected{% endif %}>Platform 3</option>
-    </select>
-
-    <input type="text" name="genre" placeholder="Genre..." value="{{ request.GET.genre|default:'' }}"
-        class="bg-background-dark border-slate-700 rounded-lg text-sm text-white">
-
-    <input type="text" name="director" placeholder="Director..." value="{{ request.GET.director|default:'' }}"
-        class="bg-background-dark border-slate-700 rounded-lg text-sm text-white">
+    {% include "components/platforms_filter.html" with query=query selected_platform=selected_platform %}
 
     <button type="submit" class="bg-primary px-4 py-2 rounded-lg text-sm font-bold text-white">Apply Filters</button>
 </form>

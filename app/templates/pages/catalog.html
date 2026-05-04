@@ -6,21 +6,8 @@
 
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Full Catalog</h1>
-
-        <form method="GET" class="w-full md:w-auto">
-                <div class="flex items-center gap-3 p-2 bg-surface-dark rounded-xl border border-white/5">
-                        <span class="text-xs font-bold text-slate-500 uppercase ml-2">Filter by:</span>
-                        <select name="platform" onchange="this.form.submit()"
-                                class="bg-background-dark border-slate-700 rounded-lg text-sm text-white focus:ring-primary focus:border-primary">
-                                <option value="">All Platforms</option>
-                                <option value="Platform 1" {% if selected_platform == "Platform 1" %}selected{% endif %}>
-                                        Platform 1</option>
-                                <option value="Platform 2" {% if selected_platform == "Platform 2" %}selected{% endif %}>
-                                        Platform 2</option>
-                                <option value="Platform 3" {% if selected_platform == "Platform 3" %}selected{% endif %}>
-                                        Platform 3</option>
-                        </select>
-                </div>
+        <form method="GET" action="{% url 'app:catalog' %}" class="flex flex-wrap gap-4 mb-8 p-4">
+                {% include "components/platforms_filter.html" with selected_platform=selected_platform %}
         </form>
 </div>
 

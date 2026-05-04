@@ -4,14 +4,8 @@
 
 <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold">Movies</h1>
-    <form method="GET" class="flex gap-2">
-        <select name="platform" onchange="this.form.submit()"
-            class="bg-surface-dark border-slate-700 rounded-lg text-sm">
-            <option value="">All Platforms</option>
-            <option value="Platform 1" {% if selected_platform == "Platform 1" %}selected{% endif %}>Platform 1</option>
-            <option value="Platform 2" {% if selected_platform == "Platform 2" %}selected{% endif %}>Platform 2</option>
-            <option value="Platform 3" {% if selected_platform == "Platform 3" %}selected{% endif %}>Platform 3</option>
-        </select>
+    <form method="GET" action="{% url 'app:movies' %}" class="flex flex-wrap gap-4 mb-8 p-4">
+        {% include "components/platforms_filter.html" with selected_platform=selected_platform %}
     </form>
 </div>
 
