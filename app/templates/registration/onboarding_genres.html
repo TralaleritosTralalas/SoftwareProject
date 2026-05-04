@@ -7,39 +7,13 @@
         <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/60 to-transparent"></div>
     </div>
 
-    <header class="pt-8 px-6 max-w-7xl mx-auto">
-        <div class="flex items-center justify-center mb-6">
-            <span class="text-2xl font-extrabold tracking-tighter text-primary">StreamSync</span>
-        </div>
+    <main class="relative z-10 flex min-h-[calc(100vh-80px)] flex-col items-center justify-start p-6 md:p-12">
 
-        <div class="flex justify-between items-end mb-4">
-            <span class="text-2xl md:text-3xl font-bold text-white">Choose Your Genres</span>
-            <span class="text-sm font-medium text-slate-400">Step 2 of 2</span>
-        </div>
-
-        <div class="relative w-full mb-8">
-            <div class="w-full h-2 bg-surface-dark/50 rounded-full overflow-hidden backdrop-blur-sm">
-                <div class="progress-bar h-full bg-gradient-to-r from-primary to-blue-400 rounded-full shadow-[0_0_15px_rgba(37,106,244,0.5)] transition-all duration-1000 ease-out" style="width: 100%"></div>
+        <header class="w-full max-w-4xl mb-12 text-center">
+            <div class="flex items-center justify-center mb-8">
+                <span class="text-3xl font-extrabold tracking-tighter text-primary">StreamSync</span>
             </div>
-            <div class="flex justify-between mt-3">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
-                    <span class="text-xs font-medium text-green-500">Profile</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(37,106,244,0.8)]"></span>
-                    <span class="text-xs font-medium text-primary">Genres</span>
-                </div>
-            </div>
-        </div>
-    </header>
 
-    <main class="pt-4 pb-48 px-6 max-w-7xl mx-auto">
-        {% if error %}
-        <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400 mb-6">
-            {{ error }}
-        </div>
-        {% endif %}
 
         <section class="mb-8 text-center md:text-left">
             <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-3 text-white">Personalize Your Experience</h1>
@@ -48,26 +22,49 @@
             </p>
         </section>
 
+            <div class="relative w-full">
+                <div class="w-full h-2 bg-surface-dark/50 rounded-full overflow-hidden backdrop-blur-sm">
+                    <div class="progress-bar h-full bg-gradient-to-r from-primary to-blue-400 rounded-full shadow-[0_0_15px_rgba(37,106,244,0.5)] transition-all duration-1000 ease-out" style="width: 100%"></div>
+                </div>
+                <div class="flex justify-between mt-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(37,106,244,0.8)]"></span>
+                        <span class="text-xs font-medium text-primary">Profile</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(37,106,244,0.8)]"></span>
+                        <span class="text-xs font-medium text-primary">Genres</span>
+                    </div>
+                </div>
+            </div>
+        
+    <section class="pt-4 pb-48 px-6 max-w-7xl mx-auto">
+        {% if error %}
+        <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400 mb-6">
+            {{ error }}
+        </div>
+        {% endif %}
+
         <form method="post" id="genre-form">
             {% csrf_token %}
 
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {% for genre in genres %}
                 <label class="genre-card relative group block cursor-pointer overflow-hidden rounded-xl aspect-square transition-all duration-300 hover:scale-[1.02] genre-animate">
-                    <input type="checkbox" name="genres" value="{{ genre.id }}" class="peer genre-checkbox sr-only"/>
+                    <input type="checkbox" name="genres" value="{{ genre.id }}" class="genre-checkbox sr-only"/>
 
-                    <div class="absolute inset-0 bg-surface-dark rounded-xl border-2 border-border-dark peer-checked:border-primary peer-checked:shadow-[0_0_25px_rgba(37,106,244,0.5)] transition-all duration-300 overflow-hidden group-hover:border-slate-500">
+                    <div class="card-inner absolute inset-0 bg-surface-dark rounded-xl border-2 border-border-dark transition-all duration-300 overflow-hidden group-hover:border-slate-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10"></div>
                         <img src="https://source.unsplash.com/400x400/?{{ genre.name }},movie&w=800"
-                             alt="{{ genre.name }}"
-                             class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 peer-checked:grayscale-0 group-hover:scale-110 transition-transform duration-700"
-                             onerror="this.src='https://placehold.co/400x400/1e293b/f1f5f9?text={{ genre.name|slugify }}'"/>
+                            alt="{{ genre.name }}"
+                            class="card-img w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500"
+                            onerror="this.src='https://placehold.co/400x400/1e293b/f1f5f9?text={{ genre.name|slugify }}'"/>
 
                         <div class="absolute bottom-4 left-4 z-20">
                             <span class="text-lg font-bold text-white drop-shadow-md">{{ genre.name }}</span>
                         </div>
 
-                        <div class="absolute top-4 right-4 z-20 opacity-0 peer-checked:opacity-100 transition-all duration-300 scale-50 peer-checked:scale-100">
+                        <div class="card-check absolute top-4 right-4 z-20 opacity-0 scale-50 transition-all duration-300">
                             <span class="material-symbols-outlined text-primary bg-black/60 backdrop-blur-sm rounded-full p-1.5 shadow-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
                         </div>
                     </div>
@@ -75,7 +72,7 @@
                 {% endfor %}
             </div>
         </form>
-    </main>
+    </section>
 
     <footer class="fixed bottom-0 left-0 w-full p-6 z-50 flex flex-col md:flex-row gap-4 justify-between items-center bg-gradient-to-t from-background-dark via-background-dark/95 to-transparent border-t border-border-dark/30">
         <div class="hidden md:block">
@@ -99,6 +96,8 @@
             <span class="text-slate-400 font-medium text-sm">Select at least 3 genres</span>
         </div>
     </footer>
+    </header>
+    </main>
 </div>
 
 

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const checkboxes = document.querySelectorAll('.genre-checkbox');
     const countDisplay = document.getElementById('count');
     const continueBtn = document.getElementById('continue-btn');
@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateCounter() {
         const selected = document.querySelectorAll('.genre-checkbox:checked').length;
         const prevCount = parseInt(countDisplay.textContent) || 0;
-
         countDisplay.textContent = selected;
 
         if (selected >= 3) {
@@ -24,14 +23,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (selected !== prevCount) {
             countDisplay.style.transform = 'scale(1.3)';
-            setTimeout(() => {
-                countDisplay.style.transform = 'scale(1)';
-            }, 150);
+            setTimeout(() => { countDisplay.style.transform = 'scale(1)'; }, 150);
         }
     }
 
     checkboxes.forEach(cb => {
-        cb.addEventListener('change', updateCounter);
+        cb.addEventListener('change', function () {
+            // Togglear clase en el label padre
+            const label = this.closest('.genre-card');
+            label.classList.toggle('is-selected', this.checked);
+            updateCounter();
+        });
+    });
+
+    // Sincronizar estado inicial (por si hay checkboxes pre-seleccionados)
+    checkboxes.forEach(cb => {
+        if (cb.checked) {
+            cb.closest('.genre-card').classList.add('is-selected');
+        }
     });
 
     updateCounter();
