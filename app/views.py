@@ -125,11 +125,45 @@ def onboarding(request):
         user.onboarding_completed = True
         user.save()
         
-        return redirect('app:onboarding_complete')
+        return redirect('app:onboarding_genres')
     
     countries = Country.objects.all()
     return render(request, 'registration/onboarding.html', {
         'countries': countries
+    })
+
+
+@login_required
+def onboarding_genres(request):
+    from app.models import Genre
+    
+    if not request.user.onboarding_completed:
+        return redirect('app:onboarding')
+    
+    if request.method == 'POST':
+        selected_genres = request.POST.getlist('genres')
+        
+        if len(selected_genres) < 3:
+            genres = Genre.objects.all()
+            return render(request, 'registration/onboarding_genres.html', {
+                'genres': genres,
+                'error': f'Select at least 3 genres (you selected {len(selected_genres)})'
+            })
+        
+        user = request.user
+        user.favorite_genres.clear()
+        for genre_id in selected_genres:
+            try:
+                genre = Genre.objects.get(id=genre_id)
+                user.favorite_genres.add(genre)
+            except Genre.DoesNotExist:
+                pass
+        
+        return redirect('app:onboarding_complete')
+    
+    genres = Genre.objects.all()
+    return render(request, 'registration/onboarding_genres.html', {
+        'genres': genres
     })
 
 

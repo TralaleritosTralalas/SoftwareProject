@@ -23,6 +23,7 @@ class User(AbstractUser):
     country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="País")
     profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True, verbose_name="Foto de Perfil")
     onboarding_completed = models.BooleanField(default=False)
+    favorite_genres = models.ManyToManyField('Genre', blank=True, related_name='users')
 
     @property
     def age(self):
