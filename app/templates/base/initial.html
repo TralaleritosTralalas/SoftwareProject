@@ -18,6 +18,7 @@
     <script src="{% static 'js/tailwind.config.js' %}"></script>
 
     <link rel="stylesheet" href="{% static 'css/main.css' %}"/>
+    {% block extra_styles %}{% endblock %}
 </head>
 <body class="bg-background-dark dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col overflow-x-hidden antialiased">
 
@@ -28,5 +29,6 @@
 
     {% include "components/footer.html" %}
 
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>
