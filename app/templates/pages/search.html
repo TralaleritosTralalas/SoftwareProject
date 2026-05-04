@@ -5,152 +5,92 @@
 
 {% block content %}
 
-
 <!-- ── Search Header ─────────────────────────────────────────────────────── -->
 <header class="mb-10 mt-2">
     {% if query %}
-    <p class="text-on-surface-variant text-xs uppercase tracking-widest font-bold mb-2">
-        Search Results for
-    </p>
-
-    <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">
-        "{{ query }}"
-    </h1>
-
-    {% if results %}
-    <p class="text-on-surface-variant text-sm">
-        {{ result_count }} result{{ result_count|pluralize }} found{{ result_count|pluralize }} across your connected
-        platforms.
-    </p>
-    {% endif %}
-
+        <p class="text-on-surface-variant text-xs uppercase tracking-widest font-bold mb-2">Search Results for</p>
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">"{{ query }}"</h1>
+        {% if result_count %}
+            <p class="text-on-surface-variant text-sm">
+                {{ result_count }} result{{ result_count|pluralize }} found across your connected platforms.
+            </p>
+        {% endif %}
     {% else %}
-    <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Search</h1>
-    <p class="text-on-surface-variant text-sm">
-        Type in the search bar to find movies and TV shows.
-    </p>
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Search</h1>
+        <p class="text-on-surface-variant text-sm">Type in the search bar to find movies and TV shows.</p>
     {% endif %}
 </header>
 
-<!-- ── Results Grid ─────────────────────────────────────────────────────── -->
-{% if movies or series %}
-        {% if movies %}
+<!-- ── Filter Bar ────────────────────────────────────────────────────────── -->
+<form method="GET" action="{% url 'app:search' %}" class="flex flex-wrap gap-4 mb-8 p-4 bg-surface-dark rounded-xl border border-white/5">
+    <input type="hidden" name="q" value="{{ query }}">
 
+    <select name="platform" class="bg-background-dark border-slate-700 rounded-lg text-sm text-white">
+        <option value="">All Platforms</option>
+        <option value="Platform 1" {% if request.GET.platform == "Platform 1" %}selected{% endif %}>Platform 1</option>
+        <option value="Platform 2" {% if request.GET.platform == "Platform 2" %}selected{% endif %}>Platform 2</option>
+        <option value="Platform 3" {% if request.GET.platform == "Platform 3" %}selected{% endif %}>Platform 3</option>
+    </select>
+
+    <input type="text" name="genre" placeholder="Genre..." value="{{ request.GET.genre|default:'' }}"
+        class="bg-background-dark border-slate-700 rounded-lg text-sm text-white">
+
+    <input type="text" name="director" placeholder="Director..." value="{{ request.GET.director|default:'' }}"
+        class="bg-background-dark border-slate-700 rounded-lg text-sm text-white">
+
+    <button type="submit" class="bg-primary px-4 py-2 rounded-lg text-sm font-bold text-white">Apply Filters</button>
+</form>
+
+<!-- ── Results Grid ─────────────────────────────────────────────────────── -->
+{% if query %}
+    {% if movies or series %}
+        {% if movies %}
             {% include "components/card_movies.html" with movies=movies %}
-            
         {% endif %}
 
         {% if series %}
-
             {% include "components/card_series.html" with series=series %}
-            
         {% endif %}
+    {% else %}
+        <!-- No results -->
+        <div class="text-center py-16">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-surface-dark mb-6">
+                <span class="material-symbols-outlined text-slate-500 text-4xl">search_off</span>
+            </div>
+            <h2 class="text-2xl font-bold mb-2">No results for "{{ query }}"</h2>
+            <p class="text-slate-400 text-sm mb-2">Try another search term or check the spelling.</p>
+        </div>
 
-{% elif query %}
-
-
-<!-- ── No results ───────────────────────────────────────────────────────── -->
-{% elif query %}
-
-<div class="text-center py-16">
-    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-surface-container mb-6">
-        <span class="material-symbols-outlined text-on-surface-variant text-4xl">search_off</span>
-    </div>
-
-    <h2 class="text-2xl font-bold mb-2">
-        No results for "{{ query }}"
-    </h2>
-
-    <p class="text-on-surface-variant text-sm mb-2">
-        Try another search term or check the spelling.
-    </p>
-</div>
-
-{% if suggestions %}
-<div class="mt-8">
-
-    <div class="flex items-center gap-3 mb-6">
-        <div class="h-px flex-1 bg-outline/40"></div>
-
-        <p class="text-on-surface-variant text-xs uppercase tracking-widest font-bold px-2">
-            You might like
-        </p>
-
-        <div class="h-px flex-1 bg-outline/40"></div>
-    </div>
-
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
-
-        {% for item in suggestions %}
-        <div class="group relative flex flex-col gap-3 transition-all duration-500 hover:scale-105 card-enter"
-            style="animation-delay: {{ forloop.counter0 }} 00ms">
-
-            <div
-                class="aspect-[2/3] rounded-xl overflow-hidden bg-surface-container relative cinematic-shadow hover-electric">
-
-                <div
-                    class="w-full h-full bg-gradient-to-br from-surface-container-high to-surface-dim flex items-center justify-center">
-                    <span class="material-symbols-outlined text-on-surface-variant opacity-30 text-6xl">
-                        {% if item.content_type == "series" %}live_tv{% else %}movie{% endif %}
-                    </span>
+        {% if suggestions %}
+            <div class="mt-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="h-px flex-1 bg-slate-800"></div>
+                    <p class="text-slate-500 text-xs uppercase tracking-widest font-bold px-2">You might like</p>
+                    <div class="h-px flex-1 bg-slate-800"></div>
                 </div>
-
-                <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent opacity-80">
-                </div>
-
-                <!-- Platform badges -->
-                <div class="absolute top-3 left-3 flex flex-col gap-1.5">
-                    {% for platform in item.platforms %}
-                    {% if platform == "Platform 1" %}
-                    <div
-                        class="badge-p1 text-white px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase shadow-lg shadow-black/50">
-                        {{ platform }}</div>
-                    {% elif platform == "Platform 2" %}
-                    <div
-                        class="badge-p2 text-white px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase shadow-lg shadow-black/50">
-                        {{ platform }}</div>
-                    {% else %}
-                    <div
-                        class="badge-p3 text-white px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase shadow-lg shadow-black/50">
-                        {{ platform }}</div>
-                    {% endif %}
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
+                    {% for item in suggestions %}
+                        <div class="group relative flex flex-col gap-3 transition-all duration-500 hover:scale-105">
+                            <div class="aspect-[2/3] rounded-xl overflow-hidden bg-surface-dark relative cinematic-shadow">
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-slate-700 text-6xl">
+                                        {% if item.content_type == "series" %}live_tv{% else %}movie{% endif %}
+                                    </span>
+                                </div>
+                                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                                    <button class="bg-primary text-white text-xs font-bold py-2 rounded-lg">Watch now</button>
+                                </div>
+                            </div>
+                            <div class="px-1">
+                                <h3 class="font-bold text-sm truncate">{{ item.title }}</h3>
+                                <p class="text-xs text-slate-500">{{ item.year|default:item.start_year }}</p>
+                            </div>
+                        </div>
                     {% endfor %}
                 </div>
-
-                <div
-                    class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                    <button class="bg-primary text-white text-xs font-bold py-2 rounded-lg tracking-wide">
-                        Watch now
-                    </button>
-                </div>
-
             </div>
-
-            <div class="px-1">
-                <h3 class="font-bold text-sm leading-tight group-hover:text-primary transition-colors truncate">
-                    {{ item.title }}
-                </h3>
-
-                <div class="flex items-center gap-2 mt-1">
-                    <span class="text-xs text-on-surface-variant">
-                        {{ item.year|default:item.start_year|default:"—" }}
-                    </span>
-
-                    <span class="w-1 h-1 rounded-full bg-on-surface-variant/40"></span>
-
-                    <span class="text-xs text-on-surface-variant truncate">
-                        {{ item.genre_name|default:"—" }}
-                    </span>
-                </div>
-            </div>
-
-        </div>
-        {% endfor %}
-
-    </div>
-</div>
-{% endif %}
-
+        {% endif %}
+    {% endif %}
 {% endif %}
 
 {% endblock %}

@@ -15,23 +15,27 @@ def catalog(request):
     return render(request, 'pages/catalog.html', {'movies': movies, 'series': series})
 
 def series(request):
-    series=get_all_series()
-    return render(request, 'pages/series.html', {'series': series} )
+    p = request.GET.get('platform')
+    series = get_all_series(platform_filter=p)
+    return render(request, 'pages/series.html', {'series': series, 'selected_platform': p})
 
 def movies(request):
-    movies = get_all_movies()
-    return render(request, '' \
-    'pages/movies.html', {'movies': movies})
+    p = request.GET.get('platform')
+    movies = get_all_movies(platform_filter=p)
+    return render(request, 'pages/movies.html', {'movies': movies, 'selected_platform': p})
 
 def search(request):
     query = request.GET.get('q', '').strip()
+    p= request.GET.get('platform')
+    g = request.GET.get('genre')
+    d = request.GET.get('director')
     movie_results = []
     series_results = []
     results = []
 
     if query:
         
-        results = search_content(query)
+        results = search_content(query, platform=p, genre=g, director=d)
        
         movie_results = [item for item in results if item.get('content_type') == 'movie']
         series_results = [item for item in results if item.get('content_type') == 'series']
@@ -40,7 +44,10 @@ def search(request):
             'query': query,
             'movies': movie_results,
             'series': series_results,
+            'results': results,
             'result_count': len(results)
+            
+
         })
     
     return render(request, 'pages/search.html', {'query': ''})

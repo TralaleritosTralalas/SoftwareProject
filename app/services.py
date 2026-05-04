@@ -73,12 +73,12 @@ def get_directors(url, api_key):
         print(f"Error connecting to API: {e}")
         return []
 
-def get_all_movies(plataform_filters= None):  # obtener todas las peliculas de todas las "plataformas"
+def get_all_movies(platform_filters= None):  # obtener todas las peliculas de todas las "plataformas"
 
     movies_dict = {} #diccionario para saber el contenido
 
     for url, key, platform_name in PLATFORMS:
-        if plataform_filters and platform_name != plataform_filters:
+        if platform_filters and platform_name != platform_filter:
             continue
         
         # mapa de generos x plataforma
@@ -121,11 +121,11 @@ def get_all_movies(plataform_filters= None):  # obtener todas las peliculas de t
     return list(movies_dict.values())
 
 
-def get_all_series(plataform_filter = None):  # obtener todas las peliculas de todas las "plataformas"
+def get_all_series(platform_filter = None):  # obtener todas las peliculas de todas las "plataformas"
     series_dict = {}
 
     for url, key, platform_name in PLATFORMS:
-        if plataform_filter and platform_name != plataform_filter:
+        if platform_filter and platform_name != platform_filter:
             continue
         genre_map = {}
         genres = get_genre(url, key)
@@ -157,11 +157,11 @@ def get_all_series(plataform_filter = None):  # obtener todas las peliculas de t
     return list(series_dict.values())
 
 
-def search_content(query, plataform=None, genre=None, director=None): #buscar peli o serie segun titulo
+def search_content(query, platform=None, genre=None, director=None): #buscar peli o serie segun titulo
     results_dict = {}
 
     for url, key, platform_name in PLATFORMS:
-        if plataform and platform_name != plataform:
+        if platform and platform_name != platform:
             continue
 
         genre_map = {}
@@ -180,8 +180,10 @@ def search_content(query, plataform=None, genre=None, director=None): #buscar pe
             response.raise_for_status()
             for movie in response.json():
                 movie_genre = genre_map.get(movie.get("genre_id"), "Unknown")
-                if genre and genre.lower() not in movie_genre.lower(): continue
-
+                if genre and genre.lower() not in movie_genre.lower(): 
+                    continue
+                if director:
+                    pass    
                 movie["content_type"] = "movie"
                 movie.setdefault("start_year", None)
                 identifier = f"movie_{movie.get('title', '').lower().strip()}_{movie.get('year', '')}"
