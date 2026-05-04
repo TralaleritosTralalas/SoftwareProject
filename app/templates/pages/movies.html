@@ -8,9 +8,9 @@
         <select name="platform" onchange="this.form.submit()"
             class="bg-surface-dark border-slate-700 rounded-lg text-sm">
             <option value="">All Platforms</option>
-            <option value="Platform 1" {% if selected_platform=="Platform 1" %}selected{% endif %}>Platform 1</option>
-            <option value="Platform 2" {% if selected_platform=="Platform 2" %}selected{% endif %}>Platform 2</option>
-            <option value="Platform 3" {% if selected_platform=="Platform 3" %}selected{% endif %}>Platform 3</option>
+            <option value="Platform 1" {% if selected_platform == "Platform 1" %}selected{% endif %}>Platform 1</option>
+            <option value="Platform 2" {% if selected_platform == "Platform 2" %}selected{% endif %}>Platform 2</option>
+            <option value="Platform 3" {% if selected_platform == "Platform 3" %}selected{% endif %}>Platform 3</option>
         </select>
     </form>
 </div>
