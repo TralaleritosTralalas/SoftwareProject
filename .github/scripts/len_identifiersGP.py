@@ -2,15 +2,37 @@ import re
 import sys
 import json
 
-KEYWORDS = {
+# Python reserved words
+PY_KEYWORDS = {
     'if', 'else', 'for', 'while', 'return', 'class',
     'def', 'import', 'from', 'as', 'with', 'try', 'except',
     'break', 'continue', 'pass', 'finally', 'raise', 'in',
     'and', 'or', 'not', 'is', 'lambda', 'yield'
 }
 
+# JavaScript / TypeScript reserved words
+JS_KEYWORDS = {
+    'if', 'else', 'for', 'while', 'do', 'return', 'class', 'function',
+    'import', 'export', 'from', 'as', 'with', 'try', 'catch', 'finally',
+    'throw', 'break', 'continue', 'new', 'delete', 'typeof', 'instanceof',
+    'in', 'of', 'let', 'const', 'var', 'this', 'super', 'null', 'undefined',
+    'true', 'false', 'void', 'switch', 'case', 'default', 'debugger',
+    # TypeScript extras
+    'interface', 'type', 'enum', 'namespace', 'declare', 'abstract',
+    'implements', 'extends', 'readonly', 'public', 'private', 'protected',
+    'static', 'async', 'await', 'yield', 'get', 'set', 'keyof', 'typeof',
+    'never', 'unknown', 'any', 'string', 'number', 'boolean', 'object',
+    'symbol', 'bigint',
+}
+
+# Combined set used for all languages
+KEYWORDS = PY_KEYWORDS | JS_KEYWORDS
+
+JS_EXTENSIONS = {'.js', '.ts', '.mjs', '.tsx', '.jsx', '.cjs'}
+ACCEPTED_EXTENSIONS = {'.py'} | JS_EXTENSIONS
+
 IDENTIFIER = r'\b[a-zA-Z_][a-zA-Z0-9_]*\b'
-THRESHOLD = 10
+THRESHOLD = 6
 
 def extract_identifiers(code):
     return re.findall(IDENTIFIER, code)
@@ -40,6 +62,10 @@ def main(paths):
     results = []
 
     for path in paths:
+        from pathlib import Path as _Path
+        if _Path(path).suffix not in ACCEPTED_EXTENSIONS:
+            print(f"Skipping {path} — unsupported extension")
+            continue
         print(f"Analyzing {path}")
         results.append(analyze_file(path))
 
