@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
-from .services import get_all_movies, get_all_series, search_content
+from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from .models import VisualizationProgress
+from django.utils.text import slugify
 
 # Create your views here.
 
@@ -17,19 +19,23 @@ def catalog(request):
     series = get_all_series()
     return render(request, 'pages/catalog.html', {'movies': movies, 'series': series})
 
-def series(request):
-    series=get_all_series()
-    return render(request, 'pages/series.html', {'series': series} )
+
 
 def movies(request):
     movies = get_all_movies()
-    return render(request, '' \
-    'pages/movies.html', {'movies': movies})
+    for movie in movies:
+        if 'unique_id' not in movie:
+            from django.utils.text import slugify
+            movie['unique_id'] = slugify(f"{movie.get('title', '')}_{movie.get('year', '')}")
+    return render(request, 'pages/movies.html', {'movies': movies})
 
-def search(request):
-    query = request.GET.get('q', '').strip()
-    movie_results = []
-    series_results = []
+def series(request):
+    series = get_all_series()
+    for serie in series:
+        if 'unique_id' not in serie:
+            from django.utils.text import slugify
+            serie['unique_id'] = slugify(f"{serie.get('title', '')}_{serie.get('start_year', '')}")
+    return render(request, 'pages/series.html', {'series': series})
 
 def register(request):
     return render(request, 'streamsync_register.html',{
@@ -51,27 +57,59 @@ def login(request):
     
     return render(request, 'pages/search.html', {'query': ''})
 
+def search(request):
+    query = request.GET.get('q', '').strip()
+    
+    if query:
+        results = search_content(query)
+        movies_results = [item for item in results if item.get('content_type') == 'movie']
+        series_results = [item for item in results if item.get('content_type') == 'series']
+        
+        return render(request, 'pages/search.html', {
+            'query': query,
+            'movies': movies_results,
+            'series': series_results,
+            'result_count': len(results)
+        })
+    
+    return render(request, 'pages/search.html', {'query': ''})
 
-
-def content_detail(request, ctype, cid):   
+def content_detail(request, ctype, cid):
     
     if ctype == 'series':
         data = get_all_series()
     else:
         data = get_all_movies()
-    content = next((item for item in data if str(item.get('id')) == str(cid)), None)
-    # ... render
+    
+    content = next((item for item in data if slugify(f"{item.get('title', '').replace(' ', '-')}_{item.get('year', item.get('start_year', ''))}") == slugify(str(cid))), None)
+    
     if content:
         return render(request, 'pages/content_view.html', {'content': content})
     else:
         return render(request, 'pages/home.html', status=404)
-
+    
 def personal_library(request):
     return render(request, 'pages/personal_library.html')
 
 
+@login_required
 def main(request):
-    return render(request, 'pages/main.html')
+    user = request.user
+    
+    favorite_genres = list(user.favorite_genres.values_list('name', flat=True))
+    
+    recommended_by_genre = {}
+    if favorite_genres:
+        recommended_by_genre = get_movies_by_genres(favorite_genres, limit_per_genre=3)
+    
+    watch_progress = VisualizationProgress.objects.filter(user=user, completed=False).select_related('content')
+    has_watch_history = watch_progress.exists()
+    
+    return render(request, 'pages/main.html', {
+        'recommended_by_genre': recommended_by_genre,
+        'has_watch_history': has_watch_history,
+        'watch_progress': watch_progress
+    })
 
 @login_required
 def login_redirect(request):

@@ -153,6 +153,40 @@ def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
     return list(series_dict.values())
 
 
+def get_movies_by_genres(genre_names, limit_per_genre=3):
+    all_movies = get_all_movies()
+    
+    result = {}
+    for genre_name in genre_names:
+        genre_movies = [
+            m for m in all_movies 
+            if m.get('genre_name', '').lower() == genre_name.lower()
+        ]
+        genre_movies.sort(key=lambda x: x.get('rating', 0), reverse=True)
+        for m in genre_movies[:limit_per_genre]:
+            m['unique_id'] = f"{m.get('title', '').lower().replace(' ', '-')}_{m.get('year', '')}"
+        result[genre_name] = genre_movies[:limit_per_genre]
+    
+    return result
+
+
+def get_series_by_genres(genre_names, limit_per_genre=3):
+    all_series = get_all_series()
+    
+    result = {}
+    for genre_name in genre_names:
+        genre_series = [
+            s for s in all_series 
+            if s.get('genre_name', '').lower() == genre_name.lower()
+        ]
+        genre_series.sort(key=lambda x: x.get('rating', 0), reverse=True)
+        for s in genre_series[:limit_per_genre]:
+            s['unique_id'] = f"{s.get('title', '').lower().replace(' ', '-')}_{s.get('start_year', '')}"
+        result[genre_name] = genre_series[:limit_per_genre]
+    
+    return result
+
+
 def search_content(query): #buscar peli o serie segun titulo
     results_dict = {}
 

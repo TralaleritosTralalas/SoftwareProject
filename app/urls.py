@@ -7,7 +7,6 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('main/', views.main, name='main'),
     path('catalog/', views.catalog, name='catalog'),
-    
     path('movies/', views.movies, name='movies'),
     path('series/', views.series, name='series'),
     path('search/', views.search, name='search'),
@@ -18,4 +17,5 @@ urlpatterns = [
     path('onboarding/', views.onboarding, name='onboarding'),
     path('onboarding/genres/', views.onboarding_genres, name='onboarding_genres'),
     path('onboarding-complete/', views.onboarding_complete, name='onboarding_complete'),
+    path('content/<str:ctype>/<str:cid>/', views.content_detail, name='content_detail'),
 ]
