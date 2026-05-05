@@ -295,6 +295,7 @@ def search_content(query): #buscar peli o serie segun titulo
                 if identifier not in results_dict:
                     movie["platforms"] = [platform_name]
                     movie["genre_name"] = genre_map.get(movie.get("genre_id"), "Unknown")
+                    movie['unique_id'] = identifier
                     results_dict[identifier] = movie
                 else:
                     if platform_name not in results_dict[identifier]["platforms"]:
@@ -317,6 +318,7 @@ def search_content(query): #buscar peli o serie segun titulo
                 if identifier not in results_dict:
                     serie["platforms"] = [platform_name]
                     serie["genre_name"] = genre_map.get(serie.get("genre_id"), "Unknown")
+                    serie['unique_id'] = identifier
                     results_dict[identifier] = serie
                 else:
                     if platform_name not in results_dict[identifier]["platforms"]:
