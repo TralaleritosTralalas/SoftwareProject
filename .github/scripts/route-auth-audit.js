@@ -11,6 +11,7 @@
 
 const { execSync } = require('child_process')
 const fs = require('fs')
+const path = require('path') // Añadido aquí para uso global
 
 // Routes defined here are intentionally public — skip them
 const PUBLIC_PATHS = new Set([
@@ -93,29 +94,12 @@ for (const file of allFiles) {
   }
 }
 
-if (errors > 0) {
-  console.log(
-    `\n❌ Route auth audit failed: ${errors} error(s), ${warnings} warning(s)`,
-  )
-  process.exit(1)
-} else if (warnings > 0) {
-  console.log(
-    `\n⚠  Route auth audit completed with ${warnings} warning(s) — review the routes above`,
-  )
-} else {
-  console.log('\n✅ Route auth audit passed — all routes have authorization metadata')
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Python Route Authorization Audit
 // Scans Flask / Django / FastAPI Python source files and reports route
 // handler functions that are missing authentication decorators.
 // ─────────────────────────────────────────────────────────────────────────────
 console.log('\n=== Django View Authorization Audit ===')
-
-const fs = require('fs')
-const path = require('path')
-const { execSync } = require('child_process')
 
 const DJANGO_AUTH = [
   '@login_required',
@@ -134,7 +118,7 @@ try {
     .filter(Boolean)
 } catch (_) {}
 
-let warnings = 0
+warnings = warnings || 0
 
 for (const file of viewFiles) {
   if (!fs.existsSync(file)) continue
@@ -172,10 +156,15 @@ for (const file of viewFiles) {
   }
 }
 
-if (warnings > 0) {
-  console.log(`\n⚠ Django audit: ${warnings} unprotected view(s)`)
-} else if (viewFiles.length > 0) {
-  console.log('\n✅ Django audit passed — all views protected')
+if (errors > 0) {
+  console.log(
+    `\n❌ Route auth audit failed: ${errors} error(s), ${warnings} warning(s)`,
+  )
+  process.exit(1)
+} else if (warnings > 0) {
+  console.log(
+    `\n⚠  Route auth audit completed with ${warnings} warning(s) — review the routes/views above`,
+  )
 } else {
-  console.log('\nℹ No Django views found')
+  console.log('\n✅ Route auth audit passed — all routes and views have authorization metadata')
 }

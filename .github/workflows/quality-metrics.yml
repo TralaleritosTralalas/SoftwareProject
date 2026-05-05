@@ -70,8 +70,7 @@ jobs:
           BEFORE="${{ github.event.before }}"
 
           if [[ "$EVENT" == "schedule" || "$EVENT" == "workflow_dispatch" ]]; then
-            # Full scan on scheduled / manual runs
-            FILES=$(find src/ functions/src/ weight_function/ -type f 2>/dev/null \
+            FILES=$(find . src/ functions/src/ weight_function/ -type f 2>/dev/null \
               | grep -E "$EXT_PATTERN" \
               | grep -v node_modules | grep -v /dist/ \
               | sort | tr '\n' ' ' || true)
@@ -84,7 +83,7 @@ jobs:
           else
             # push — fall back to full scan when branch is new (zeroed before SHA)
             if [[ "$BEFORE" =~ ^0+$ ]]; then
-              FILES=$(find src/ functions/src/ -type f 2>/dev/null \
+              FILES=$(find . src/ functions/src/ -type f 2>/dev/null \
                 | grep -E "$EXT_PATTERN" | grep -v node_modules | sort | tr '\n' ' ' || true)
             else
               FILES=$(git diff --name-only --diff-filter=AM \
@@ -95,7 +94,7 @@ jobs:
 
           # Fallback — if diff produced no code files, full-scan src/
           if [[ -z "${FILES// /}" ]]; then
-            FILES=$(find src/ functions/src/ weight_function/ -type f 2>/dev/null \
+            FILES=$(find . src/ functions/src/ weight_function/ -type f 2>/dev/null \
               | grep -E "$EXT_PATTERN" \
               | grep -v node_modules | grep -v /dist/ \
               | sort | tr '\n' ' ' || true)
@@ -113,7 +112,7 @@ jobs:
               ${{ steps.target.outputs.files }} \
               > quality-job1/complexity-results.json
           else
-            echo '{"analysis_type":"Cyclomatic Complexity","threshold":20,"summary":{"total_files":0,"failed_files":0},"results":[],"skipped":true}' \
+            echo '{"analysis_type":"Cyclomatic Complexity","threshold":15,"summary":{"total_files":0,"failed_files":0},"results":[],"skipped":true}' \
               > quality-job1/complexity-results.json
             echo "::notice::No supported files changed — complexity check skipped"
           fi
@@ -179,7 +178,7 @@ jobs:
         id: all-files
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: |
-          FILES=$(find src/ functions/src/ weight_function/ -type f 2>/dev/null \
+          FILES=$(find . src/ functions/src/ weight_function/ -type f 2>/dev/null \
             | grep -E '\.(py|js|ts|jsx|tsx|mjs|cjs)$' \
             | grep -v node_modules | grep -v /dist/ | sort | tr '\n' ' ' || true)
           echo "files=$FILES" >> "$GITHUB_OUTPUT"
@@ -190,7 +189,7 @@ jobs:
           FILES="${{ steps.all-files.outputs.files }}${{ steps.changed-files.outputs.all_changed_files }}"
           # Fallback — if diff produced no code files, full-scan src/
           if [[ -z "${FILES// /}" ]]; then
-            FILES=$(find src/ functions/src/ weight_function/ -type f 2>/dev/null \
+            FILES=$(find . src/ functions/src/ weight_function/ -type f 2>/dev/null \
               | grep -E '\.(py|js|ts|jsx|tsx|mjs|cjs)$' \
               | grep -v node_modules | grep -v /dist/ | sort | tr '\n' ' ' || true)
           fi
@@ -253,7 +252,7 @@ jobs:
         id: all-files
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: |
-          FILES=$(find src/ functions/src/ weight_function/ -type f 2>/dev/null \
+          FILES=$(find . src/ functions/src/ weight_function/ -type f 2>/dev/null \
             | grep -E '\.(py|js|ts|jsx|tsx|mjs|cjs)$' \
             | grep -v node_modules | grep -v /dist/ | sort | tr '\n' ' ' || true)
           echo "files=$FILES" >> "$GITHUB_OUTPUT"
@@ -327,7 +326,7 @@ jobs:
       - name: Run fog index analysis
         run: |
           mkdir -p quality-job4
-          python .github/scripts/fog_comments_indexGP.py src/ \
+          python .github/scripts/fog_comments_indexGP.py . \
             > quality-job4/fog-results.json
           cat quality-job4/fog-results.json
 
