@@ -543,30 +543,35 @@ jobs:
           FAIL=0
 
           ROUTER="src/app/router/index.js"
+          
+          if [ -f "$ROUTER" ]; then
+            if ! grep -q "router\.beforeEach" "$ROUTER"; then
+              echo "::error file=$ROUTER::router.beforeEach guard not found — all routes may be unprotected"
+              FAIL=1
+            fi
 
-          if ! grep -q "router\.beforeEach" "$ROUTER"; then
-            echo "::error file=$ROUTER::router.beforeEach guard not found — all routes may be unprotected"
-            FAIL=1
-          fi
+            if ! grep -q "authorize" "$ROUTER"; then
+              echo "::error file=$ROUTER::No authorization enforcement found in router guard"
+              FAIL=1
+            fi
 
-          if ! grep -q "authorize" "$ROUTER"; then
-            echo "::error file=$ROUTER::No authorization enforcement found in router guard"
-            FAIL=1
-          fi
+            if ! grep -qE "Auth\.user|autoSignIn|currentUser" "$ROUTER"; then
+              echo "::error file=$ROUTER::Router guard does not appear to verify authentication state"
+              FAIL=1
+            fi
 
-          if ! grep -qE "Auth\.user|autoSignIn|currentUser" "$ROUTER"; then
-            echo "::error file=$ROUTER::Router guard does not appear to verify authentication state"
-            FAIL=1
-          fi
+            if ! grep -q "signin" "$ROUTER"; then
+              echo "::warning file=$ROUTER::Router guard may not redirect unauthenticated users to /signin"
+            fi
 
-          if ! grep -q "signin" "$ROUTER"; then
-            echo "::warning file=$ROUTER::Router guard may not redirect unauthenticated users to /signin"
-          fi
-
-          if [ "$FAIL" -eq 0 ]; then
-            echo "✅ Router guard integrity verified"
+            if [ "$FAIL" -eq 0 ]; then
+              echo "✅ Router guard integrity verified"
+            else
+              exit 1
+            fi
           else
-            exit 1
+            echo "::notice::Vue Router not found — skipping frontend router guard check (Django project)"
+            echo "N/A: File $ROUTER not found." >> quality-job6/route-auth.log
           fi
 
       - name: Audit Route Definitions for Missing Auth Metadata
