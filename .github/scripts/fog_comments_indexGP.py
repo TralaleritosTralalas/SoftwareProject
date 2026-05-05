@@ -121,7 +121,12 @@ if __name__ == "__main__":
     results, total, failed = scan(sys.argv[1])
 
     if not results:
-        print("[]")
+        print(json.dumps({
+            "analysis_type": "Comment Readability (Fog Index)",
+            "threshold": 22,
+            "summary": {"total_files": 0, "failed_files": 0},
+            "results": []
+        }, indent=2))
         sys.exit(0)
 
     print_json(results, total, failed)
