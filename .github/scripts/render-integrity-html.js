@@ -5,7 +5,7 @@
  *
  * Reads a security/quality report JSON and generates a self-contained HTML
  * visualisation. Path resolution is environment-variable-driven so both the
- * legacy integrity-GP.yml workflow and the unified quality-pipeline.yml can
+ * legacy integrity-GP.yml workflow and the unified quality-metrics.yml can
  * share this script without modification.
  *
  * Environment variables:

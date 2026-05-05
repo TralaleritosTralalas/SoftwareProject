@@ -28,7 +28,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
-    branches: [main, dev, "features/**"]
   schedule:
     - cron: '0 3 * * 1'   # Weekly integrity sweep — Monday 03:00 UTC
   workflow_dispatch:

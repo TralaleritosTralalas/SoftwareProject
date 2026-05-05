@@ -11,7 +11,7 @@
  * behaves exactly as before (reads from integrity-job1/2/3, writes to
  * integrity-report/security-report.json).
  *
- * Environment variables (set by quality-pipeline.yml):
+ * Environment variables (set by quality-metrics.yml):
  *   QUALITY_ARTIFACT_PREFIX  — artifact directory prefix, e.g. "quality-job"
  *                              When present, security logs are read from
  *                              <prefix>5/, <prefix>6/, <prefix>7/ and quality
