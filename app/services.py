@@ -107,6 +107,7 @@ def get_all_movies():  # obtener todas las peliculas de todas las "plataformas"
                 # Otros datos
                 movie["age_rating"] = movie.get("age_rating", {}).get("title", "NR")
                 movie["duration_minutes"] = movie.get("duration_minutes", "—")
+                movie['unique_id'] = identifier 
 
                 movie["platforms"] = [platform_name]
                 movie.pop("platform_name", None)
@@ -142,6 +143,7 @@ def get_all_series():  # obtener todas las peliculas de todas las "plataformas"
                 serie["director_nationality"] = director_data.get("country", {}).get("name", "Unknown")
                 serie["genre_description"] = serie.get("genre", {}).get("description", "")
                 serie["age_rating"] = serie.get("age_rating", {}).get("title", "NR")
+                serie['unique_id'] = identifier
 
                 serie["platforms"] = [platform_name]
                 serie.pop("platform_name", None)
