@@ -68,7 +68,13 @@
 {% if recommended_series_by_genre %}
 <section class="mb-12">
     <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Series Recommended for You</h2>
-    <div class="flex gap-6 overflow-x-auto no-scrollbar pb-4 w-full">
+        <div class="relative w-full">
+        <div class="flex gap-6 overflow-x-auto overflow-y-visible pb-4" 
+                style="scrollbar-width: thin; 
+                        overflow-x: scroll; 
+                        overflow-y: visible;
+                        -webkit-overflow-scrolling: touch;
+                        white-space: nowrap;">
         {% for genre_name, series_list in recommended_series_by_genre.items %}
             {% for serie in series_list %}
             <div class="min-w-[200px] md:min-w-[240px] flex-shrink-0 group">

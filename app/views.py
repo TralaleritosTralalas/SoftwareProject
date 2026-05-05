@@ -99,14 +99,17 @@ def main(request):
     favorite_genres = list(user.favorite_genres.values_list('name', flat=True))
     
     recommended_by_genre = {}
+    recommended_series_by_genre = {}
     if favorite_genres:
-        recommended_by_genre = get_movies_by_genres(favorite_genres, limit_per_genre=3)
+        recommended_by_genre = get_movies_by_genres(favorite_genres, min_total=5)
+        recommended_series_by_genre = get_series_by_genres(favorite_genres, min_total=5)
     
     watch_progress = VisualizationProgress.objects.filter(user=user, completed=False).select_related('content')
     has_watch_history = watch_progress.exists()
     
     return render(request, 'pages/main.html', {
         'recommended_by_genre': recommended_by_genre,
+        'recommended_series_by_genre': recommended_series_by_genre,
         'has_watch_history': has_watch_history,
         'watch_progress': watch_progress
     })
