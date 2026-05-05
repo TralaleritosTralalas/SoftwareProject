@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
-from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres
+from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .models import VisualizationProgress
@@ -104,12 +104,15 @@ def main(request):
         recommended_by_genre = get_movies_by_genres(favorite_genres, min_total=5)
         recommended_series_by_genre = get_series_by_genres(favorite_genres, min_total=5)
     
+    trending = get_trending(limit=4)
+    
     watch_progress = VisualizationProgress.objects.filter(user=user, completed=False).select_related('content')
     has_watch_history = watch_progress.exists()
     
     return render(request, 'pages/main.html', {
         'recommended_by_genre': recommended_by_genre,
         'recommended_series_by_genre': recommended_series_by_genre,
+        'trending': trending,
         'has_watch_history': has_watch_history,
         'watch_progress': watch_progress
     })

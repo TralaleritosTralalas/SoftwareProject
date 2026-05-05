@@ -197,71 +197,39 @@
     </div>
 </section>
 {% endif %}
-<!-- Trending Now (Horizontal Scroll) -->
+<!-- Trending Now -->
+{% if trending %}
 <section class="mb-12">
-<div class="flex items-center justify-between mb-6">
-<h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Trending Now</h2>
-<a class="text-primary text-sm font-semibold hover:underline" href="#">View All</a>
-</div>
-<div class="flex gap-4 overflow-x-auto no-scrollbar pb-4">
-<!-- Trend Card 1 -->
-<div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer">
-<div class="aspect-video rounded-lg overflow-hidden relative shadow-sm bg-surface-dark">
-<img alt="Action movie car chase scene" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-50" data-alt="Action movie scene with a car chase" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjiucoXa_4EXaEwEkLFPoXWhWCzhwNNUsFW__i4En-euL-oCC4g4gcjtbUOIH3vHTQsP4qVqZr9VPUXD2EZyhcbffUI87IwsNPxUAcR1802RTlR-uDajrGBN501MO9_E2OmjPxtA19Yvle5j3XDTzOuK6SDqasetxCYK_vqHYOAYkytUjiLRtOqGxZnU6NFuvgbXnqNDm6boe6WmswB6Lr7N0UKVKqiVyDKwYaVMXEsS5RUjcseeCd0_XApXIKapUhdbyI-VNkseK_"/>
-<span class="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded z-10">#1</span>
-<span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-<span class="material-symbols-outlined text-white text-4xl drop-shadow-lg">play_circle</span>
-</span>
-</div>
-<div class="mt-2">
-<h4 class="text-slate-900 dark:text-white font-medium text-sm truncate">Fast X</h4>
-<p class="text-xs text-slate-500 dark:text-slate-400">Peacock • Action</p>
-</div>
-</div>
-<!-- Trend Card 2 -->
-<div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer">
-<div class="aspect-video rounded-lg overflow-hidden relative shadow-sm bg-surface-dark">
-<img alt="Horror movie dark hallway" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-50" data-alt="Spooky dark hallway scene from a horror movie" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUPVUtBCcdKiv_sIK1XjJO-lC95zNMxnXmSV9VUJB91JITa2MGr5F2FplH1l24hh9W29RSAvTYywYNk70HG8D0Hfulq5d2UlLcsaRfWtYGmAas3LpWE51oqy4o8j3rMuE_2jIhYsQf7Nmsmo7yJLWgM6BgM-HUqy5ZqG9OM5Wp0_Q6g1WXOiufyt8V_beVMUalvtWBA2vC3jyH5ObscSj3DwltdxI_UEXXunlpZNBtQ3ZdsE758umPA0DjpQmc997Wfnk5UpRyvffw"/>
-<span class="absolute top-2 left-2 bg-slate-700/80 text-white text-[10px] font-bold px-1.5 py-0.5 rounded z-10">#2</span>
-<span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-<span class="material-symbols-outlined text-white text-4xl drop-shadow-lg">play_circle</span>
-</span>
-</div>
-<div class="mt-2">
-<h4 class="text-slate-900 dark:text-white font-medium text-sm truncate">Evil Dead Rise</h4>
-<p class="text-xs text-slate-500 dark:text-slate-400">HBO Max • Horror</p>
-</div>
-</div>
-<!-- Trend Card 3 -->
-<div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer">
-<div class="aspect-video rounded-lg overflow-hidden relative shadow-sm bg-surface-dark">
-<img alt="Documentary nature scene" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-50" data-alt="Nature documentary scene with mountains" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlEv6k67dPoKONbUbCtsKvTPasBwA6wwh8XweKzEQi2_J19qm7tJxbZQd212vlDAmoE66bXAN3A8d6DjKhA-DhRbv4JDwXlQr3HcYLr7rG-khNS4NZFNnCl-FB6dijNIOQBqkcnf6fKAaR8yHdqCJznHm_eVEJh9sQ01CocEwLkdyQBV4Je6vL5caSxkQGi_NOR0wFGpubdWhNCcw3X1dHSn2xbeERk0nj66nXGejh_9Y-6ZWaVMLsQ8M367ogE32cNQPAQa5iW3zs"/>
-<span class="absolute top-2 left-2 bg-slate-700/80 text-white text-[10px] font-bold px-1.5 py-0.5 rounded z-10">#3</span>
-<span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-<span class="material-symbols-outlined text-white text-4xl drop-shadow-lg">play_circle</span>
-</span>
-</div>
-<div class="mt-2">
-<h4 class="text-slate-900 dark:text-white font-medium text-sm truncate">Planet Earth III</h4>
-<p class="text-xs text-slate-500 dark:text-slate-400">BBC • Documentary</p>
-</div>
-</div>
-<!-- Trend Card 4 -->
-<div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer">
-<div class="aspect-video rounded-lg overflow-hidden relative shadow-sm bg-surface-dark">
-<img alt="Comedy show stage" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-50" data-alt="Stage setup for a comedy special" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOVuvOvAo1lMN2koKGmZQ-EDbqJW7_EWOW5k28ygvnO9gY4r5QETZTi5i_VY9cAXMCwdgr3gl6ReRBvuSVDQlZg0L6r3acniO8EI3E23r-P8BYkJdMv4dty96TL1GJNXqSwSO_YaNlEcG2575d-Ro0qsvQPPwP9Hj9BM3PKPOGT2t1iZeKRO1dXc2ic7Xgvo0agwW4qMOsNzBI39Sc35iWiEGKD3_XjebP1QSITXy-9URF134kAQyIUKHEslm7_wUqIh4ZywkkXvn3"/>
-<span class="absolute top-2 left-2 bg-slate-700/80 text-white text-[10px] font-bold px-1.5 py-0.5 rounded z-10">#4</span>
-<span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-<span class="material-symbols-outlined text-white text-4xl drop-shadow-lg">play_circle</span>
-</span>
-</div>
-<div class="mt-2">
-<h4 class="text-slate-900 dark:text-white font-medium text-sm truncate">John Mulaney: Baby J</h4>
-<p class="text-xs text-slate-500 dark:text-slate-400">Netflix • Comedy</p>
-</div>
-</div>
-</div>
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Trending Now</h2>
+    </div>
+    <div class="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+        {% for item in trending %}
+        <div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer">
+            <a href="{% url 'app:content_detail' item.content_type item.unique_id %}">
+                <div class="aspect-video rounded-lg overflow-hidden relative shadow-sm bg-surface-dark">
+                    {% if item.image_url %}
+                    <img alt="{{ item.title }}" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-50" src="{{ item.image_url }}"/>
+                    {% else %}
+                    <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-4xl text-slate-500">movie</span>
+                    </div>
+                    {% endif %}
+                    <span class="absolute top-2 left-2 {% if forloop.counter == 1 %}bg-primary{% else %}bg-slate-700/80{% endif %} text-white text-[10px] font-bold px-1.5 py-0.5 rounded z-10">#{{ forloop.counter }}</span>
+                    <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                        <span class="material-symbols-outlined text-white text-4xl drop-shadow-lg">play_circle</span>
+                    </span>
+                </div>
+            </a>
+            <div class="mt-2">
+                <h4 class="text-slate-900 dark:text-white font-medium text-sm truncate">{{ item.title }}</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400">{{ item.platforms.0|default:"Streaming" }} • {{ item.genre_name|default:"Movie" }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </section>
+{% endif %}
 <!-- New Releases (List Layout) -->
 <section>
 <div class="flex items-center justify-between mb-6">

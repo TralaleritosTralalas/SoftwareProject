@@ -269,6 +269,31 @@ def get_series_by_genres(genre_names, min_total=5):
     return result
 
 
+def get_trending(limit=10):
+    """
+    Obtiene las películas y series mejor valoradas (Top Rated).
+    Combina movies y series, ordena por rating descendente.
+    """
+    all_movies = get_all_movies()
+    all_series = get_all_series()
+    
+    all_content = []
+    
+    for m in all_movies:
+        m['content_type'] = 'movie'
+        m['unique_id'] = f"{m.get('title', '').lower().replace(' ', '-')}_{m.get('year', '')}"
+        all_content.append(m)
+    
+    for s in all_series:
+        s['content_type'] = 'series'
+        s['unique_id'] = f"{s.get('title', '').lower().replace(' ', '-')}_{s.get('start_year', '')}"
+        all_content.append(s)
+    
+    all_content.sort(key=lambda x: x.get('rating', 0), reverse=True)
+    
+    return all_content[:limit]
+
+
 def search_content(query): #buscar peli o serie segun titulo
     results_dict = {}
 
