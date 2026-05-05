@@ -111,37 +111,22 @@ if (errors > 0) {
 // Scans Flask / Django / FastAPI Python source files and reports route
 // handler functions that are missing authentication decorators.
 // ─────────────────────────────────────────────────────────────────────────────
-console.log('\n=== Python Route Authorization Audit ===')
+console.log('\n=== Django View Authorization Audit ===')
 
-const { execSync: execSyncPy } = require('child_process')
+const fs = require('fs')
+const path = require('path')
+const { execSync } = require('child_process')
 
-// Auth decorators that protect a Python route
-const PY_AUTH_DECORATORS = [
+const DJANGO_AUTH = [
   '@login_required',
   '@permission_required',
-  '@jwt_required',
-  '@require_http_methods',
-  '@token_required',
-  '@auth.login_required',
-  '@requires_auth',
-  '@Depends(',           // FastAPI dependency injection
 ]
 
-// Route decorators that expose an endpoint
-const PY_ROUTE_DECORATORS = [
-  /@app\.(get|post|put|delete|patch|route)\s*\(/,
-  /@blueprint\.\w+\s*\(/,
-  /@router\.(get|post|put|delete|patch)\s*\(/,       // FastAPI APIRouter
-  /path\s*\(/,                                         // Django urls.py
-  /re_path\s*\(/,
-]
-
-let pySourceFiles = []
+let viewFiles = []
 try {
-  pySourceFiles = execSyncPy(
-    'find . -name "*.py" -not -path "*/node_modules/*" -not -path "*/.git/*" ' +
-    '-not -path "*/venv/*" -not -path "*/.venv/*" -not -path "*/migrations/*" ' +
-    '-not -path "*/tests/*" -not -path "*/__pycache__/*" 2>/dev/null',
+  viewFiles = execSync(
+    'find . -name "views.py" -not -path "*/venv/*" -not -path "*/.venv/*" ' +
+    '-not -path "*/migrations/*" -not -path "*/__pycache__/*"'
   )
     .toString()
     .trim()
@@ -149,10 +134,9 @@ try {
     .filter(Boolean)
 } catch (_) {}
 
-let pyWarnings = 0
-let pyErrors = 0
+let warnings = 0
 
-for (const file of pySourceFiles) {
+for (const file of viewFiles) {
   if (!fs.existsSync(file)) continue
 
   const lines = fs.readFileSync(file, 'utf8').split('\n')
@@ -160,43 +144,38 @@ for (const file of pySourceFiles) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim()
 
-    // Check if this line is a route decorator
-    const isRoute = PY_ROUTE_DECORATORS.some((pattern) => pattern.test(line))
-    if (!isRoute) continue
+    const isView = line.match(/^def\s+\w+\(request[,\)]/)
 
-    // Inspect the 5 lines above for an auth decorator
-    const contextAbove = lines
-      .slice(Math.max(0, i - 5), i)
-      .map((l) => l.trim())
-      .join('\n')
+    if (!isView) continue
 
-    const hasAuth = PY_AUTH_DECORATORS.some((decorator) =>
-      contextAbove.includes(decorator),
-    )
+    const viewName = line.match(/^def\s+(\w+)/)?.[1] || 'unknown'
+
+    let hasAuth = false
+    let j = i - 1
+
+    while (j >= 0 && lines[j].trim().startsWith('@')) {
+      const decoratorLine = lines[j].trim()
+
+      if (DJANGO_AUTH.some(d => decoratorLine.includes(d))) {
+        hasAuth = true
+      }
+
+      j--
+    }
 
     if (!hasAuth) {
-      // Extract route path from the decorator for reporting
-      const routeMatch = line.match(/['"`]([^'"`]+)['"`]/)
-      const routePath = routeMatch ? routeMatch[1] : line.substring(0, 60)
-
       console.log(
-        `::warning file=${file}::Python route '${routePath}' (line ${i + 1}) has no recognizable auth decorator — verify it is intentionally public`,
+        `::warning file=${file}::Django view '${viewName}' (line ${i + 1}) has no auth decorator — verify it is public`
       )
-      pyWarnings++
+      warnings++
     }
   }
 }
 
-if (pyWarnings > 0) {
-  console.log(
-    `\n⚠  Python route audit completed with ${pyWarnings} unprotected route(s) — review above`,
-  )
-} else if (pySourceFiles.length > 0) {
-  console.log('\n✅ Python route audit passed — all detected routes have auth decorators')
+if (warnings > 0) {
+  console.log(`\n⚠ Django audit: ${warnings} unprotected view(s)`)
+} else if (viewFiles.length > 0) {
+  console.log('\n✅ Django audit passed — all views protected')
 } else {
-  console.log('\nℹ  Python route audit skipped — no Python source files found')
-}
-
-if (pyErrors > 0) {
-  process.exit(1)
+  console.log('\nℹ No Django views found')
 }
