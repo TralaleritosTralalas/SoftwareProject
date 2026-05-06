@@ -73,13 +73,13 @@ def get_directors(url, api_key):
         print(f"Error connecting to API: {e}")
         return []
 
-def get_all_plataforms():
-    """Obtiene los nombres de todas las plataformas disponibles."""
+def get_all_platforms():
+    """Retorna los nombres de las plataformas configuradas."""
     return [p[2] for p in PLATFORMS]
 
-def get_all_genres():
-    """Obtiene todos los géneros disponibles."""
-    genres = set()
+def get_all_genres_from_api():
+    """Obtiene géneros únicos consultando todas las APIs configuradas."""
+    all_genres = set()
     for url, key, _ in PLATFORMS:
         genres = get_genre(url, key)
         for g in genres:

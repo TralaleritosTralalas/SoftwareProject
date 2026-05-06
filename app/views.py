@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
-from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending
+from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending, get_all_platforms, get_all_genres_from_api
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .models import VisualizationProgress
@@ -53,23 +53,63 @@ def catalog(request):
     }
     return render(request, 'pages/catalog.html', context)
 
-def series(request):
-    p = request.GET.get('platform')
-    series = get_all_series(platform_filter=p)
-    for serie in series:
-        if 'unique_id' not in serie:
-            from django.utils.text import slugify
-            serie['unique_id'] = slugify(f"{serie.get('title', '')}_{serie.get('start_year', '')}")
-    return render(request, 'pages/series.html', {'series': series, 'selected_platform': p})
-
 def movies(request):
-    p = request.GET.get('platform')
-    movies = get_all_movies(platform_filter=p)
-    for movie in movies:
-        if 'unique_id' not in movie:
-            from django.utils.text import slugify
-            movie['unique_id'] = slugify(f"{movie.get('title', '')}_{movie.get('year', '')}")
-    return render(request, 'pages/movies.html', {'movies': movies, 'selected_platform': p})
+    selected_platform = request.GET.get('platform')
+    selected_genre = request.GET.get('genre')
+    sort_rating = request.GET.get('sort_rating')
+    sort_year = request.GET.get('sort_year')
+
+    movies_list = get_all_movies(platform_filter=selected_platform)
+    
+    # Filtrado por género
+    if selected_genre:
+        movies_list = [m for m in movies_list if m.get('genre_name') == selected_genre]
+
+    # Ordenamiento
+    if sort_rating:
+        movies_list.sort(key=lambda x: x.get('rating', 0), reverse=(sort_rating == 'desc'))
+    if sort_year:
+        movies_list.sort(key=lambda x: x.get('year', 0), reverse=(sort_year == 'desc'))
+
+    context = {
+        'movies': movies_list,
+        'platforms': get_all_platforms(), # <--- Añadir esto
+        'genres': get_all_genres_from_api(), # <--- Añadir esto
+        'selected_platform': selected_platform,
+        'selected_genre': selected_genre,
+        'sort_rating': sort_rating,
+        'sort_year': sort_year,
+    }
+    return render(request, 'pages/movies.html', context)
+
+def series(request):
+    selected_platform = request.GET.get('platform')
+    selected_genre = request.GET.get('genre')
+    sort_rating = request.GET.get('sort_rating')
+    sort_year = request.GET.get('sort_year')
+
+    series_list = get_all_series(platform_filter=selected_platform)
+    
+    # Filtrado por género
+    if selected_genre:
+        series_list = [s for s in series_list if s.get('genre_name') == selected_genre]
+
+    # Ordenamiento
+    if sort_rating:
+        series_list.sort(key=lambda x: x.get('rating', 0), reverse=(sort_rating == 'desc'))
+    if sort_year:
+        series_list.sort(key=lambda x: x.get('start_year', 0), reverse=(sort_year == 'desc'))
+
+    context = {
+        'series': series_list,
+        'platforms': get_all_platforms(), # <--- Añadir esto
+        'genres': get_all_genres_from_api(), # <--- Añadir esto
+        'selected_platform': selected_platform,
+        'selected_genre': selected_genre,
+        'sort_rating': sort_rating,
+        'sort_year': sort_year,
+    }
+    return render(request, 'pages/series.html', context)
 
 def search(request, platform=None, genre=None, director=None):
     query = request.GET.get('q', '').strip()
