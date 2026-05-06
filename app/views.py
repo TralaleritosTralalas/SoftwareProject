@@ -105,7 +105,7 @@ def tech_add_user_view(request):
                 user.role = Group.objects.get(id=role_id)
             
             if profile_img:
-                user.image = profile_img
+                user.profile_picture = profile_img
             
             user.save()
             
@@ -145,7 +145,7 @@ def tech_edit_user_view(request, user_id):
             user_to_edit.role = Group.objects.get(id=role_id)
         
         if profile_img:
-            user_to_edit.image = profile_img
+            user_to_edit.profile_picture = profile_img
         
         try:
             user_to_edit.save()
