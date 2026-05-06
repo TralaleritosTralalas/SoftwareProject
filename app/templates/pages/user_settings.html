@@ -79,103 +79,121 @@
             <div class="lg:col-span-8 space-y-6">
 
                 <!-- ACCOUNT SETTINGS -->
-                <div class="bg-surface-container-low rounded-3xl border border-outline-variant overflow-hidden shadow-xl">
+                <form method="POST" enctype="multipart/form-data" class="block">
+                    {% csrf_token %}
 
-                    <!-- HEADER -->
-                    <div class="flex items-center justify-between px-8 py-6 border-b border-outline-variant">
+                    {% if errors %}
+                    <div class="mb-6 p-4 bg-red-500/20 border border-red-500 rounded-2xl">
+                        {% for error in errors %}
+                        <p class="text-red-400 text-sm">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
 
-                        <div>
-                            <h3 class="text-2xl font-bold">
-                                Account Settings
-                            </h3>
+                    {% if success %}
+                    <div class="mb-6 p-4 bg-green-500/20 border border-green-500 rounded-2xl">
+                        <p class="text-green-400 text-sm">{{ success }}</p>
+                    </div>
+                    {% endif %}
 
-                            <p class="text-sm text-on-surface-variant mt-1">
-                                Manage your profile information and preferences.
-                            </p>
+                    <div class="bg-surface-container-low rounded-3xl border border-outline-variant overflow-hidden shadow-xl">
+
+                        <!-- HEADER -->
+                        <div class="flex items-center justify-between px-8 py-6 border-b border-outline-variant">
+
+                            <div>
+                                <h3 class="text-2xl font-bold">
+                                    Account Settings
+                                </h3>
+
+                                <p class="text-sm text-on-surface-variant mt-1">
+                                    Manage your profile information and preferences.
+                                </p>
+                            </div>
+
+                            <!-- EDIT BTN -->
+                            <button
+                                type="button"
+                                id="edit-profile-btn"
+                                onclick="toggleEditProfile()"
+                                class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-background-dark border border-outline-variant hover:border-primary hover:bg-surface-container-high transition-all group">
+
+                                <span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">
+                                    edit
+                                </span>
+
+                                <span class="font-medium">
+                                    Edit Profile
+                                </span>
+
+                            </button>
+
                         </div>
 
-                        <!-- EDIT BTN -->
-                        <button
-                            id="edit-profile-btn"
-                            onclick="toggleEditProfile()"
-                            class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-background-dark border border-outline-variant hover:border-primary hover:bg-surface-container-high transition-all group">
+                        <!-- BODY -->
+                        <div class="p-8">
 
-                            <span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">
-                                edit
-                            </span>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
-                            <span class="font-medium">
-                                Edit Profile
-                            </span>
+                                <!-- FIRST NAME -->
+                                <div class="space-y-2">
 
-                        </button>
+                                    <label class="text-sm text-on-surface-variant">
+                                        First Name
+                                    </label>
 
-                    </div>
+                                    <input
+                                        disabled
+                                        type="text"
+                                        name="first_name"
+                                        class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
+                                        value="{{ user.first_name|default:'' }}"/>
 
-                    <!-- BODY -->
-                    <div class="p-8">
+                                </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <!-- LAST NAME -->
+                                <div class="space-y-2">
 
-                            <!-- FIRST NAME -->
-                            <div class="space-y-2">
+                                    <label class="text-sm text-on-surface-variant">
+                                        Last Name
+                                    </label>
 
-                                <label class="text-sm text-on-surface-variant">
-                                    First Name
-                                </label>
+                                    <input
+                                        disabled
+                                        type="text"
+                                        name="last_name"
+                                        class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
+                                        value="{{ user.last_name|default:'' }}"/>
 
-                                <input
-                                    disabled
-                                    type="text"
-                                    name="first_name"
-                                    class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
-                                    value="{{ user.first_name|default:'' }}"/>
+                                </div>
 
-                            </div>
+                                <!-- USERNAME -->
+                                <div class="space-y-2">
 
-                            <!-- LAST NAME -->
-                            <div class="space-y-2">
+                                    <label class="text-sm text-on-surface-variant">
+                                        Username
+                                    </label>
 
-                                <label class="text-sm text-on-surface-variant">
-                                    Last Name
-                                </label>
+                                    <input
+                                        disabled
+                                        type="text"
+                                        name="username"
+                                        class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
+                                        value="{{ user.username }}"/>
 
-                                <input
-                                    disabled
-                                    type="text"
-                                    name="last_name"
-                                    class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
-                                    value="{{ user.last_name|default:'' }}"/>
+                                </div>
 
-                            </div>
+                                <!-- COUNTRY -->
+                                <div class="space-y-2">
 
-                            <!-- USERNAME -->
-                            <div class="space-y-2">
+                                    <label class="text-sm text-on-surface-variant">
+                                        Country
+                                    </label>
 
-                                <label class="text-sm text-on-surface-variant">
-                                    Username
-                                </label>
-
-                                <input
-                                    disabled
-                                    type="text"
-                                    name="username"
-                                    class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
-                                    value="@{{ user.username }}"/>
-
-                            </div>
-
-                            <!-- COUNTRY -->
-                            <div class="space-y-2">
-
-                                <label class="text-sm text-on-surface-variant">
-                                    Country
-                                </label>
-
-                                <select
-                                    disabled
-                                    name="country"
-                                    class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed appearance-none transition-all">
+                                    <select
+                                        disabled
+                                        name="country"
+                                        class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed appearance-none transition-all">
 
                                     {% for country in countries %}
                                     <option value="{{ country.id }}" {% if user.country_id == country.id %}selected{% endif %}>
@@ -187,28 +205,30 @@
 
                             </div>
 
-                            <!-- GENRES -->
+                            <!-- GENDER -->
                             <div class="space-y-2 md:col-span-2">
 
                                 <label class="text-sm text-on-surface-variant">
-                                    Genre Preferences
+                                    Gender
                                 </label>
+
+                                <input type="hidden" name="gender" id="selected-gender" value="{{ user.gender|default:'' }}">
 
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 
-                                    <button type="button" class="genre-btn p-3 rounded-2xl {% if user.gender == 'male' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed">
+                                    <button type="button" onclick="selectGender('male')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'male' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
                                         Male
                                     </button>
 
-                                    <button type="button" class="genre-btn p-3 rounded-2xl {% if user.gender == 'female' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed">
+                                    <button type="button" onclick="selectGender('female')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'female' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
                                         Female
                                     </button>
 
-                                    <button type="button" class="genre-btn p-3 rounded-2xl {% if user.gender == 'non-binary' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed">
+                                    <button type="button" onclick="selectGender('non-binary')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'non-binary' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
                                         Non-binary
                                     </button>
 
-                                    <button type="button" class="genre-btn p-3 rounded-2xl {% if user.gender == 'other' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed">
+                                    <button type="button" onclick="selectGender('other')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'other' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
                                         Other
                                     </button>
 
@@ -240,6 +260,7 @@
                             class="hidden opacity-0 translate-y-3 flex justify-end gap-4 transition-all duration-300">
 
                             <button
+                                type="button"
                                 onclick="cancelProfileEdit()"
                                 class="px-6 py-3 text-on-surface-variant hover:text-white transition-colors">
 
@@ -248,6 +269,7 @@
                             </button>
 
                             <button
+                                type="submit"
                                 class="px-8 py-3 bg-primary hover:bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all">
 
                                 Save Changes
@@ -258,7 +280,9 @@
 
                     </div>
 
-                </div>
+                    </div>
+
+                </form>
 
                 <!-- SECURITY -->
                 <div class="bg-surface-container-low rounded-3xl border border-outline-variant overflow-hidden shadow-xl">
@@ -445,31 +469,31 @@ function previewImage(event) {
     reader.readAsDataURL(event.target.files[0]);
 }
 
+let isEditing = false;
+
 function toggleEditProfile() {
+    isEditing = !isEditing;
 
     const fields = document.querySelectorAll('.profile-field');
     const actions = document.getElementById('profile-actions');
+    const genderBtns = document.querySelectorAll('.gender-btn');
+    const editBtn = document.getElementById('edit-profile-btn');
 
     fields.forEach(field => {
-
         field.disabled = !field.disabled;
 
         if (!field.disabled) {
-
             field.classList.remove(
                 'cursor-not-allowed',
                 'bg-background-dark/60',
                 'opacity-70'
             );
-
             field.classList.add(
                 'focus:ring-2',
                 'focus:ring-primary/50',
                 'bg-background-dark'
             );
-
         } else {
-
             field.classList.add(
                 'cursor-not-allowed',
                 'bg-background-dark/60'
@@ -477,14 +501,38 @@ function toggleEditProfile() {
         }
     });
 
+    genderBtns.forEach(btn => {
+        if (isEditing) {
+            btn.classList.remove('cursor-not-allowed', 'opacity-70');
+            btn.classList.add('hover:scale-105', 'hover:border-primary');
+        } else {
+            btn.classList.add('cursor-not-allowed', 'opacity-70');
+            btn.classList.remove('hover:scale-105', 'hover:border-primary');
+        }
+    });
+
+    editBtn.querySelector('span:last-child').textContent = isEditing ? 'Cancel' : 'Edit Profile';
+
     actions.classList.toggle('hidden');
 
     setTimeout(() => {
-
         actions.classList.toggle('opacity-0');
         actions.classList.toggle('translate-y-3');
-
     }, 10);
+}
+
+function selectGender(gender) {
+    if (!isEditing) return;
+
+    document.getElementById('selected-gender').value = gender;
+
+    document.querySelectorAll('.gender-btn').forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white');
+        btn.classList.add('bg-background-dark', 'border', 'border-outline-variant', 'text-on-surface-variant', 'opacity-70');
+    });
+
+    event.target.classList.remove('bg-background-dark', 'border', 'border-outline-variant', 'text-on-surface-variant', 'opacity-70');
+    event.target.classList.add('bg-primary', 'text-white');
 }
 
 function toggleSecurityEdit() {
@@ -529,8 +577,9 @@ function toggleSecurityEdit() {
 }
 
 function cancelProfileEdit() {
-
-    location.reload();
+    if (isEditing) {
+        location.reload();
+    }
 }
 
 </script>

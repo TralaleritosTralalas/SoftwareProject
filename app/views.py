@@ -6,17 +6,73 @@ from django.shortcuts import render, redirect
 from .models import VisualizationProgress
 from django.utils.text import slugify
 from app.models import Country
-
+from app.models import User, Country
+from django.contrib import messages
 # Create your views here.
 
 def home(request):
     return render(request, 'pages/home.html')
 
+@login_required
 def user_settings(request):
-    user = request.user
+
+
     countries = Country.objects.all()
+
+    if request.method == 'POST':
+        user = request.user
+
+        username = request.POST.get('username', '').strip()
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        bio = request.POST.get('bio', '').strip()
+        gender = request.POST.get('gender')
+        country_id = request.POST.get('country')
+
+        errors = []
+
+        if not username:
+            errors.append('Username is required')
+        elif username != user.username and User.objects.filter(username=username).exclude(pk=user.pk).exists():
+            errors.append('Username already exists')
+
+        if not first_name:
+            errors.append('First name is required')
+
+        if not last_name:
+            errors.append('Last name is required')
+
+        if errors:
+            return render(request, 'pages/user_settings.html', {
+                'user': user,
+                'countries': countries,
+                'errors': errors
+            })
+
+        user.username = username
+        user.first_name = first_name
+        user.last_name = last_name
+        user.bio = bio
+        user.gender = gender if gender else None
+
+        if country_id:
+            user.country_id = country_id
+        else:
+            user.country_id = None
+
+        if request.FILES.get('profile_picture'):
+            user.profile_picture = request.FILES['profile_picture']
+
+        user.save()
+
+        return render(request, 'pages/user_settings.html', {
+            'user': user,
+            'countries': countries,
+            'success': 'Profile updated successfully!'
+        })
+
     return render(request, 'pages/user_settings.html', {
-        'user': user,
+        'user': request.user,
         'countries': countries
     })
 
