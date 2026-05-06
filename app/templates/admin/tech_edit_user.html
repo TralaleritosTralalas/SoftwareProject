@@ -14,7 +14,7 @@
                     <p class="text-slate-400 text-sm mt-1">Modificando la cuenta de <b>{{ user_to_edit.username }}</b></p>
                 </div>
                 <div class="size-16 rounded-2xl border-2 border-primary/30 overflow-hidden bg-slate-800">
-                    <img src="{{ user_to_edit.profile.image.url }}" class="w-full h-full object-cover">
+                    <img src="{{ user_to_edit.image.url }}" class="w-full h-full object-cover">
                 </div>
             </div>
 
@@ -66,7 +66,7 @@
                         <label class="block text-[10px] font-black text-slate-500 mb-2 uppercase">Rol Asignado</label>
                         <select name="role" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 focus:border-primary outline-none appearance-none">
                             {% for g in groups %}
-                            <option value="{{ g.id }}" {% if user_to_edit.profile.role.id == g.id %}selected{% endif %}>
+                            <option value="{{ g.id }}" {% if user_to_edit.role.id == g.id %}selected{% endif %}>
                                 {{ g.name|upper }}
                             </option>
                             {% endfor %}

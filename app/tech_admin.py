@@ -1,31 +1,20 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import Profile
+from .models import User
 from django.contrib.admin import AdminSite
 from . import views
 from django.urls import path
 
-
-
-class ProfileInline(admin.StackedInline):
-    model = Profile
-    can_delete = False
-    verbose_name_plural = 'Información del Perfil'
-
 class TechUserAdmin(BaseUserAdmin):
-    inlines = (ProfileInline,)
     list_display = ('username', 'email', 'get_role', 'is_staff')
-    list_filter = ('profile__role', 'is_staff')
+    list_filter = ('role', 'is_staff')
     search_fields = ('username', 'email')
     ordering = ('username',)
-    list_per_page = 10  # Paginación automática
+    list_per_page = 10
 
     def get_role(self, obj):
-        return obj.profile.role
+        return obj.role
     get_role.short_description = 'Rol'
-
-    
 
 class TechAdminSite(AdminSite):
     site_header = "StreamSync Tech"
@@ -40,9 +29,12 @@ class TechAdminSite(AdminSite):
         if request.user.is_superuser:
             return True
 
-        profile = getattr(request.user, 'profile', None)
-        if profile and profile.role:
-            return profile.role.name.lower() == 'technical'
+        try:
+            custom_user = User.objects.select_related('role').get(pk=request.user.pk)
+            if custom_user.role:
+                return custom_user.role.name.lower() == 'technical'
+        except User.DoesNotExist:
+            return False
         
         return False
                 
@@ -56,9 +48,9 @@ class TechAdminSite(AdminSite):
         return custom_urls + urls
     
     def index(self, request, extra_context=None):
-        from django.contrib.auth.models import User, Group
+        from django.contrib.auth.models import Group
         
-        users = User.objects.all().select_related('profile')
+        users = User.objects.all().select_related('role')
 
         query = request.GET.get('q')
         if query:
@@ -66,13 +58,12 @@ class TechAdminSite(AdminSite):
 
         role_filter = request.GET.get('role')
         if role_filter:
-            users = users.filter(profile__role_id=role_filter)
+            users = users.filter(role_id=role_filter)
 
         status_filter = request.GET.get('status')
 
         if status_filter == 'active':
             users = users.filter(is_active=True)
-
         elif status_filter == 'inactive':
             users = users.filter(is_active=False)
 
@@ -82,8 +73,8 @@ class TechAdminSite(AdminSite):
         
         extra_context['current_role'] = role_filter
         extra_context['current_status'] = status_filter
-
+        
         return super().index(request, extra_context)
 
-tech_site = TechAdminSite(name='tech_admin')
-tech_site.register(User, TechUserAdmin)
+tech_admin_site = TechAdminSite(name='tech_admin')
+tech_admin_site.register(User, TechUserAdmin)

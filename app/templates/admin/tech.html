@@ -96,7 +96,7 @@
                                 <td class="px-6 py-5 flex items-center gap-4">
                                     <div class="relative">
                                         <div class="size-12 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 p-[1px] group-hover:scale-110 transition-transform duration-300">
-                                            <img src="{{ u.profile.image.url }}" class="w-full h-full object-cover rounded-2xl" alt="">
+                                            <img src="{{ u.image.url }}" class="w-full h-full object-cover rounded-2xl" alt="">
                                         </div>
                                         {% if u.is_active %}
                                             <span class="absolute -bottom-1 -right-1 size-3 bg-green-500 border-2 border-surface-dark rounded-full"></span>
@@ -108,9 +108,9 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-5">
-                                    {% if u.profile.role %}
+                                    {% if u.role %}
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-slate-800 text-slate-300 border border-white/10 group-hover:border-primary/30 transition-colors">
-                                            {{ u.profile.role.name|upper }}
+                                            {{ u.role.name|upper }}
                                         </span>
                                     {% else %}
                                         <span class="text-slate-600 text-[10px] font-medium tracking-tighter">UNASSIGNED</span>
@@ -177,7 +177,7 @@
                             <div class="size-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-primary/10 group-hover:border-primary/20 transition-all duration-300">
                                 <span class="material-symbols-outlined text-slate-400 group-hover:text-primary">
                                     {% if model.object_name == "Movie" %}movie
-                                    {% elif model.object_name == "Profile" %}account_circle
+                                    {% elif model.object_name == "User" %}account_circle
                                     {% else %}analytics{% endif %}
                                 </span>
                             </div>
