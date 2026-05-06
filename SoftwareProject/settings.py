@@ -130,3 +130,5 @@ STATICFILES_DIRS = [BASE_DIR / 'app' / 'static']
 
 LOGIN_REDIRECT_URL = "/redirect/"
 LOGOUT_REDIRECT_URL = "app:home"
+
+AUTH_USER_MODEL = 'app.User'
