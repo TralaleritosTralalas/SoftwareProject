@@ -75,6 +75,8 @@ def search(request):
     return render(request, 'pages/search.html', {'query': ''})
 
 def content_detail(request, ctype, cid):
+    from django.http import JsonResponse
+    from .models import VisualizationProgress, Favorite, Watchlist
     
     if ctype == 'series':
         data = get_all_series()
@@ -84,9 +86,123 @@ def content_detail(request, ctype, cid):
     content = next((item for item in data if slugify(f"{item.get('title', '').replace(' ', '-')}_{item.get('year', item.get('start_year', ''))}") == slugify(str(cid))), None)
     
     if content:
-        return render(request, 'pages/content_view.html', {'content': content})
+        content['content_type'] = ctype
+        
+        # Obtener estado del usuario si está autenticado
+        user_status = 'not_seen'
+        is_favorite = False
+        is_in_watchlist = False
+        
+        if request.user.is_authenticated:
+            # Buscar el contenido en la base de datos local
+            from app.models import AudiovisualContent, Movie, Series
+            try:
+                if ctype == 'series':
+                    local_content = Series.objects.filter(title=content.get('title')).first()
+                else:
+                    local_content = Movie.objects.filter(title=content.get('title')).first()
+                
+                if local_content:
+                    # Verificar VisualizationProgress
+                    vp = VisualizationProgress.objects.filter(user=request.user, content=local_content).first()
+                    if vp:
+                        if vp.completed:
+                            user_status = 'completed'
+                        elif vp.last_minute > 0:
+                            user_status = 'watching'
+                    
+                    # Verificar Favorite
+                    is_favorite = Favorite.objects.filter(user=request.user, content=local_content).exists()
+                    
+                    # Verificar Watchlist
+                    is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
+            except Exception:
+                pass
+        
+        return render(request, 'pages/content_view.html', {
+            'content': content,
+            'user_status': user_status,
+            'is_favorite': is_favorite,
+            'is_in_watchlist': is_in_watchlist
+        })
     else:
         return render(request, 'pages/home.html', status=404)
+
+
+@login_required
+def update_status(request, ctype, cid):
+    from django.http import JsonResponse
+    from django.views.decorators.csrf import csrf_exempt
+    from django.utils.decorators import method_decorator
+    from .models import VisualizationProgress, Movie, Series
+    import json
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            status = data.get('status', 'not_seen')
+            
+            # Buscar contenido local
+            if ctype == 'series':
+                local_content = Series.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
+            else:
+                local_content = Movie.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
+            
+            if local_content:
+                vp, created = VisualizationProgress.objects.get_or_create(
+                    user=request.user,
+                    content=local_content
+                )
+                
+                if status == 'completed':
+                    vp.completed = True
+                    vp.last_minute = local_content.duration_minutes if hasattr(local_content, 'duration_minutes') else 0
+                elif status == 'watching':
+                    vp.completed = False
+                    vp.last_minute = vp.last_minute if vp.last_minute > 0 else 1
+                else:  # not_seen
+                    vp.completed = False
+                    vp.last_minute = 0
+                
+                vp.save()
+                
+                return JsonResponse({'success': True, 'status': status})
+            
+            return JsonResponse({'success': False, 'error': 'Content not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def toggle_favorite(request, ctype, cid):
+    from django.http import JsonResponse
+    from .models import Favorite, Movie, Series
+    import json
+    
+    if request.method == 'POST':
+        try:
+            # Buscar contenido local
+            if ctype == 'series':
+                local_content = Series.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
+            else:
+                local_content = Movie.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
+            
+            if local_content:
+                favorite = Favorite.objects.filter(user=request.user, content=local_content).first()
+                if favorite:
+                    favorite.delete()
+                    return JsonResponse({'success': True, 'is_favorite': False})
+                else:
+                    Favorite.objects.create(user=request.user, content=local_content)
+                    return JsonResponse({'success': True, 'is_favorite': True})
+            
+            return JsonResponse({'success': False, 'error': 'Content not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
     
 def personal_library(request):
     return render(request, 'pages/personal_library.html')
