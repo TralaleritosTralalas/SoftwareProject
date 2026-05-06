@@ -73,6 +73,19 @@ def get_directors(url, api_key):
         print(f"Error connecting to API: {e}")
         return []
 
+def get_all_plataforms():
+    """Obtiene los nombres de todas las plataformas disponibles."""
+    return [p[2] for p in PLATFORMS]
+
+def get_all_genres():
+    """Obtiene todos los géneros disponibles."""
+    genres = set()
+    for url, key, _ in PLATFORMS:
+        genres = get_genre(url, key)
+        for g in genres:
+            all_genres.add(g["name"])
+    return sorted(list(all_genres))
+
 def get_all_movies(platform_filter= None):  # obtener todas las peliculas de todas las "plataformas"
 
     movies_dict = {} #diccionario para saber el contenido

@@ -15,10 +15,43 @@ def user_settings(request):
     return render(request, 'pages/user_settings.html')
 
 def catalog(request):
-    p = request.GET.get('platform')
-    movies = get_all_movies(platform_filter=p)
-    series = get_all_series(platform_filter=p)
-    return render(request, 'pages/catalog.html', {'movies': movies, 'series': series, 'selected_platform': p})
+    # Obtener parámetros de filtro
+    selected_platform = request.GET.get('platform')
+    selected_genre = request.GET.get('genre')
+    sort_rating = request.GET.get('sort_rating')
+    sort_year = request.GET.get('sort_year')
+
+    # Obtener datos base
+    movies = get_all_movies(platform_filter=selected_platform)
+    series = get_all_series(platform_filter=selected_platform)
+    
+    # Filtrar por género localmente si se seleccionó uno
+    if selected_genre:
+        movies = [m for m in movies if m.get('genre_name') == selected_genre]
+        series = [s for s in series if s.get('genre_name') == selected_genre]
+
+    # Lógica de ordenamiento
+    def apply_sort(data, key_rating, key_year):
+        if sort_rating:
+            data.sort(key=lambda x: x.get(key_rating, 0), reverse=(sort_rating == 'desc'))
+        if sort_year:
+            data.sort(key=lambda x: x.get(key_year, 0), reverse=(sort_year == 'desc'))
+        return data
+
+    movies = apply_sort(movies, 'rating', 'year')
+    series = apply_sort(series, 'rating', 'start_year')
+
+    context = {
+        'movies': movies,
+        'series': series,
+        'platforms': get_all_platforms(),
+        'genres': get_all_genres_from_api(),
+        'selected_platform': selected_platform,
+        'selected_genre': selected_genre,
+        'sort_rating': sort_rating,
+        'sort_year': sort_year,
+    }
+    return render(request, 'pages/catalog.html', context)
 
 def series(request):
     p = request.GET.get('platform')
@@ -38,7 +71,7 @@ def movies(request):
             movie['unique_id'] = slugify(f"{movie.get('title', '')}_{movie.get('year', '')}")
     return render(request, 'pages/movies.html', {'movies': movies, 'selected_platform': p})
 
-def search(request):
+def search(request, platform=None, genre=None, director=None):
     query = request.GET.get('q', '').strip()
     p= request.GET.get('platform')
     g = request.GET.get('genre')
