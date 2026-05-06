@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
-from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending
+from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending, get_all_platforms, get_all_genres_from_api, search_content
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .models import VisualizationProgress
@@ -15,27 +15,125 @@ def user_settings(request):
     return render(request, 'pages/user_settings.html')
 
 def catalog(request):
-    movies = get_all_movies()
-    series = get_all_series()
-    return render(request, 'pages/catalog.html', {'movies': movies, 'series': series})
+    # Obtener parámetros de filtro
+    selected_platform = request.GET.get('platform')
+    selected_genre = request.GET.get('genre')
+    sort_rating = request.GET.get('sort_rating')
+    sort_year = request.GET.get('sort_year')
 
+    # Obtener datos base
+    movies = get_all_movies(platform_filter=selected_platform)
+    series = get_all_series(platform_filter=selected_platform)
+    
+    # Filtrar por género localmente si se seleccionó uno
+    if selected_genre:
+        movies = [m for m in movies if m.get('genre_name') == selected_genre]
+        series = [s for s in series if s.get('genre_name') == selected_genre]
 
+    # Lógica de ordenamiento
+    def apply_sort(data, key_rating, key_year):
+        if sort_rating:
+            data.sort(key=lambda x: x.get(key_rating, 0), reverse=(sort_rating == 'desc'))
+        if sort_year:
+            data.sort(key=lambda x: x.get(key_year, 0), reverse=(sort_year == 'desc'))
+        return data
+
+    movies = apply_sort(movies, 'rating', 'year')
+    series = apply_sort(series, 'rating', 'start_year')
+
+    context = {
+        'movies': movies,
+        'series': series,
+        'platforms': get_all_platforms(),
+        'genres': get_all_genres_from_api(),
+        'selected_platform': selected_platform,
+        'selected_genre': selected_genre,
+        'sort_rating': sort_rating,
+        'sort_year': sort_year,
+    }
+    return render(request, 'pages/catalog.html', context)
 
 def movies(request):
-    movies = get_all_movies()
-    for movie in movies:
-        if 'unique_id' not in movie:
-            from django.utils.text import slugify
-            movie['unique_id'] = slugify(f"{movie.get('title', '')}_{movie.get('year', '')}")
-    return render(request, 'pages/movies.html', {'movies': movies})
+    selected_platform = request.GET.get('platform')
+    selected_genre = request.GET.get('genre')
+    sort_rating = request.GET.get('sort_rating')
+    sort_year = request.GET.get('sort_year')
+
+    movies_list = get_all_movies(platform_filter=selected_platform)
+    
+    # Filtrado por género
+    if selected_genre:
+        movies_list = [m for m in movies_list if m.get('genre_name') == selected_genre]
+
+    # Ordenamiento
+    if sort_rating:
+        movies_list.sort(key=lambda x: x.get('rating', 0), reverse=(sort_rating == 'desc'))
+    if sort_year:
+        movies_list.sort(key=lambda x: x.get('year', 0), reverse=(sort_year == 'desc'))
+
+    context = {
+        'movies': movies_list,
+        'platforms': get_all_platforms(), # <--- Añadir esto
+        'genres': get_all_genres_from_api(), # <--- Añadir esto
+        'selected_platform': selected_platform,
+        'selected_genre': selected_genre,
+        'sort_rating': sort_rating,
+        'sort_year': sort_year,
+    }
+    return render(request, 'pages/movies.html', context)
 
 def series(request):
-    series = get_all_series()
-    for serie in series:
-        if 'unique_id' not in serie:
-            from django.utils.text import slugify
-            serie['unique_id'] = slugify(f"{serie.get('title', '')}_{serie.get('start_year', '')}")
-    return render(request, 'pages/series.html', {'series': series})
+    selected_platform = request.GET.get('platform')
+    selected_genre = request.GET.get('genre')
+    sort_rating = request.GET.get('sort_rating')
+    sort_year = request.GET.get('sort_year')
+
+    series_list = get_all_series(platform_filter=selected_platform)
+    
+    # Filtrado por género
+    if selected_genre:
+        series_list = [s for s in series_list if s.get('genre_name') == selected_genre]
+
+    # Ordenamiento
+    if sort_rating:
+        series_list.sort(key=lambda x: x.get('rating', 0), reverse=(sort_rating == 'desc'))
+    if sort_year:
+        series_list.sort(key=lambda x: x.get('start_year', 0), reverse=(sort_year == 'desc'))
+
+    context = {
+        'series': series_list,
+        'platforms': get_all_platforms(), # <--- Añadir esto
+        'genres': get_all_genres_from_api(), # <--- Añadir esto
+        'selected_platform': selected_platform,
+        'selected_genre': selected_genre,
+        'sort_rating': sort_rating,
+        'sort_year': sort_year,
+    }
+    return render(request, 'pages/series.html', context)
+
+def search(request):
+    query = request.GET.get('q', '').strip()
+    p = request.GET.get('platform')
+    g = request.GET.get('genre')
+    sr = request.GET.get('sort_rating')
+    sy = request.GET.get('sort_year')
+    
+    results = []
+    if query:
+        # Ahora el servicio devuelve objetos con el campo 'detail_url' ya calculado
+        results = search_content(query, platform=p, genre=g, sort_rating=sr, sort_year=sy)
+
+    context = {
+        'query': query,
+        'movies': [i for i in results if i['content_type'] == 'movie'],
+        'series': [i for i in results if i['content_type'] == 'series'],
+        'result_count': len(results),
+        'platforms': get_all_platforms(),
+        'genres': get_all_genres_from_api(),
+        'selected_platform': p,
+        'selected_genre': g,
+    }
+    return render(request, 'pages/search.html', context)
 
 def register(request):
     return render(request, 'streamsync_register.html',{
@@ -44,35 +142,7 @@ def register(request):
 
 def login(request):
     return render(request, 'login.html')
-    if query:
-        results = search_content(query)
-        movie_results = [item for item in results if item.get('content_type') == 'movie']
-        series_results = [item for item in results if item.get('content_type') == 'series']
-        return render(request, 'pages/search.html', {
-            'query' : query,
-            'movies': movie_results,
-            'series': series_results,
-            'result_count': len(results)
-        })
-    
-    return render(request, 'pages/search.html', {'query': ''})
 
-def search(request):
-    query = request.GET.get('q', '').strip()
-    
-    if query:
-        results = search_content(query)
-        movies_results = [item for item in results if item.get('content_type') == 'movie']
-        series_results = [item for item in results if item.get('content_type') == 'series']
-        
-        return render(request, 'pages/search.html', {
-            'query': query,
-            'movies': movies_results,
-            'series': series_results,
-            'result_count': len(results)
-        })
-    
-    return render(request, 'pages/search.html', {'query': ''})
 
 def content_detail(request, ctype, cid):
     from django.http import JsonResponse
