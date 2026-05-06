@@ -113,9 +113,18 @@
         </button>
 
         <button id="favorite-btn"
-          class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-pink-500/30 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 hover:text-pink-300 active:scale-95">
-          <span class="material-symbols-outlined text-pink-400" id="favorite-icon">{% if is_favorite %}favorite{% else %}favorite_border{% endif %}</span>
-          <span id="favorite-text">{% if is_favorite %}Remove from Favorites{% else %}Add to Favorites{% endif %}</span>
+          class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-pink-500/30 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 hover:text-pink-300 active:scale-95"
+          data-content-id="{{ content.unique_id|default:content.id }}"
+          data-content-type="{% if content.start_year %}series{% else %}movie{% endif %}">
+
+          <span class="material-symbols-outlined text-pink-400" id="favorite-icon" {% if is_favorite
+            %}style="font-variation-settings: 'FILL' 1;" {% endif %}>
+            {% if is_favorite %}favorite{% else %}favorite_border{% endif %}
+          </span>
+
+          <span id="favorite-text">
+            {% if is_favorite %}Eliminar de favoritos{% else %}Añadir a favoritos{% endif %}
+          </span>
         </button>
 
         <div class="relative">
@@ -125,16 +134,23 @@
             <span id="status-text">Not Seen</span>
             <span class="material-symbols-outlined text-purple-400">expand_more</span>
           </button>
-          <div id="status-dropdown" class="hidden absolute top-full left-0 w-full mt-2 bg-surface-dark border border-white/10 rounded-xl overflow-hidden z-50 shadow-xl">
-            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="not_seen">
+          <div id="status-dropdown"
+            class="hidden absolute top-full left-0 w-full mt-2 bg-surface-dark border border-white/10 rounded-xl overflow-hidden z-50 shadow-xl">
+            <button type="button"
+              class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors"
+              data-status="not_seen">
               <span class="material-symbols-outlined text-sm">visibility_off</span>
               Not Seen
             </button>
-            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="watching">
+            <button type="button"
+              class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors"
+              data-status="watching">
               <span class="material-symbols-outlined text-sm">play_circle</span>
               Watching
             </button>
-            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="completed">
+            <button type="button"
+              class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors"
+              data-status="completed">
               <span class="material-symbols-outlined text-sm">check_circle</span>
               Completed
             </button>
@@ -166,7 +182,7 @@
 </nav>
 {% endblock %}
 
-{% block extra_scripts %} 
-    {% load static %}
-    <script src="{% static 'js/content.js' %}"></script>
+{% block extra_scripts %}
+{% load static %}
+<script src="{% static 'js/content.js' %}"></script>
 {% endblock %}

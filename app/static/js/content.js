@@ -1,9 +1,11 @@
 
-document.addEventListener('DOMContentLoaded', function() {
-  const contentId = '{{ content.unique_id|default:content.id }}';
-  const contentType = '{{ content.content_type|default:"movie" }}';
+document.addEventListener('DOMContentLoaded', function () {
+  const favoriteBtn = document.getElementById('favorite-btn');
+  // Llegir dades dels atributs data del botó
+  const contentId = favoriteBtn ? favoriteBtn.dataset.contentId : '';
+  const contentType = favoriteBtn ? favoriteBtn.dataset.contentType : 'movie';
   const userStatus = '{{ user_status|default:"not_seen" }}';
-  
+
   // Inicializar estado del dropdown
   const statusLabels = {
     'not_seen': 'Not Seen',
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     'watching': 'play_circle',
     'completed': 'check_circle'
   };
-  
+
   // Actualizar texto del status según el estado del usuario
   const statusText = document.getElementById('status-text');
   const statusIcon = document.getElementById('status-icon');
@@ -23,43 +25,43 @@ document.addEventListener('DOMContentLoaded', function() {
     statusText.textContent = statusLabels[userStatus] || 'Not Seen';
     statusIcon.textContent = statusIcons[userStatus] || 'visibility_off';
   }
-  
+
   // Toggle dropdown de Status
   const statusBtn = document.getElementById('status-btn');
   const statusDropdown = document.getElementById('status-dropdown');
-  
+
   if (statusBtn && statusDropdown) {
-    statusBtn.addEventListener('click', function(e) {
+    statusBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       statusDropdown.classList.toggle('hidden');
     });
-    
+
     // Cerrar dropdown al hacer click fuera
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
       if (!statusBtn.contains(e.target) && !statusDropdown.contains(e.target)) {
         statusDropdown.classList.add('hidden');
       }
     });
-    
+
     // Manejar cambio de estado
     const statusOptions = statusDropdown.querySelectorAll('button[data-status]');
     statusOptions.forEach(btn => {
-      btn.addEventListener('click', function(e) {
+      btn.addEventListener('click', function (e) {
         const status = this.dataset.status;
         updateStatus(status);
         statusDropdown.classList.add('hidden');
       });
     });
   }
-  
+
   // Toggle Favorites
   const favoriteBtn = document.getElementById('favorite-btn');
   if (favoriteBtn) {
-    favoriteBtn.addEventListener('click', function() {
+    favoriteBtn.addEventListener('click', function () {
       toggleFavorite();
     });
   }
-  
+
   // Función para actualizar estado
   function updateStatus(status) {
     fetch(`/content/${contentType}/${contentId}/update-status/`, {
@@ -70,19 +72,19 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       body: JSON.stringify({ status: status })
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        const statusText = document.getElementById('status-text');
-        const statusIcon = document.getElementById('status-icon');
-        
-        statusText.textContent = statusLabels[status] || 'Not Seen';
-        statusIcon.textContent = statusIcons[status] || 'visibility_off';
-      }
-    })
-    .catch(error => console.error('Error:', error));
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const statusText = document.getElementById('status-text');
+          const statusIcon = document.getElementById('status-icon');
+
+          statusText.textContent = statusLabels[status] || 'Not Seen';
+          statusIcon.textContent = statusIcons[status] || 'visibility_off';
+        }
+      })
+      .catch(error => console.error('Error:', error));
   }
-  
+
   // Función para toggle favorite
   function toggleFavorite() {
     fetch(`/content/${contentType}/${contentId}/toggle-favorite/`, {
@@ -92,24 +94,28 @@ document.addEventListener('DOMContentLoaded', function() {
         'X-CSRFToken': getCookie('csrftoken')
       }
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        const favoriteIcon = document.getElementById('favorite-icon');
-        const favoriteText = document.getElementById('favorite-text');
-        
-        if (data.is_favorite) {
-          favoriteIcon.textContent = 'favorite';
-          favoriteText.textContent = 'Remove from Favorites';
-        } else {
-          favoriteIcon.textContent = 'favorite_border';
-          favoriteText.textContent = 'Add to Favorites';
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const favoriteIcon = document.getElementById('favorite-icon');
+          const favoriteText = document.getElementById('favorite-text');
+
+          if (data.is_favorite) {
+            // Estado: Favorito (Corazón relleno)
+            favoriteIcon.textContent = 'favorite';
+            favoriteIcon.style.fontVariationSettings = "'FILL' 1";
+            favoriteText.textContent = 'Eliminar de favoritos';
+          } else {
+            // Estado: No favorito (Corazón vacío)
+            favoriteIcon.textContent = 'favorite_border';
+            favoriteIcon.style.fontVariationSettings = "'FILL' 0";
+            favoriteText.textContent = 'Añadir a favoritos';
+          }
         }
-      }
-    })
-    .catch(error => console.error('Error:', error));
+      })
+      .catch(error => console.error('Error:', error));
   }
-  
+
   // Función para obtener CSRF token
   function getCookie(name) {
     let cookieValue = null;
