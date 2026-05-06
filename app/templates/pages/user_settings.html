@@ -6,130 +6,523 @@
 
 <main class="flex-1 flex flex-col">
 
+    <!-- HERO -->
     <section class="relative w-full h-[320px] overflow-hidden rounded-3xl group">
-        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+
+        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
              style='background-image:url("https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=2069&auto=format&fit=crop")'>
         </div>
-        
-        <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20"></div>
 
-        <button class="absolute top-4 right-4 p-2 bg-black/40 backdrop-blur-md rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity">
+        <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/40"></div>
+
+        <!-- COVER EDIT -->
+        <button class="absolute top-5 right-5 p-3 bg-black/40 backdrop-blur-md rounded-2xl text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-105">
             <span class="material-symbols-outlined">edit_square</span>
         </button>
 
         <div class="relative max-w-7xl mx-auto px-6 h-full flex items-end pb-12">
+
             <div class="flex flex-col md:flex-row items-end gap-6">
-                
+
+                <!-- PROFILE -->
                 <div class="relative group/avatar">
-                    <img class="w-32 h-32 md:w-40 md:h-40 rounded-2xl border-4 border-background-dark object-cover shadow-2xl"
-                         src="https://randomuser.me/api/portraits/men/32.jpg" id="profile-preview"/>
-                    
-                    <label for="avatar-upload" class="absolute inset-0 flex items-center justify-center bg-black/60 rounded-2xl opacity-0 group-hover/avatar:opacity-100 transition-opacity cursor-pointer">
-                        <span class="material-symbols-outlined text-white text-3xl">add_a_photo</span>
-                        <input type="file" id="avatar-upload" class="hidden" accept="image/*" onchange="previewImage(event)">
+
+                    <img
+                        class="w-32 h-32 md:w-40 md:h-40 rounded-3xl border-4 border-background-dark object-cover shadow-2xl"
+                        src="https://randomuser.me/api/portraits/men/32.jpg"
+                        id="profile-preview"/>
+
+                    <label
+                        for="avatar-upload"
+                        class="absolute inset-0 flex items-center justify-center bg-black/60 rounded-3xl opacity-0 group-hover/avatar:opacity-100 transition-all cursor-pointer">
+
+                        <span class="material-symbols-outlined text-white text-3xl">
+                            add_a_photo
+                        </span>
+
+                        <input
+                            type="file"
+                            id="avatar-upload"
+                            class="hidden"
+                            accept="image/*"
+                            onchange="previewImage(event)">
                     </label>
+
                 </div>
 
+                <!-- INFO -->
                 <div class="mb-2">
-                    <h2 class="text-4xl font-bold text-white">Alex Morgan</h2>
-                    <p class="text-on-surface-variant flex items-center gap-2">
+
+                    <h2 class="text-4xl font-bold text-white">
+                        Alex Morgan
+                    </h2>
+
+                    <p class="text-on-surface-variant flex items-center gap-2 mt-2">
                         <span class="size-2 bg-green-500 rounded-full"></span>
                         Premium Subscriber
                     </p>
+
                 </div>
+
             </div>
+
         </div>
+
     </section>
 
+    <!-- CONTENT -->
     <section class="max-w-7xl mx-auto px-6 py-12 w-full">
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
+
+            <!-- LEFT -->
             <div class="lg:col-span-8 space-y-6">
-                <div class="bg-surface-container-low p-8 rounded-2xl border border-outline-variant">
-                    <h3 class="text-xl font-bold mb-6">Account Settings</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div class="space-y-2">
-                            <label class="text-sm text-on-surface-variant">First Name</label>
-                            <input class="w-full p-4 rounded-xl bg-background-dark border border-outline-variant focus:ring-2 focus:ring-primary/50 outline-none transition-all" value="Alex"/>
+
+                <!-- ACCOUNT SETTINGS -->
+                <div class="bg-surface-container-low rounded-3xl border border-outline-variant overflow-hidden shadow-xl">
+
+                    <!-- HEADER -->
+                    <div class="flex items-center justify-between px-8 py-6 border-b border-outline-variant">
+
+                        <div>
+                            <h3 class="text-2xl font-bold">
+                                Account Settings
+                            </h3>
+
+                            <p class="text-sm text-on-surface-variant mt-1">
+                                Manage your profile information and preferences.
+                            </p>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-sm text-on-surface-variant">Last Name</label>
-                            <input class="w-full p-4 rounded-xl bg-background-dark border border-outline-variant focus:ring-2 focus:ring-primary/50 outline-none transition-all" value="Morgan"/>
-                        </div>
+
+                        <!-- EDIT BTN -->
+                        <button
+                            id="edit-profile-btn"
+                            onclick="toggleEditProfile()"
+                            class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-background-dark border border-outline-variant hover:border-primary hover:bg-surface-container-high transition-all group">
+
+                            <span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">
+                                edit
+                            </span>
+
+                            <span class="font-medium">
+                                Edit Profile
+                            </span>
+
+                        </button>
+
                     </div>
 
-                    <div class="space-y-2 mb-6">
-                        <label class="text-sm text-on-surface-variant">Bio</label>
-                        <textarea rows="4" class="w-full p-4 rounded-xl bg-background-dark border border-outline-variant focus:ring-2 focus:ring-primary/50 outline-none transition-all">Streaming Experience Designer and movie marathon enthusiast.</textarea>
+                    <!-- BODY -->
+                    <div class="p-8">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+                            <!-- FIRST NAME -->
+                            <div class="space-y-2">
+
+                                <label class="text-sm text-on-surface-variant">
+                                    First Name
+                                </label>
+
+                                <input
+                                    disabled
+                                    class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
+                                    value="Alex"/>
+
+                            </div>
+
+                            <!-- LAST NAME -->
+                            <div class="space-y-2">
+
+                                <label class="text-sm text-on-surface-variant">
+                                    Last Name
+                                </label>
+
+                                <input
+                                    disabled
+                                    class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
+                                    value="Morgan"/>
+
+                            </div>
+
+                            <!-- USERNAME -->
+                            <div class="space-y-2">
+
+                                <label class="text-sm text-on-surface-variant">
+                                    Username
+                                </label>
+
+                                <input
+                                    disabled
+                                    class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
+                                    value="@alexmorgan"/>
+
+                            </div>
+
+                            <!-- COUNTRY -->
+                            <div class="space-y-2">
+
+                                <label class="text-sm text-on-surface-variant">
+                                    Country
+                                </label>
+
+                                <select
+                                    disabled
+                                    class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed appearance-none transition-all">
+
+                                    <option>Spain</option>
+                                    <option>France</option>
+                                    <option>Germany</option>
+                                    <option>Italy</option>
+
+                                </select>
+
+                            </div>
+
+                            <!-- GENRES -->
+                            <div class="space-y-2 md:col-span-2">
+
+                                <label class="text-sm text-on-surface-variant">
+                                    Genre Preferences
+                                </label>
+
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+
+                                    <button class="genre-btn p-3 rounded-2xl bg-primary text-white font-medium opacity-80 cursor-not-allowed">
+                                        Male
+                                    </button>
+
+                                    <button class="genre-btn p-3 rounded-2xl bg-background-dark border border-outline-variant text-on-surface-variant opacity-70 cursor-not-allowed">
+                                        Female
+                                    </button>
+
+                                    <button class="genre-btn p-3 rounded-2xl bg-background-dark border border-outline-variant text-on-surface-variant opacity-70 cursor-not-allowed">
+                                        Non-binary
+                                    </button>
+
+                                    <button class="genre-btn p-3 rounded-2xl bg-background-dark border border-outline-variant text-on-surface-variant opacity-70 cursor-not-allowed">
+                                        Other
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- BIO -->
+                        <div class="space-y-2 mb-8">
+
+                            <label class="text-sm text-on-surface-variant">
+                                Bio
+                            </label>
+
+                            <textarea
+                                rows="4"
+                                disabled
+                                class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed resize-none transition-all">Streaming Experience Designer and movie marathon enthusiast.</textarea>
+
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div
+                            id="profile-actions"
+                            class="hidden opacity-0 translate-y-3 flex justify-end gap-4 transition-all duration-300">
+
+                            <button
+                                onclick="cancelProfileEdit()"
+                                class="px-6 py-3 text-on-surface-variant hover:text-white transition-colors">
+
+                                Cancel
+
+                            </button>
+
+                            <button
+                                class="px-8 py-3 bg-primary hover:bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all">
+
+                                Save Changes
+
+                            </button>
+
+                        </div>
+
                     </div>
 
-                    <div class="flex justify-end gap-4">
-                        <button class="px-6 py-3 text-on-surface-variant hover:text-white transition-colors">Discard</button>
-                        <button class="px-8 py-3 bg-primary hover:bg-blue-600 text-white rounded-xl font-bold shadow-lg shadow-primary/20 transition-all">Save Changes</button>
-                    </div>
                 </div>
+
+                <!-- SECURITY -->
+                <div class="bg-surface-container-low rounded-3xl border border-outline-variant overflow-hidden shadow-xl">
+
+                    <!-- HEADER -->
+                    <div class="flex items-center justify-between px-8 py-6 border-b border-outline-variant">
+
+                        <div>
+
+                            <h3 class="text-2xl font-bold">
+                                Security
+                            </h3>
+
+                            <p class="text-sm text-on-surface-variant mt-1">
+                                Manage your password and security preferences.
+                            </p>
+
+                        </div>
+
+                        <!-- SECURITY BTN -->
+                        <button
+                            onclick="toggleSecurityEdit()"
+                            class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-background-dark border border-outline-variant hover:border-primary hover:bg-surface-container-high transition-all group">
+
+                            <span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">
+                                lock_reset
+                            </span>
+
+                            <span class="font-medium">
+                                Change Password
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="p-8 space-y-5">
+
+                        <!-- CURRENT -->
+                        <div class="space-y-2">
+
+                            <label class="text-sm text-on-surface-variant">
+                                Current Password
+                            </label>
+
+                            <input
+                                disabled
+                                type="password"
+                                placeholder="••••••••••••"
+                                class="security-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"/>
+
+                        </div>
+
+                        <!-- NEW -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <div class="space-y-2">
+
+                                <label class="text-sm text-on-surface-variant">
+                                    New Password
+                                </label>
+
+                                <input
+                                    disabled
+                                    type="password"
+                                    placeholder="Enter new password"
+                                    class="security-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"/>
+
+                            </div>
+
+                            <div class="space-y-2">
+
+                                <label class="text-sm text-on-surface-variant">
+                                    Confirm Password
+                                </label>
+
+                                <input
+                                    disabled
+                                    type="password"
+                                    placeholder="Confirm new password"
+                                    class="security-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"/>
+
+                            </div>
+
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div
+                            id="security-actions"
+                            class="hidden opacity-0 translate-y-3 flex items-center justify-between pt-2 transition-all duration-300">
+
+                            <a
+                                href="#"
+                                class="text-sm text-primary hover:underline">
+
+                                Forgot your password?
+
+                            </a>
+
+                            <button
+                                class="px-8 py-3 bg-white text-black rounded-2xl font-bold hover:bg-slate-200 transition-all">
+
+                                Update Password
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
+            <!-- RIGHT -->
             <div class="lg:col-span-4 space-y-6">
-                
-                <div class="bg-surface-container-low p-6 rounded-2xl border border-outline-variant">
-                    <h4 class="font-bold mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">analytics</span>
+
+                <!-- ACTIVITY -->
+                <div class="bg-surface-container-low p-6 rounded-3xl border border-outline-variant shadow-xl">
+
+                    <h4 class="font-bold mb-5 flex items-center gap-2">
+
+                        <span class="material-symbols-outlined text-primary">
+                            analytics
+                        </span>
+
                         Your Activity
+
                     </h4>
+
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="p-4 bg-background-dark rounded-xl border border-outline-variant text-center">
-                            <p class="text-2xl font-bold">142</p>
-                            <p class="text-[10px] uppercase tracking-wider text-on-surface-variant">Watched</p>
+
+                        <div class="p-5 bg-background-dark rounded-2xl border border-outline-variant text-center">
+
+                            <p class="text-3xl font-bold">
+                                142
+                            </p>
+
+                            <p class="text-[10px] uppercase tracking-wider text-on-surface-variant mt-1">
+                                Watched
+                            </p>
+
                         </div>
-                        <div class="p-4 bg-background-dark rounded-xl border border-outline-variant text-center">
-                            <p class="text-2xl font-bold">24</p>
-                            <p class="text-[10px] uppercase tracking-wider text-on-surface-variant">Reviews</p>
+
+                        <div class="p-5 bg-background-dark rounded-2xl border border-outline-variant text-center">
+
+                            <p class="text-3xl font-bold">
+                                24
+                            </p>
+
+                            <p class="text-[10px] uppercase tracking-wider text-on-surface-variant mt-1">
+                                Reviews
+                            </p>
+
                         </div>
+
                     </div>
+
                 </div>
 
-                <div class="bg-gradient-to-br from-primary/20 to-purple-500/20 p-6 rounded-2xl border border-primary/20">
-                    <h4 class="font-bold mb-2">StreamSync Pro</h4>
-                    <p class="text-sm text-on-surface-variant mb-4">Your plan expires in 12 days. Renew now to keep 4K access.</p>
-                    <button class="w-full py-3 bg-white text-black rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors">
-                        Manage Plan
-                    </button>
-                </div>
-
-                <div class="space-y-2">
-                    <a href="#" class="flex items-center justify-between p-4 bg-surface-container-low border border-outline-variant rounded-xl hover:bg-surface-container-high transition-colors group">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-on-surface-variant">history</span>
-                            <span class="text-sm">Watch History</span>
-                        </div>
-                        <span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
-                    </a>
-                    <a href="#" class="flex items-center justify-between p-4 bg-surface-container-low border border-outline-variant rounded-xl hover:bg-surface-container-high transition-colors group">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-on-surface-variant">devices</span>
-                            <span class="text-sm">Connected Devices</span>
-                        </div>
-                        <span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
-                    </a>
-                </div>
+                
 
             </div>
+
         </div>
+
     </section>
 
 </main>
 
 <script>
+
 function previewImage(event) {
+
     const reader = new FileReader();
-    reader.onload = function(){
+
+    reader.onload = function() {
+
         const output = document.getElementById('profile-preview');
         output.src = reader.result;
     };
+
     reader.readAsDataURL(event.target.files[0]);
 }
+
+function toggleEditProfile() {
+
+    const fields = document.querySelectorAll('.profile-field');
+    const actions = document.getElementById('profile-actions');
+
+    fields.forEach(field => {
+
+        field.disabled = !field.disabled;
+
+        if (!field.disabled) {
+
+            field.classList.remove(
+                'cursor-not-allowed',
+                'bg-background-dark/60',
+                'opacity-70'
+            );
+
+            field.classList.add(
+                'focus:ring-2',
+                'focus:ring-primary/50',
+                'bg-background-dark'
+            );
+
+        } else {
+
+            field.classList.add(
+                'cursor-not-allowed',
+                'bg-background-dark/60'
+            );
+        }
+    });
+
+    actions.classList.toggle('hidden');
+
+    setTimeout(() => {
+
+        actions.classList.toggle('opacity-0');
+        actions.classList.toggle('translate-y-3');
+
+    }, 10);
+}
+
+function toggleSecurityEdit() {
+
+    const fields = document.querySelectorAll('.security-field');
+    const actions = document.getElementById('security-actions');
+
+    fields.forEach(field => {
+
+        field.disabled = !field.disabled;
+
+        if (!field.disabled) {
+
+            field.classList.remove(
+                'cursor-not-allowed',
+                'bg-background-dark/60'
+            );
+
+            field.classList.add(
+                'focus:ring-2',
+                'focus:ring-primary/50',
+                'bg-background-dark'
+            );
+
+        } else {
+
+            field.classList.add(
+                'cursor-not-allowed',
+                'bg-background-dark/60'
+            );
+        }
+    });
+
+    actions.classList.toggle('hidden');
+
+    setTimeout(() => {
+
+        actions.classList.toggle('opacity-0');
+        actions.classList.toggle('translate-y-3');
+
+    }, 10);
+}
+
+function cancelProfileEdit() {
+
+    location.reload();
+}
+
 </script>
 
 {% endblock %}
