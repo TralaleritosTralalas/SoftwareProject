@@ -3,21 +3,21 @@ from django.contrib.auth.models import AbstractUser, Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
+from datetime import date
 
 class User(AbstractUser):
-
     GENDER_CHOICES = [
         ('male', 'Male'),
         ('female', 'Female'),
         ('non-binary', 'Non-binary'),
         ('other', 'Other'),
     ]
-        
+
     role = models.ForeignKey(
-        Group, 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True, 
+        Group,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         verbose_name="Rol de Usuario",
         related_name='user_roles'
     )
@@ -30,7 +30,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username} - {self.role.name if self.role else 'Sin Rol'}"
-    
+
     def save(self, *args, **kwargs):
         if self.role and self.role.name.lower() == 'technical':
             new_staff_status = True
@@ -40,8 +40,18 @@ class User(AbstractUser):
         if self.is_staff != new_staff_status and not self.is_superuser:
             self.is_staff = new_staff_status
             self.save(update_fields=['is_staff'])
-            
+
         super().save(*args, **kwargs)
+
+    @property
+    def age(self):
+        if not self.birth_date:
+            return None
+
+        today = date.today()
+
+        return today.year - self.birth_date.year - (
+                    (today.month, today.day) < (self.birth_date.month, self.birth_date.day))
 
 
 class Country(models.Model):
