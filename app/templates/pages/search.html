@@ -23,9 +23,14 @@
 
 <!-- ── Filter Bar ────────────────────────────────────────────────────────── -->
 <form method="GET" action="{% url 'app:search' %}" class="flex flex-wrap gap-4 mb-8 p-4 bg-surface-dark rounded-xl border border-white/5">
-    {% include "components/platforms_filter.html" with query=query selected_platform=selected_platform %}
+    
+    <input type="hidden" name="q" value="{{ query }}">
+    
+    {% include "components/platforms_filter.html" with selected_platform=selected_platform selected_genre=selected_genre %}
 
-    <button type="submit" class="bg-primary px-4 py-2 rounded-lg text-sm font-bold text-white">Apply Filters</button>
+    <button type="submit" class="bg-primary px-4 py-2 rounded-lg text-sm font-bold text-white hover:bg-blue-600 transition-colors">
+        Aplicar Filtros
+    </button>
 </form>
 
 <!-- ── Results Grid ─────────────────────────────────────────────────────── -->

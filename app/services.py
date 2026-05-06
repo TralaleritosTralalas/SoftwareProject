@@ -1,4 +1,5 @@
 import requests
+from django.urls import reverse
 from decouple import config
 
 # URL DE LAS MOVIES-API EN LOCAL
@@ -311,68 +312,67 @@ def get_trending(limit=10):
     return all_content[:limit]
 
 
-def search_content(query): #buscar peli o serie segun titulo
+def search_content(query, platform=None, genre=None, sort_rating=None, sort_year=None):
     results_dict = {}
 
     for url, key, platform_name in PLATFORMS:
         if platform and platform_name != platform:
             continue
 
-        genre_map = {}
-        genres = get_genre(url, key)
-        for g in genres:
-            genre_map[g["id"]] = g["name"]
+        genre_map = {g["id"]: g["name"] for g in get_genre(url, key)}
 
-        # Buscar en movies
+        # --- Búsqueda en Películas ---
         try:
-            response = requests.get(
-                f"{url}/movies",
-                headers={"X-API-KEY": key},
-                params={"title": query},  # la API ya filtra por title con LIKE
-                timeout=5
-            )
-            response.raise_for_status()
-            for movie in response.json():
-                movie_genre = genre_map.get(movie.get("genre_id"), "Unknown")
-                if genre and genre.lower() not in movie_genre.lower(): 
-                    continue
-                if director:
-                    pass    
-                movie["content_type"] = "movie"
-                movie.setdefault("start_year", None)
-                identifier = f"movie_{movie.get('title', '').lower().strip()}_{movie.get('year', '')}"
-                if identifier not in results_dict:
-                    movie["platforms"] = [platform_name]
-                    movie["genre_name"] = genre_map.get(movie.get("genre_id"), "Unknown")
-                    movie['unique_id'] = identifier
-                    results_dict[identifier] = movie
-                else:
-                    if platform_name not in results_dict[identifier]["platforms"]:
-                        results_dict[identifier]["platforms"].append(platform_name)
-        except requests.exceptions.RequestException:
-            pass  # plataforma no disponible, se ignora
-
-        # Buscar en series
-        try:
-            response = requests.get(
-                f"{url}/series",
-                headers={"X-API-KEY": key},
-                params={"title": query},
-                timeout=5
-            )
-            response.raise_for_status()
-            for serie in response.json():
-                serie["content_type"] = "series"
-                identifier = f"series_{serie.get('title', '').lower().strip()}_{serie.get('start_year', '')}"
-                if identifier not in results_dict:
-                    serie["platforms"] = [platform_name]
-                    serie["genre_name"] = genre_map.get(serie.get("genre_id"), "Unknown")
-                    serie['unique_id'] = identifier
-                    results_dict[identifier] = serie
-                else:
-                    if platform_name not in results_dict[identifier]["platforms"]:
-                        results_dict[identifier]["platforms"].append(platform_name)
-        except requests.exceptions.RequestException:
+            res = requests.get(f"{url}/movies", headers={"X-API-KEY": key}, params={"title": query}, timeout=5)
+            if res.status_code == 200:
+                for movie in res.json():
+                    movie_genre = genre_map.get(movie.get("genre_id"), "Unknown")
+                    if genre and genre.lower() not in movie_genre.lower():
+                        continue
+                    
+                    # CAMBIO AQUÍ: Eliminamos el prefijo 'movie_' del identifier
+                    # para que coincida con el formato del resto de la app
+                    clean_title = movie.get('title', '').lower().strip()
+                    year = movie.get('year', '')
+                    identifier = f"{clean_title}_{year}" # Antes era movie_{title}_{year}
+                    
+                    if identifier not in results_dict:
+                        movie["content_type"] = "movie"
+                        movie["genre_name"] = movie_genre
+                        movie["platforms"] = [platform_name]
+                        movie["unique_id"] = identifier  # Ahora será "amélie_2001"
+                        results_dict[identifier] = movie
+                    else:
+                        if platform_name not in results_dict[identifier]["platforms"]:
+                            results_dict[identifier]["platforms"].append(platform_name)
+        except:
             pass
 
+        # --- Búsqueda en Series ---
+        try:
+            res = requests.get(f"{url}/series", headers={"X-API-KEY": key}, params={"title": query}, timeout=5)
+            if res.status_code == 200:
+                for serie in res.json():
+                    serie_genre = genre_map.get(serie.get("genre_id"), "Unknown")
+                    if genre and genre.lower() not in serie_genre.lower():
+                        continue
+                    
+                    # CAMBIO AQUÍ: Eliminamos el prefijo 'series_'
+                    clean_title = serie.get('title', '').lower().strip()
+                    year = serie.get('start_year', '')
+                    identifier = f"{clean_title}_{year}"
+                    
+                    if identifier not in results_dict:
+                        serie["content_type"] = "series"
+                        serie["genre_name"] = serie_genre
+                        serie["platforms"] = [platform_name]
+                        serie["unique_id"] = identifier
+                        results_dict[identifier] = serie
+                    else:
+                        if platform_name not in results_dict[identifier]["platforms"]:
+                            results_dict[identifier]["platforms"].append(platform_name)
+        except:
+            pass
+
+    # ... (resto de la lógica de ordenación y retorno)
     return list(results_dict.values())

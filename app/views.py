@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
-from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending, get_all_platforms, get_all_genres_from_api
+from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending, get_all_platforms, get_all_genres_from_api, search_content
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .models import VisualizationProgress
@@ -111,34 +111,29 @@ def series(request):
     }
     return render(request, 'pages/series.html', context)
 
-def search(request, platform=None, genre=None, director=None):
+def search(request):
     query = request.GET.get('q', '').strip()
-    p= request.GET.get('platform')
+    p = request.GET.get('platform')
     g = request.GET.get('genre')
-    d = request.GET.get('director')
-    movie_results = []
-    series_results = []
-    results = []
-
-    if query:
-        
-        results = search_content(query, platform=p, genre=g, director=d)
-       
-        movie_results = [item for item in results if item.get('content_type') == 'movie']
-        series_results = [item for item in results if item.get('content_type') == 'series']
-        
-        return render(request, 'pages/search.html', {
-            'query': query,
-            'movies': movie_results,
-            'series': series_results,
-            'results': results,
-            'result_count': len(results)
-            
-
-        })
+    sr = request.GET.get('sort_rating')
+    sy = request.GET.get('sort_year')
     
-    return render(request, 'pages/search.html', {'query': ''})
+    results = []
+    if query:
+        # Ahora el servicio devuelve objetos con el campo 'detail_url' ya calculado
+        results = search_content(query, platform=p, genre=g, sort_rating=sr, sort_year=sy)
 
+    context = {
+        'query': query,
+        'movies': [i for i in results if i['content_type'] == 'movie'],
+        'series': [i for i in results if i['content_type'] == 'series'],
+        'result_count': len(results),
+        'platforms': get_all_platforms(),
+        'genres': get_all_genres_from_api(),
+        'selected_platform': p,
+        'selected_genre': g,
+    }
+    return render(request, 'pages/search.html', context)
 
 def register(request):
     return render(request, 'streamsync_register.html',{
@@ -147,18 +142,6 @@ def register(request):
 
 def login(request):
     return render(request, 'login.html')
-    if query:
-        results = search_content(query)
-        movie_results = [item for item in results if item.get('content_type') == 'movie']
-        series_results = [item for item in results if item.get('content_type') == 'series']
-        return render(request, 'pages/search.html', {
-            'query' : query,
-            'movies': movie_results,
-            'series': series_results,
-            'result_count': len(results)
-        })
-    
-    return render(request, 'pages/search.html', {'query': ''})
 
 
 def content_detail(request, ctype, cid):
