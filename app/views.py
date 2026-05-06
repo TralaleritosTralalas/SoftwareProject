@@ -2,8 +2,6 @@ from django.contrib.auth.forms import UserCreationForm
 from .services import get_all_movies, get_all_series, search_content
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.db.models import Sum, Count
 from django.core.exceptions import PermissionDenied
@@ -32,20 +30,28 @@ def movies(request):
 
 def search(request):
     query = request.GET.get('q', '').strip()
+    movie_results = []
+    series_results = []
+    results = []
+
     if query:
+
         results = search_content(query)
+
         movie_results = [item for item in results if item.get('content_type') == 'movie']
         series_results = [item for item in results if item.get('content_type') == 'series']
+
         return render(request, 'pages/search.html', {
             'query': query,
             'movies': movie_results,
             'series': series_results,
             'result_count': len(results)
         })
+
     return render(request, 'pages/search.html', {'query': ''})
 
 def register(request):
-    return render(request, 'streamsync_register.html', {
+    return render(request, 'streamsync_register.html',{
         'form': UserCreationForm
     })
 
@@ -58,7 +64,7 @@ def content_detail(request, ctype, cid):
     else:
         data = get_all_movies()
     content = next((item for item in data if str(item.get('id')) == str(cid)), None)
-    
+
     if content:
         return render(request, 'pages/content_view.html', {'content': content})
     else:
@@ -91,7 +97,7 @@ def tech_add_user_view(request):
         email = request.POST.get('email')
         pass1 = request.POST.get('password')
         pass2 = request.POST.get('password_again')
-        
+
         role_id = request.POST.get('role')
         profile_img = request.FILES.get('profile_image')
 
@@ -101,24 +107,24 @@ def tech_add_user_view(request):
 
         try:
             user = User.objects.create_user(
-                username=username, 
-                email=email, 
+                username=username,
+                email=email,
                 password=pass1,
                 first_name=first_name,
                 last_name=last_name
             )
-            
+
             if role_id:
                 user.role = Group.objects.get(id=role_id)
-            
+
             if profile_img:
                 user.profile_picture = profile_img
-            
+
             user.save()
-            
+
             messages.success(request, f"User {username} created successfully!")
             return redirect('tech_admin:index')
-            
+
         except Exception as e:
             messages.error(request, f"Error: {e}")
             return redirect(request.path)
@@ -147,13 +153,13 @@ def tech_edit_user_view(request, user_id):
 
         role_id = request.POST.get('role')
         profile_img = request.FILES.get('profile_image')
-        
+
         if role_id:
             user_to_edit.role = Group.objects.get(id=role_id)
-        
+
         if profile_img:
             user_to_edit.profile_picture = profile_img
-        
+
         try:
             user_to_edit.save()
             messages.success(request, f"Usuario {user_to_edit.username} actualizado correctamente.")
@@ -173,16 +179,16 @@ def tech_delete_user(request, user_id):
 
     user_to_delete = get_object_or_404(User, id=user_id)
     username = user_to_delete.username
-    
+
     if request.method == 'POST':
         user_to_delete.delete()
         messages.success(request, f"Usuario {username} eliminado permanentemente.")
-    
+
     return redirect('tech_admin:index')
 
 @login_required
 def direction_dashboard(request):
-    if request.user.groups.filter(name='director').exists() and not request.user.is_superuser:
+    if not (request.user.groups.filter(name='director').exists() or request.user.is_superuser):
         raise PermissionDenied
 
     stats_qs, content_qs = DashboardService.apply_filters(request.GET)
