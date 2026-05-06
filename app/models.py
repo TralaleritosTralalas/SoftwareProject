@@ -1,23 +1,26 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db.models.signals import m2m_changed
 from datetime import date
 
-
 class User(AbstractUser):
-    ROLE_CHOICES = [
-        ('normal', 'Normal'),
-        ('manager', 'Platform Manager'),
-        ('tech', 'Technical Manager'),
-        ('director', 'Direction'),
-        ('admin', 'Administrator'),
-    ]
     GENDER_CHOICES = [
         ('male', 'Male'),
         ('female', 'Female'),
         ('non-binary', 'Non-binary'),
         ('other', 'Other'),
     ]
-    role = models.CharField(max_length=30, choices=ROLE_CHOICES, default='normal')
+
+    role = models.ForeignKey(
+        Group,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Rol de Usuario",
+        related_name='user_roles'
+    )
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES, null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True, verbose_name="Fecha de Nacimiento")
     country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="País")
@@ -25,6 +28,21 @@ class User(AbstractUser):
     bio = models.TextField(null=True, blank=True, verbose_name="Biografía")
     onboarding_completed = models.BooleanField(default=False)
     favorite_genres = models.ManyToManyField('Genre', blank=True, related_name='users')
+
+    def __str__(self):
+        return f"{self.username} - {self.role.name if self.role else 'Sin Rol'}"
+
+    def save(self, *args, **kwargs):
+        if self.role and self.role.name.lower() == 'technical':
+            new_staff_status = True
+        else:
+            new_staff_status = False
+
+        if self.is_staff != new_staff_status and not self.is_superuser:
+            self.is_staff = new_staff_status
+            self.save(update_fields=['is_staff'])
+
+        super().save(*args, **kwargs)
 
     @property
     def age(self):
@@ -35,9 +53,6 @@ class User(AbstractUser):
 
         return today.year - self.birth_date.year - (
                     (today.month, today.day) < (self.birth_date.month, self.birth_date.day))
-
-    def __str__(self):
-        return f"{self.username} ({self.get_role_display()})"
 
 
 class Country(models.Model):
@@ -170,3 +185,16 @@ class Favorite(models.Model):
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.ForeignKey(AudiovisualContent, on_delete=models.CASCADE)
+
+# SIGNALS
+@receiver(post_save, sender=User)
+def sync_user_groups(sender, instance, **kwargs):
+    if instance.role:
+        instance.groups.clear()
+        instance.groups.add(instance.role)
+
+@receiver(m2m_changed, sender=User.groups.through)
+def sync_profile_role_from_group(sender, instance, action, pk_set, **kwargs):
+    if action == "post_add" or action == "post_remove":
+        first_group = instance.groups.first()
+        User.objects.filter(id=instance.id).update(role=first_group)

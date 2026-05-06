@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views, admin
-
 app_name = 'app'
 
 urlpatterns = [
@@ -19,4 +18,6 @@ urlpatterns = [
     path('onboarding/', views.onboarding, name='onboarding'),
     path('onboarding/genres/', views.onboarding_genres, name='onboarding_genres'),
     path('onboarding-complete/', views.onboarding_complete, name='onboarding_complete'),
+    path('dashboard/direction/', views.direction_dashboard, name='direction_dashboard'),
+    path('content/<str:ctype>/<int:cid>/', views.content_detail, name='content_detail'),
 ]

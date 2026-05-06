@@ -16,6 +16,9 @@ RUN uv sync --frozen --no-dev
 # Copy project
 COPY . .
 
+# Execution permits to entrypoint.sh
+RUN chmod +x entrypoint.sh
+
 # Expose port
 EXPOSE 8000
 

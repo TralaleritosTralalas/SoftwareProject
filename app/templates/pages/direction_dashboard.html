@@ -1,0 +1,291 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div class="flex min-h-screen font-display text-slate-100 bg-transparent">
+
+        <aside class="w-80 flex flex-col justify-center sticky top-0 h-screen bg-transparent px-6">
+            <form id="filter-form" method="GET"
+                  class="bg-[#0f172a] border border-slate-800/60 p-8 rounded-[3.5rem] flex flex-col gap-5 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+
+                <div class="text-center mb-2">
+                    <h2 class="text-xl font-bold text-white flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-primary">tune</span> Filters
+                    </h2>
+                    <p class="text-[9px] text-slate-500 uppercase tracking-widest mt-1">Control Panel</p>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex flex-col mb-1">
+                        <label class="text-[11px] font-black text-primary uppercase tracking-tight">Time
+                            Analytics</label>
+                        <span class="text-[9px] text-slate-500 leading-none">Predefined reporting periods</span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 bg-slate-950/60 p-1 rounded-2xl border border-slate-800/50">
+                        <button type="button" onclick="setQuickRange('24h')"
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '24h' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">
+                            24H
+                        </button>
+                        <button type="button" onclick="setQuickRange('7d')"
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '7d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">
+                            7D
+                        </button>
+                        <button type="button" onclick="setQuickRange('30d')"
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '30d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">
+                            30D
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 bg-slate-950/60 p-1.5 rounded-2xl border border-slate-800/50">
+                        <button type="button" onclick="setQuickRange('90d')"
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '90d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">
+                            QUARTER
+                        </button>
+                        <button type="button" onclick="setQuickRange('ytd')"
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == 'ytd' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">
+                            YTD
+                        </button>
+                    </div>
+
+                    <input type="hidden" name="range" id="range-input" value="{{ filters.range }}">
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex flex-col mb-1">
+                        <label class="text-[11px] font-black text-primary uppercase tracking-tight">Custom Range</label>
+                        <span class="text-[9px] text-slate-500 leading-none">Specific calendar selection</span>
+                    </div>
+                    <div class="relative">
+                        <input type="date" name="start_date" id="start_date" value="{{ filters.start_date }}"
+                               onfocus="clearQuickRange()"
+                               class="w-full bg-slate-950/40 border border-slate-800 text-[11px] text-slate-300 rounded-2xl px-4 py-3 outline-none focus:border-primary appearance-none">
+                        <span class="text-[8px] text-slate-500 absolute -top-2 left-4 bg-[#0f172a] px-2 border border-slate-800 rounded-full font-bold uppercase">From</span>
+                    </div>
+                    <div class="relative">
+                        <input type="date" name="end_date" id="end_date" value="{{ filters.end_date }}"
+                               onfocus="clearQuickRange()"
+                               class="w-full bg-slate-950/40 border border-slate-800 text-[11px] text-slate-300 rounded-2xl px-4 py-3 outline-none focus:border-primary appearance-none">
+                        <span class="text-[8px] text-slate-500 absolute -top-2 left-4 bg-[#0f172a] px-2 border border-slate-800 rounded-full font-bold uppercase">To</span>
+                    </div>
+                    <button type="submit"
+                            class="w-full py-3 bg-slate-800 hover:bg-primary text-white rounded-2xl text-[10px] font-black transition-all flex items-center justify-center gap-2">
+                        UPDATE SEARCH <span class="material-symbols-outlined text-base">calendar_month</span>
+                    </button>
+                </div>
+
+                <div class="space-y-3 pt-3 border-t border-slate-800/50">
+                    <div class="flex flex-col mb-1">
+                        <label class="text-[11px] font-black text-primary uppercase tracking-tight">Segmentation</label>
+                        <span class="text-[9px] text-slate-500 leading-none">Categorical filters</span>
+                    </div>
+
+                    <select name="platform" onchange="this.form.submit()"
+                            class="w-full bg-slate-950/40 border border-slate-800 text-xs font-bold text-slate-300 rounded-2xl px-4 py-3 appearance-none focus:border-primary outline-none cursor-pointer">
+                        <option value="all">All Platforms</option>
+                        {% for p in platforms %}
+                            <option value="{{ p.id }}"
+                                    {% if filters.platform|stringformat:"s" == p.id|stringformat:"s" %}selected{% endif %}>{{ p.platform_name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="country" onchange="this.form.submit()"
+                            class="w-full bg-slate-950/40 border border-slate-800 text-xs font-bold text-slate-300 rounded-2xl px-4 py-3 appearance-none focus:border-primary outline-none cursor-pointer">
+                        <option value="all">All Countries</option>
+                        {% for c in countries %}
+                            <option value="{{ c.id }}"
+                                    {% if filters.country|stringformat:"s" == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="genre" onchange="this.form.submit()"
+                            class="w-full bg-slate-950/40 border border-slate-800 text-xs font-bold text-slate-300 rounded-2xl px-4 py-3 appearance-none focus:border-primary outline-none cursor-pointer">
+                        <option value="all">All Genres</option>
+                        {% for g in genres %}
+                            <option value="{{ g.id }}"
+                                    {% if filters.genre|stringformat:"s" == g.id|stringformat:"s" %}selected{% endif %}>{{ g.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </aside>
+
+        <main class="flex-1 p-8 lg:p-12 max-w-[1300px]">
+            <header class="mb-10 flex justify-between items-start">
+                <div>
+                    <h1 class="text-4xl font-black text-white tracking-tight mb-2">Direction Dashboard</h1>
+                    <p class="text-slate-400 text-sm">Strategic performance analysis and interaction growth trends.</p>
+                </div>
+
+                <a href="?{{ request.GET.urlencode }}&export=csv"
+                   class="flex items-center gap-3 bg-[#2563eb] hover:bg-[#1d4ed8] text-white px-8 py-3.5 rounded-2xl font-black text-[11px] tracking-widest transition-all active:scale-95 uppercase">
+                    <span class="material-symbols-outlined text-lg">download</span> EXPORT CSV
+                </a>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-slate-900/40 border border-slate-800/50 p-8 rounded-3xl flex flex-col justify-between">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Total
+                            Engagement</p>
+                        <h3 class="text-3xl font-black text-white flex items-baseline gap-2 flex-wrap">
+                            {{ total_clicks }}
+                            <span class="text-[11px] font-black text-slate-600 uppercase tracking-widest">Clicks</span>
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/40 border border-slate-800/50 p-8 rounded-3xl flex flex-col justify-between">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Interest
+                            Score</p>
+                        <h3 class="text-3xl font-black text-white flex items-baseline gap-2 flex-wrap">
+                            {{ total_favorites }}
+                            <span class="text-[11px] font-black text-slate-600 uppercase tracking-widest">Favs</span>
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/40 border border-slate-800/50 p-8 rounded-3xl flex flex-col justify-between min-w-0">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Dominant
+                            Entity</p>
+                        <h3 class="text-2xl font-black text-primary uppercase leading-tight"
+                            title="{{ top_platform.platform__platform_name|default:'--' }}">
+                            <div class="truncate">
+                                {{ top_platform.platform__platform_name|default:"--" }}
+                            </div>
+                            <span class="text-[10px] font-black text-slate-600 uppercase tracking-widest block mt-1">Platform</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <section class="bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8 mb-8 shadow-2xl">
+                <h3 class="font-bold text-white mb-8 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">analytics</span> Periodic Engagement Trend
+                </h3>
+
+                <div class="h-80 w-full relative flex items-center justify-center">
+                    {% if chart_labels == '["No Data"]' or chart_labels == '[]' %}
+                        <div class="text-center">
+                            <span class="material-symbols-outlined text-slate-700 text-6xl mb-2">Query_stats</span>
+                            <p class="text-slate-500 font-bold tracking-widest text-[10px] uppercase">No analytics data
+                                 found for this period</p>
+                        </div>
+                    {% else %}
+                        <canvas id="trendChart"></canvas>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="bg-slate-900/30 border border-slate-800/50 rounded-3xl overflow-hidden shadow-2xl">
+                <div class="p-8 pb-4 font-bold text-white flex items-center gap-2 border-b border-slate-800/50">
+                    <span class="material-symbols-outlined text-primary">military_tech</span> Top Content Performance
+                </div>
+                <div class="px-8 pb-8 pt-4 overflow-x-auto">
+                    <table class="w-full text-left table-auto">
+                        <thead class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        <tr>
+                            <th class="py-4 px-4">Title & Director</th>
+                            <th class="py-4 px-4 text-center">Genre</th>
+                            <th class="py-4 px-4 text-center">Country</th>
+                            <th class="py-4 px-4 text-right">Interactions (Favs)</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/40">
+                        {% for content in trending_content %}
+                            <tr class="group hover:bg-slate-800/30 transition-all border-none">
+                                <td class="py-5 px-4">
+                                    <div class="font-bold text-slate-200 group-hover:text-primary transition-colors">{{ content.title }}</div>
+                                    <div class="text-[10px] text-slate-600 font-bold uppercase tracking-widest">
+                                        Dir. {{ content.director.name }}</div>
+                                </td>
+                                <td class="py-5 px-4 text-center">
+                                    <span class="bg-slate-800 px-3 py-1 rounded-full text-[9px] text-slate-300 border border-slate-700 font-black uppercase">{{ content.genre.name }}</span>
+                                </td>
+                                <td class="py-5 px-4 text-center text-[11px] text-slate-400 font-medium uppercase">{{ content.country.name }}</td>
+                                <td class="py-5 px-4 text-right font-mono font-black text-primary text-lg">{{ content.fav_count }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="py-16 text-center">
+                                    <p class="text-slate-600 italic text-sm">No content matches the selected
+                                        filters.</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Form handling
+        function setQuickRange(v) {
+            document.getElementById('range-input').value = v;
+            document.getElementById('start_date').value = '';
+            document.getElementById('end_date').value = '';
+            document.getElementById('filter-form').submit();
+        }
+
+        function clearQuickRange() {
+            document.getElementById('range-input').value = '';
+        }
+
+        // Chart.js initialization
+        document.addEventListener('DOMContentLoaded', function () {
+            const chartElement = document.getElementById('trendChart');
+
+            if (chartElement) {
+                const ctx = chartElement.getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: JSON.parse('{{ chart_labels|safe }}'),
+                        datasets: [{
+                            data: JSON.parse('{{ chart_values|safe }}'),
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3b82f6',
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {display: false},
+                            tooltip: {
+                                backgroundColor: '#0f172a',
+                                titleFont: {size: 10},
+                                bodyFont: {size: 12, weight: 'bold'},
+                                padding: 12,
+                                borderColor: '#1e293b',
+                                borderWidth: 1
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {color: 'rgba(255,255,255,0.05)'},
+                                ticks: {color: '#64748b', font: {size: 10}}
+                            },
+                            x: {
+                                grid: {display: false},
+                                ticks: {color: '#64748b', font: {size: 10}}
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}
