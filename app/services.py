@@ -109,6 +109,7 @@ def get_all_movies(platform_filter= None):  # obtener todas las peliculas de tod
                 # Otros datos
                 movie["age_rating"] = movie.get("age_rating", {}).get("title", "NR")
                 movie["duration_minutes"] = movie.get("duration_minutes", "—")
+                movie['unique_id'] = identifier 
 
                 movie["platforms"] = [platform_name]
                 movie.pop("platform_name", None)
@@ -146,6 +147,7 @@ def get_all_series(platform_filter = None):  # obtener todas las peliculas de to
                 serie["director_nationality"] = director_data.get("country", {}).get("name", "Unknown")
                 serie["genre_description"] = serie.get("genre", {}).get("description", "")
                 serie["age_rating"] = serie.get("age_rating", {}).get("title", "NR")
+                serie['unique_id'] = identifier
 
                 serie["platforms"] = [platform_name]
                 serie.pop("platform_name", None)
@@ -157,7 +159,146 @@ def get_all_series(platform_filter = None):  # obtener todas las peliculas de to
     return list(series_dict.values())
 
 
-def search_content(query, platform=None, genre=None, director=None): #buscar peli o serie segun titulo
+def get_movies_by_genres(genre_names, min_total=5):
+    all_movies = get_all_movies()
+    
+    result = {}
+    used_movies = []
+    
+    # Primero: intentar 3+ de cada género
+    for genre_name in genre_names:
+        genre_movies = [
+            m for m in all_movies 
+            if m.get('genre_name', '').lower() == genre_name.lower()
+        ]
+        genre_movies.sort(key=lambda x: x.get('rating', 0), reverse=True)
+        
+        # Tomar hasta 3 películas de este género
+        selected = []
+        for m in genre_movies:
+            if m not in used_movies:
+                selected.append(m)
+                used_movies.append(m)
+                if len(selected) >= 3:
+                    break
+        
+        result[genre_name] = selected
+    
+    # Contar total actual
+    current_total = sum(len(movies) for movies in result.values())
+    
+    # Si no llega a min_total, completar con otros géneros
+    if current_total < min_total:
+        remaining = min_total - current_total
+        # Recolectar movies adicionales de otros géneros
+        extra_movies = []
+        for m in all_movies:
+            if m not in used_movies and len(extra_movies) < remaining:
+                extra_movies.append(m)
+        
+        # Distribuir los extras entre los géneros
+        genre_list = list(result.keys())
+        idx = 0
+        for m in extra_movies:
+            while len(result[genre_list[idx]]) >= 5 and idx < len(genre_list) - 1:
+                idx += 1
+            if idx < len(genre_list):
+                m_copy = m.copy()
+                m_copy['unique_id'] = f"{m.get('title', '').lower().replace(' ', '-')}_{m.get('year', '')}"
+                result[genre_list[idx]].append(m_copy)
+    
+    # Asignar unique_id a cada movie que no lo tenga
+    for genre_name, movies in result.items():
+        for m in movies:
+            if 'unique_id' not in m:
+                m['unique_id'] = f"{m.get('title', '').lower().replace(' ', '-')}_{m.get('year', '')}"
+    
+    return result
+
+
+def get_series_by_genres(genre_names, min_total=5):
+    all_series = get_all_series()
+    
+    result = {}
+    used_series = []
+    
+    # Primero: intentar 3+ de cada género
+    for genre_name in genre_names:
+        genre_series = [
+            s for s in all_series 
+            if s.get('genre_name', '').lower() == genre_name.lower()
+        ]
+        genre_series.sort(key=lambda x: x.get('rating', 0), reverse=True)
+        
+        # Tomar hasta 3 series de este género
+        selected = []
+        for s in genre_series:
+            if s not in used_series:
+                selected.append(s)
+                used_series.append(s)
+                if len(selected) >= 3:
+                    break
+        
+        result[genre_name] = selected
+    
+    # Contar total actual
+    current_total = sum(len(series_list) for series_list in result.values())
+    
+    # Si no llega a min_total, completar con otros géneros
+    if current_total < min_total:
+        remaining = min_total - current_total
+        # Recolectar series adicionales de otros géneros
+        extra_series = []
+        for s in all_series:
+            if s not in used_series and len(extra_series) < remaining:
+                extra_series.append(s)
+        
+        # Distribuir los extras entre los géneros
+        genre_list = list(result.keys())
+        idx = 0
+        for s in extra_series:
+            while len(result[genre_list[idx]]) >= 5 and idx < len(genre_list) - 1:
+                idx += 1
+            if idx < len(genre_list):
+                s_copy = s.copy()
+                s_copy['unique_id'] = f"{s.get('title', '').lower().replace(' ', '-')}_{s.get('start_year', '')}"
+                result[genre_list[idx]].append(s_copy)
+    
+    # Asignar unique_id a cada serie que no lo tenga
+    for genre_name, series_list in result.items():
+        for s in series_list:
+            if 'unique_id' not in s:
+                s['unique_id'] = f"{s.get('title', '').lower().replace(' ', '-')}_{s.get('start_year', '')}"
+    
+    return result
+
+
+def get_trending(limit=10):
+    """
+    Obtiene las películas y series mejor valoradas (Top Rated).
+    Combina movies y series, ordena por rating descendente.
+    """
+    all_movies = get_all_movies()
+    all_series = get_all_series()
+    
+    all_content = []
+    
+    for m in all_movies:
+        m['content_type'] = 'movie'
+        m['unique_id'] = f"{m.get('title', '').lower().replace(' ', '-')}_{m.get('year', '')}"
+        all_content.append(m)
+    
+    for s in all_series:
+        s['content_type'] = 'series'
+        s['unique_id'] = f"{s.get('title', '').lower().replace(' ', '-')}_{s.get('start_year', '')}"
+        all_content.append(s)
+    
+    all_content.sort(key=lambda x: x.get('rating', 0), reverse=True)
+    
+    return all_content[:limit]
+
+
+def search_content(query): #buscar peli o serie segun titulo
     results_dict = {}
 
     for url, key, platform_name in PLATFORMS:
@@ -190,6 +331,7 @@ def search_content(query, platform=None, genre=None, director=None): #buscar pel
                 if identifier not in results_dict:
                     movie["platforms"] = [platform_name]
                     movie["genre_name"] = genre_map.get(movie.get("genre_id"), "Unknown")
+                    movie['unique_id'] = identifier
                     results_dict[identifier] = movie
                 else:
                     if platform_name not in results_dict[identifier]["platforms"]:
@@ -212,6 +354,7 @@ def search_content(query, platform=None, genre=None, director=None): #buscar pel
                 if identifier not in results_dict:
                     serie["platforms"] = [platform_name]
                     serie["genre_name"] = genre_map.get(serie.get("genre_id"), "Unknown")
+                    serie['unique_id'] = identifier
                     results_dict[identifier] = serie
                 else:
                     if platform_name not in results_dict[identifier]["platforms"]:
