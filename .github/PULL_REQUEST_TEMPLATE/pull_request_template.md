@@ -1,18 +1,15 @@
-## Description
+## Description of what has been done
 
 <-- Add a description of the user story !-->
 
-## Summary of Changes
+## Changes
 
-<-- Add a brief description of the changes !-->
-
-## Checklist
-
-- [x] Builds successfully
-- [x] Documentation updated 
+<-- Add a list of the changes done !-->
 
 ## Notes
 
-<-- Add additional notes !-->
+<-- Add additional notes if you consider !-->
 
 ## Screenshots
+
+<-- Add screenshots of the work done !-->
