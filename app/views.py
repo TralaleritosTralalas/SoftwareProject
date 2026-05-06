@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending, get_all_platforms, get_all_genres_from_api, search_content
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.contrib.auth import update_session_auth_hash
 from .models import VisualizationProgress
 from django.utils.text import slugify
 from app.models import Country
@@ -21,6 +22,43 @@ def user_settings(request):
 
     if request.method == 'POST':
         user = request.user
+
+        if request.POST.get('action') == 'change_password':
+            current_password = request.POST.get('current_password', '').strip()
+            new_password = request.POST.get('new_password', '').strip()
+            confirm_password = request.POST.get('confirm_password', '').strip()
+
+            password_errors = []
+
+            if not current_password:
+                password_errors.append('Current password is required')
+            elif not user.check_password(current_password):
+                password_errors.append('Current password is incorrect')
+
+            if not new_password:
+                password_errors.append('New password is required')
+            elif len(new_password) < 8:
+                password_errors.append('New password must be at least 8 characters')
+
+            if new_password != confirm_password:
+                password_errors.append('New password and confirm password do not match')
+
+            if password_errors:
+                return render(request, 'pages/user_settings.html', {
+                    'user': user,
+                    'countries': countries,
+                    'password_errors': password_errors
+                })
+
+            user.set_password(new_password)
+            user.save()
+            update_session_auth_hash(request, user)
+
+            return render(request, 'pages/user_settings.html', {
+                'user': user,
+                'countries': countries,
+                'password_success': 'Password changed successfully!'
+            })
 
         username = request.POST.get('username', '').strip()
         first_name = request.POST.get('first_name', '').strip()
