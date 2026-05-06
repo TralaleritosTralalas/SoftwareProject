@@ -29,7 +29,7 @@
 
                     <img
                         class="w-32 h-32 md:w-40 md:h-40 rounded-3xl border-4 border-background-dark object-cover shadow-2xl"
-                        src="https://randomuser.me/api/portraits/men/32.jpg"
+                        src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}https://randomuser.me/api/portraits/men/32.jpg{% endif %}"
                         id="profile-preview"/>
 
                     <label
@@ -54,12 +54,12 @@
                 <div class="mb-2">
 
                     <h2 class="text-4xl font-bold text-white">
-                        Alex Morgan
+                        {{ user.first_name }} {{ user.last_name }}
                     </h2>
 
                     <p class="text-on-surface-variant flex items-center gap-2 mt-2">
                         <span class="size-2 bg-green-500 rounded-full"></span>
-                        Premium Subscriber
+                        @{{ user.username }}
                     </p>
 
                 </div>
@@ -126,8 +126,10 @@
 
                                 <input
                                     disabled
+                                    type="text"
+                                    name="first_name"
                                     class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
-                                    value="Alex"/>
+                                    value="{{ user.first_name|default:'' }}"/>
 
                             </div>
 
@@ -140,8 +142,10 @@
 
                                 <input
                                     disabled
+                                    type="text"
+                                    name="last_name"
                                     class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
-                                    value="Morgan"/>
+                                    value="{{ user.last_name|default:'' }}"/>
 
                             </div>
 
@@ -154,8 +158,10 @@
 
                                 <input
                                     disabled
+                                    type="text"
+                                    name="username"
                                     class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
-                                    value="@alexmorgan"/>
+                                    value="@{{ user.username }}"/>
 
                             </div>
 
@@ -168,12 +174,14 @@
 
                                 <select
                                     disabled
+                                    name="country"
                                     class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed appearance-none transition-all">
 
-                                    <option>Spain</option>
-                                    <option>France</option>
-                                    <option>Germany</option>
-                                    <option>Italy</option>
+                                    {% for country in countries %}
+                                    <option value="{{ country.id }}" {% if user.country_id == country.id %}selected{% endif %}>
+                                        {{ country.name }}
+                                    </option>
+                                    {% endfor %}
 
                                 </select>
 
@@ -188,19 +196,19 @@
 
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 
-                                    <button class="genre-btn p-3 rounded-2xl bg-primary text-white font-medium opacity-80 cursor-not-allowed">
+                                    <button type="button" class="genre-btn p-3 rounded-2xl {% if user.gender == 'male' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed">
                                         Male
                                     </button>
 
-                                    <button class="genre-btn p-3 rounded-2xl bg-background-dark border border-outline-variant text-on-surface-variant opacity-70 cursor-not-allowed">
+                                    <button type="button" class="genre-btn p-3 rounded-2xl {% if user.gender == 'female' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed">
                                         Female
                                     </button>
 
-                                    <button class="genre-btn p-3 rounded-2xl bg-background-dark border border-outline-variant text-on-surface-variant opacity-70 cursor-not-allowed">
+                                    <button type="button" class="genre-btn p-3 rounded-2xl {% if user.gender == 'non-binary' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed">
                                         Non-binary
                                     </button>
 
-                                    <button class="genre-btn p-3 rounded-2xl bg-background-dark border border-outline-variant text-on-surface-variant opacity-70 cursor-not-allowed">
+                                    <button type="button" class="genre-btn p-3 rounded-2xl {% if user.gender == 'other' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed">
                                         Other
                                     </button>
 
@@ -220,7 +228,9 @@
                             <textarea
                                 rows="4"
                                 disabled
-                                class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed resize-none transition-all">Streaming Experience Designer and movie marathon enthusiast.</textarea>
+                                name="bio"
+                                class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed resize-none transition-all"
+                            >{{ user.bio|default:'' }}</textarea>
 
                         </div>
 

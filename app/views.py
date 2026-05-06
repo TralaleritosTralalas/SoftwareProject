@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .models import VisualizationProgress
 from django.utils.text import slugify
+from app.models import Country
 
 # Create your views here.
 
@@ -12,7 +13,12 @@ def home(request):
     return render(request, 'pages/home.html')
 
 def user_settings(request):
-    return render(request, 'pages/user_settings.html')
+    user = request.user
+    countries = Country.objects.all()
+    return render(request, 'pages/user_settings.html', {
+        'user': user,
+        'countries': countries
+    })
 
 def catalog(request):
     # Obtener parámetros de filtro
