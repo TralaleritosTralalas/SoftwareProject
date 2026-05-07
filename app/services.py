@@ -411,17 +411,17 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
                     if genre and genre.lower() not in movie_genre.lower():
                         continue
                     
-                    # CAMBIO AQUÍ: Eliminamos el prefijo 'movie_' del identifier
-                    # para que coincida con el formato del resto de la app
                     clean_title = movie.get('title', '').lower().strip()
                     year = movie.get('year', '')
-                    identifier = f"{clean_title}_{year}" # Antes era movie_{title}_{year}
+                    identifier = f"{clean_title}_{year}" 
                     
                     if identifier not in results_dict:
+                        tmdb_data = get_tmdb_data(movie.get('title'), movie.get('year'), "movie")
+                        movie["poster_url"] = tmdb_data.get("poster_url") if tmdb_data else None
                         movie["content_type"] = "movie"
                         movie["genre_name"] = movie_genre
                         movie["platforms"] = [platform_name]
-                        movie["unique_id"] = identifier  # Ahora será "amélie_2001"
+                        movie["unique_id"] = identifier  
                         results_dict[identifier] = movie
                     else:
                         if platform_name not in results_dict[identifier]["platforms"]:
@@ -444,6 +444,8 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
                     identifier = f"{clean_title}_{year}"
                     
                     if identifier not in results_dict:
+                        tmdb_data = get_tmdb_data(movie.get('title'), movie.get('year'), "movie")
+                        movie["poster_url"] = tmdb_data.get("poster_url") if tmdb_data else None
                         serie["content_type"] = "series"
                         serie["genre_name"] = serie_genre
                         serie["platforms"] = [platform_name]
