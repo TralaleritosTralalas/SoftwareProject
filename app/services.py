@@ -2,6 +2,65 @@ import requests
 from django.urls import reverse
 from decouple import config
 
+TMDB_API_KEY = config("TMDB_API_KEY")
+TMDB_ACCESS_TOKEN = config("TMDB_ACCESS_TOKEN")
+TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w300"
+
+_tmdb_cache = {}
+
+def get_tmdb_data(title, year=None, content_type="movie"):
+    """
+    Busca en TMDB por título y año y retorna un dict con:
+    - poster_url: URL del póster
+    - overview: synopsis/descripción
+    """
+    cache_key = f"{title}_{year}_{content_type}"
+    if cache_key in _tmdb_cache:
+        return _tmdb_cache[cache_key]
+
+    try:
+        search_url = "https://api.themoviedb.org/3/search/movie" if content_type == "movie" else "https://api.themoviedb.org/3/search/tv"
+        params = {
+            "api_key": TMDB_API_KEY,
+            "query": title,
+        }
+        if year:
+            if content_type == "movie":
+                params["year"] = year
+            else:
+                params["first_air_date_year"] = year
+
+        headers = {"Authorization": f"Bearer {TMDB_ACCESS_TOKEN}"}
+        response = requests.get(search_url, params=params, headers=headers, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("results"):
+                result = data["results"][0]
+                poster_path = result.get("poster_path")
+                poster_url = f"{TMDB_IMAGE_BASE_URL}{poster_path}" if poster_path else None
+                overview = result.get("overview")
+
+                tmdb_data = {
+                    "poster_url": poster_url,
+                    "overview": overview
+                }
+                _tmdb_cache[cache_key] = tmdb_data
+                return tmdb_data
+    except Exception:
+        pass
+
+    _tmdb_cache[cache_key] = None
+    return None
+
+
+def get_tmdb_poster(title, year=None, content_type="movie"):
+    """
+    Busca el póster de TMDB por título y año.
+    Retorna la URL del póster o None si no se encuentra.
+    """
+    tmdb_data = get_tmdb_data(title, year, content_type)
+    return tmdb_data.get("poster_url") if tmdb_data else None
+
 # URL DE LAS MOVIES-API EN LOCAL
 url_local_1 = "http://127.0.0.1:8080" #API LOCAL 1
 url_local_2 = "http://127.0.0.1:8081" #API LOCAL 2
@@ -115,15 +174,26 @@ def get_all_movies(platform_filter= None):  # obtener todas las peliculas de tod
             identifier = f"{movie.get('title')}_{movie.get('year')}".lower().strip() #identificador del contenido
             
             if identifier not in movies_dict:
+                # TMDB data
+                tmdb_data = get_tmdb_data(movie.get('title'), movie.get('year'), "movie")
+                movie["poster_url"] = tmdb_data.get("poster_url") if tmdb_data else None
+
                 # Género y descripción
                 movie["genre_name"] = genre_map.get(movie.get('genre_id'), "Unknown")
                 dir_info = director_map.get(movie.get("director_id"), {})
                 movie["director"] = dir_info.get("name", "Unknown Director")
-                movie["director_nationality"] = dir_info.get("nationality", "Unknown")             
+                movie["director_nationality"] = dir_info.get("nationality", "Unknown")
+
+                # Completar synopsis desde TMDB si no existe
+                local_synopsis = movie.get("synopsis", "")
+                if not local_synopsis or local_synopsis.lower() in ["", "no synopsis available."]:
+                    if tmdb_data and tmdb_data.get("overview"):
+                        movie["synopsis"] = tmdb_data["overview"]
+
                 # Otros datos
                 movie["age_rating"] = movie.get("age_rating", {}).get("title", "NR")
                 movie["duration_minutes"] = movie.get("duration_minutes", "—")
-                movie['unique_id'] = identifier 
+                movie['unique_id'] = identifier
 
                 movie["platforms"] = [platform_name]
                 movie.pop("platform_name", None)
@@ -153,11 +223,22 @@ def get_all_series(platform_filter = None):  # obtener todas las peliculas de to
             identifier = f"{serie.get('title')}_{serie.get('start_year', '')}".lower().strip()
 
             if identifier not in series_dict:
+                # TMDB data
+                tmdb_data = get_tmdb_data(serie.get('title'), serie.get('start_year'), "tv")
+                serie["poster_url"] = tmdb_data.get("poster_url") if tmdb_data else None
+
                 serie["genre_name"] = serie.get("genre", {}).get("name") or genre_map.get(serie.get("genre_id"), "Unknown")
                 serie["synopsis"] = serie.get("synopsis", "No synopsis available.")
-                
+
+                # Completar synopsis desde TMDB si no existe
+                local_synopsis = serie.get("synopsis", "")
+                if not local_synopsis or local_synopsis.lower() in ["", "no synopsis available."]:
+                    if tmdb_data and tmdb_data.get("overview"):
+                        serie["synopsis"] = tmdb_data["overview"]
+
                 director_data = serie.get("director", {})
                 serie["director"] = director_data.get("name", "Unknown Director")
+
                 serie["director_nationality"] = director_data.get("country", {}).get("name", "Unknown")
                 serie["genre_description"] = serie.get("genre", {}).get("description", "")
                 serie["age_rating"] = serie.get("age_rating", {}).get("title", "NR")
