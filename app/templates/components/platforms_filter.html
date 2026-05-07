@@ -1,0 +1,33 @@
+<div class="flex flex-wrap items-center gap-3 p-2 bg-surface-dark rounded-xl border border-white/5">
+    <span class="text-xs font-bold text-slate-500 uppercase ml-2">Filtrar por:</span>
+    
+    <select name="platform" onchange="this.form.submit()"
+        class="bg-background-dark border-slate-700 rounded-lg text-sm text-white focus:ring-primary">
+        <option value="">All Platforms</option>
+        {% for p in platforms %}
+        <option value="{{ p }}" {% if selected_platform == p %}selected{% endif %}>{{ p }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="genre" onchange="this.form.submit()"
+        class="bg-background-dark border-slate-700 rounded-lg text-sm text-white focus:ring-primary">
+        <option value="">All Genres</option>
+        {% for g in genres %}
+        <option value="{{ g }}" {% if selected_genre == g %}selected{% endif %}>{{ g }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="sort_rating" onchange="this.form.submit()"
+        class="bg-background-dark border-slate-700 rounded-lg text-sm text-white focus:ring-primary">
+        <option value="">Rating (Sin orden)</option>
+        <option value="desc" {% if sort_rating == "desc" %}selected{% endif %}>Rating: Highest to Lowest</option>
+        <option value="asc" {% if sort_rating == "asc" %}selected{% endif %}>Rating: Lowest to Highest</option>
+    </select>
+
+    <select name="sort_year" onchange="this.form.submit()"
+        class="bg-background-dark border-slate-700 rounded-lg text-sm text-white focus:ring-primary">
+        <option value="">Año (Sin orden)</option>
+        <option value="desc" {% if sort_year == "desc" %}selected{% endif %}>Year: Most recent</option>
+        <option value="asc" {% if sort_year == "asc" %}selected{% endif %}>Year: Oldest</option>
+    </select>
+</div>

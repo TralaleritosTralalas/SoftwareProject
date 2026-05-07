@@ -107,10 +107,39 @@
           </p>
         </div>
         <button
-          class="glass-panel border border-white/5 hover:bg-white/10 text-white px-10 py-4 rounded-xl font-bold flex items-center gap-3 active:scale-95 transition-all">
-          <span class="material-symbols-outlined">add</span>
+          class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 active:scale-95">
+          <span class="material-symbols-outlined text-blue-400">bookmark_add</span>
           Add to Watchlist
         </button>
+
+        <button id="favorite-btn"
+          class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-pink-500/30 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 hover:text-pink-300 active:scale-95">
+          <span class="material-symbols-outlined text-pink-400" id="favorite-icon">{% if is_favorite %}favorite{% else %}favorite_border{% endif %}</span>
+          <span id="favorite-text">{% if is_favorite %}Remove from Favorites{% else %}Add to Favorites{% endif %}</span>
+        </button>
+
+        <div class="relative">
+          <button id="status-btn" type="button"
+            class="w-full flex items-center justify-between gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-purple-500/30 bg-purple-500/10 text-purple-400 active:scale-95">
+            <span class="material-symbols-outlined text-purple-400" id="status-icon">visibility_off</span>
+            <span id="status-text">Not Seen</span>
+            <span class="material-symbols-outlined text-purple-400">expand_more</span>
+          </button>
+          <div id="status-dropdown" class="hidden absolute top-full left-0 w-full mt-2 bg-surface-dark border border-white/10 rounded-xl overflow-hidden z-50 shadow-xl">
+            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="not_seen">
+              <span class="material-symbols-outlined text-sm">visibility_off</span>
+              Not Seen
+            </button>
+            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="watching">
+              <span class="material-symbols-outlined text-sm">play_circle</span>
+              Watching
+            </button>
+            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="completed">
+              <span class="material-symbols-outlined text-sm">check_circle</span>
+              Completed
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -135,7 +164,9 @@
     <span class="text-[10px]">Settings</span>
   </button>
 </nav>
-</body>
+{% endblock %}
 
-</html>
+{% block extra_scripts %} 
+    {% load static %}
+    <script src="{% static 'js/content.js' %}"></script>
 {% endblock %}
