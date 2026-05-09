@@ -319,72 +319,116 @@ def content_detail(request, ctype, cid):
         return render(request, 'pages/home.html', status=404)
 
 
+def _safe_int(value, default=0):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return default
+
+
+def _safe_float(value, default=0.0):
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return default
+
+
+def _resolve_content(ctype, cid):
+    """Find API content dict and local ORM object from ctype/cid."""
+    from datetime import date
+
+    data = get_all_series() if ctype == 'series' else get_all_movies()
+    api_content = next(
+        (item for item in data 
+         if slugify(f"{item.get('title', '').replace(' ', '-')}_{item.get('year', item.get('start_year', ''))}") 
+            == slugify(str(cid))),
+        None
+    )
+    if not api_content:
+        return None, None
+
+    model_class = Series if ctype == 'series' else Movie
+    local_content = model_class.objects.filter(title=api_content['title']).first()
+    if local_content:
+        return api_content, local_content
+
+    defaults = {
+        'synopsis': api_content.get('synopsis', ''),
+        'rating': _safe_float(api_content.get('rating')),
+    }
+    if ctype == 'series':
+        defaults.update({
+            'start_year': _safe_int(api_content.get('start_year')),
+            'end_year': _safe_int(api_content.get('end_year')) if api_content.get('end_year') else None,
+            'total_seasons': _safe_int(api_content.get('total_seasons')),
+        })
+    else:
+        release_date_str = api_content.get('release_date')
+        try:
+            release_date = date.fromisoformat(release_date_str) if release_date_str else date.today()
+        except (ValueError, TypeError):
+            release_date = date.today()
+        defaults.update({
+            'year': _safe_int(api_content.get('year')),
+            'release_date': release_date,
+            'duration_minutes': _safe_int(api_content.get('duration_minutes')),
+        })
+
+    local_content = model_class.objects.create(title=api_content['title'], **defaults)
+    return api_content, local_content
+
+
 @login_required
 def update_status(request, ctype, cid):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             status = data.get('status', 'not_seen')
-            
-            # Buscar contenido local
-            if ctype == 'series':
-                local_content = Series.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
+
+            _, local_content = _resolve_content(ctype, cid)
+            if not local_content:
+                return JsonResponse({'success': False, 'error': 'Content not found'})
+
+            vp, created = VisualizationProgress.objects.get_or_create(
+                user=request.user,
+                content=local_content
+            )
+
+            if status == 'completed':
+                vp.completed = True
+            elif status == 'watching':
+                vp.completed = False
+                vp.last_minute = vp.last_minute if vp.last_minute > 0 else 1
             else:
-                local_content = Movie.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
-            
-            if local_content:
-                vp, created = VisualizationProgress.objects.get_or_create(
-                    user=request.user,
-                    content=local_content
-                )
-                
-                if status == 'completed':
-                    vp.completed = True
-                elif status == 'watching':
-                    vp.completed = False
-                    vp.last_minute = vp.last_minute if vp.last_minute > 0 else 1
-                else:  # not_seen
-                    vp.completed = False
-                    vp.last_minute = 0
-                
-                vp.save()
-                
-                return JsonResponse({'success': True, 'status': status})
-            
-            return JsonResponse({'success': False, 'error': 'Content not found'})
+                vp.completed = False
+                vp.last_minute = 0
+
+            vp.save()
+            return JsonResponse({'success': True, 'status': status})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
-    
+
     return JsonResponse({'success': False, 'error': 'Invalid method'})
 
 
 @login_required
 def toggle_favorite(request, ctype, cid):
-    from django.http import JsonResponse
-    from .models import Favorite, Movie, Series
-    import json
-    
     if request.method == 'POST':
         try:
-            # Buscar contenido local
-            if ctype == 'series':
-                local_content = Series.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
+            _, local_content = _resolve_content(ctype, cid)
+            if not local_content:
+                return JsonResponse({'success': False, 'error': 'Content not found'})
+
+            favorite = Favorite.objects.filter(user=request.user, content=local_content).first()
+            if favorite:
+                favorite.delete()
+                return JsonResponse({'success': True, 'is_favorite': False})
             else:
-                local_content = Movie.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
-            
-            if local_content:
-                favorite = Favorite.objects.filter(user=request.user, content=local_content).first()
-                if favorite:
-                    favorite.delete()
-                    return JsonResponse({'success': True, 'is_favorite': False})
-                else:
-                    Favorite.objects.create(user=request.user, content=local_content)
-                    return JsonResponse({'success': True, 'is_favorite': True})
-            
-            return JsonResponse({'success': False, 'error': 'Content not found'})
+                Favorite.objects.create(user=request.user, content=local_content)
+                return JsonResponse({'success': True, 'is_favorite': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
-    
+
     return JsonResponse({'success': False, 'error': 'Invalid method'})
     
 def personal_library(request):
