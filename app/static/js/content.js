@@ -1,8 +1,8 @@
 
 document.addEventListener('DOMContentLoaded', function() {
-  const contentId = '{{ content.unique_id|default:content.id }}';
-  const contentType = '{{ content.content_type|default:"movie" }}';
-  const userStatus = '{{ user_status|default:"not_seen" }}';
+  const contentId = window.CONTENT_DATA.id;
+  const contentType = window.CONTENT_DATA.type;
+  const userStatus = window.CONTENT_DATA.userStatus;
   
   // Inicializar estado del dropdown
   const statusLabels = {

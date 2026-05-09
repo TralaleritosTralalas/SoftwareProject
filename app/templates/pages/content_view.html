@@ -168,5 +168,12 @@
 
 {% block extra_scripts %} 
     {% load static %}
+    <script>
+      window.CONTENT_DATA = {
+        id: '{{ content.unique_id|default:content.id }}',
+        type: '{{ content.content_type|default:"movie" }}',
+        userStatus: '{{ user_status|default:"not_seen" }}'
+      };
+    </script>
     <script src="{% static 'js/content.js' %}"></script>
 {% endblock %}
