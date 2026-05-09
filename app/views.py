@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending, get_all_platforms, get_all_genres_from_api, search_content
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, logout
 from .models import VisualizationProgress
 from django.utils.text import slugify
 from app.models import Country
@@ -124,6 +124,15 @@ def user_settings(request):
         'user': request.user,
         'countries': countries
     })
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()
+
+    return redirect('app:home')
 
 def catalog(request):
     # Obtener parámetros de filtro

@@ -18,6 +18,7 @@ urlpatterns = [
     path('onboarding/', views.onboarding, name='onboarding'),
     path('onboarding/genres/', views.onboarding_genres, name='onboarding_genres'),
     path('onboarding-complete/', views.onboarding_complete, name='onboarding_complete'),
+    path('delete_account/', views.delete_account, name='delete_account'),
     path('dashboard/direction/', views.direction_dashboard, name='direction_dashboard'),
     path('content/<str:ctype>/<int:cid>/', views.content_detail, name='content_detail'),
 ]
