@@ -396,7 +396,27 @@ def main(request):
     
     trending = get_trending(limit=4)
     
-    watch_progress = VisualizationProgress.objects.filter(user=user, completed=False).select_related('content')
+    watch_progress = VisualizationProgress.objects.filter(
+        user=user,  
+        completed=False
+    ).select_related('content').order_by('-id')
+
+    # 2. Enrich the data (Calculations)
+    for progress in watch_progress:
+        # Get duration from Movie model (Series fallback to 90m for now)
+        movie = Movie.objects.filter(id=progress.content.id).first()
+        progress.total_duration = movie.duration_minutes if movie else 90 
+        
+        # Calculate time remaining
+        progress.minutes_left = max(0, progress.total_duration - progress.last_minute)
+        
+        # Find which platform this content belongs to
+        catalog_entry = Catalog.objects.filter(content=progress.content).first()
+        progress.platform_name = catalog_entry.platform.platform_name if catalog_entry else "StreamSync"
+        
+        # Prepare URL data
+        progress.ctype = 'movie' if movie else 'series'
+        progress.slug = slugify(f"{progress.content.title}_{movie.year if movie else progress.content.id}")
     has_watch_history = watch_progress.exists()
     
     return render(request, 'pages/main.html', {

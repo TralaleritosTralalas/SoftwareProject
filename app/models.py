@@ -128,7 +128,7 @@ class Series(AudiovisualContent):
 class Platform(models.Model):
     platform_name = models.CharField(max_length=100)
     url_api = models.URLField()
-    p_manager = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'manager'})
+    p_manager = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role__name': 'manager'})
 
     def __str__(self):
         return self.platform_name
