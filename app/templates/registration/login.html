@@ -38,7 +38,7 @@
                     <div>
                         <div class="flex justify-between items-center mb-2">
                             <label class="text-base font-medium text-slate-300" for="id_password">Password</label>
-                            <a class="text-sm text-primary hover:underline font-medium" href="#">Forgot password?</a>
+                            <a class="text-sm text-primary hover:underline font-medium" href="{% url 'password_reset' %}">Forgot password?</a>
                         </div>
                         <div class="relative">
                             <input name="password" id="id_password" required
