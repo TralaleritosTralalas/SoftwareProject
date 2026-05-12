@@ -307,7 +307,7 @@ def content_detail(request, ctype, cid):
             'is_in_watchlist': is_in_watchlist
         })
     else:
-        return render(request, 'pages/home.html', status=404)
+        return render(request, 'pages/main.html', status=404)
 
 
 @login_required
@@ -317,7 +317,6 @@ def update_status(request, ctype, cid):
             data = json.loads(request.body)
             status = data.get('status', 'not_seen')
             
-            # Buscar contenido local
             if ctype == 'series':
                 local_content = Series.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
             else:
@@ -357,7 +356,6 @@ def toggle_favorite(request, ctype, cid):
     
     if request.method == 'POST':
         try:
-            # Buscar contenido local
             if ctype == 'series':
                 local_content = Series.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
             else:
@@ -401,20 +399,16 @@ def main(request):
         completed=False
     ).select_related('content').order_by('-id')
 
-    # 2. Enrich the data (Calculations)
+    
     for progress in watch_progress:
-        # Get duration from Movie model (Series fallback to 90m for now)
         movie = Movie.objects.filter(id=progress.content.id).first()
         progress.total_duration = movie.duration_minutes if movie else 90 
         
-        # Calculate time remaining
         progress.minutes_left = max(0, progress.total_duration - progress.last_minute)
         
-        # Find which platform this content belongs to
         catalog_entry = Catalog.objects.filter(content=progress.content).first()
         progress.platform_name = catalog_entry.platform.platform_name if catalog_entry else "StreamSync"
         
-        # Prepare URL data
         progress.ctype = 'movie' if movie else 'series'
         progress.slug = slugify(f"{progress.content.title}_{movie.year if movie else progress.content.id}")
     has_watch_history = watch_progress.exists()
