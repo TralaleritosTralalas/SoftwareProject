@@ -1,6 +1,7 @@
 import requests
 from django.urls import reverse
 from decouple import config
+from thefuzz import fuzz
 
 # URL DE LAS MOVIES-API EN LOCAL
 url_local_1 = "http://127.0.0.1:8080" #API LOCAL 1
@@ -315,6 +316,7 @@ def get_trending(limit=10):
 def search_content(query, platform=None, genre=None, sort_rating=None, sort_year=None):
     results_dict = {}
     search_query = query.lower().strip()
+    THRESHOLD = 60
 
     for url, key, platform_name in PLATFORMS:
         if platform and platform_name != platform:
@@ -334,9 +336,10 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
                     # Obtener nombre del director desde el mapa
                     d_name = director_map.get(movie.get("director_id"), "Unknown Director").lower()
                     m_title = movie.get("title", "").lower()
-
+                    score_title = fuzz.partial_ratio(search_query, m_title)
+                    score_director = fuzz.partial_ratio(search_query, d_name)
                     # Lógica Case-Insensitive
-                    if search_query not in m_title and search_query not in d_name:
+                    if search_query not in m_title and search_query not in d_name and score_title < THRESHOLD and score_director < THRESHOLD:
                         continue
 
                     # Filtro de género
@@ -344,6 +347,7 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
                     if genre and genre.lower() not in movie_genre.lower():
                         continue
                     
+                    movie["search_score"] = max(score_title, score_director)
                     identifier = f"{m_title}_{movie.get('year', '')}".strip()
                     
                     if identifier not in results_dict:
@@ -352,6 +356,7 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
                         movie["director"] = director_map.get(movie.get("director_id"), "Unknown Director")
                         movie["platforms"] = [platform_name]
                         movie["unique_id"] = identifier 
+                        
                         results_dict[identifier] = movie
                     else:
                         if platform_name not in results_dict[identifier]["platforms"]:
@@ -401,7 +406,8 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
     # 2. ORDENACIÓN PRIORITARIA: "Empieza por" primero, luego "Contiene"
     # True se ordena después de False, por eso usamos 'not' para que los que SI empiezan sean 0 (primero)
     final_results.sort(key=lambda x: (
-        not x.get('title', '').lower().startswith(search_query), 
+        not x.get('title', '').lower().startswith(search_query),
+        x.get('search_score', 0),  # Per relevancia de busqueda
         x.get('title', '').lower()
     ))
 
