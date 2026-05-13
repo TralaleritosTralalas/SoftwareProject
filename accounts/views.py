@@ -18,3 +18,6 @@ def terms_of_service(request):
 
 def privacy_policy(request):
     return render(request, "registration/privacy_policy.html")
+
+def help_center(request):
+    return render(request, 'registration/help_center.html')
