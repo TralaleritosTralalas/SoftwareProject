@@ -131,10 +131,12 @@ LOGIN_REDIRECT_URL = "/redirect/"
 LOGOUT_REDIRECT_URL = "app:home"
 
 # Custom user model
-
 AUTH_USER_MODEL = 'app.User'
 
 # Configuration for static files, such as CSS, JS and images
 STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Email backend
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
