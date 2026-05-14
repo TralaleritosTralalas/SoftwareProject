@@ -19,6 +19,9 @@ def terms_of_service(request):
 def privacy_policy(request):
     return render(request, "registration/privacy_policy.html")
 
+def help_center(request):
+    return render(request, 'registration/help_center.html')
+
 password_reset = auth_views.PasswordResetView.as_view(
     template_name='registration/password_reset_form.html',
     success_url=reverse_lazy('password_reset_done')
