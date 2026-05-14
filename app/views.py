@@ -222,8 +222,8 @@ def series(request):
 
     context = {
         'series': series_list,
-        'platforms': get_all_platforms(), # <--- Añadir esto
-        'genres': get_all_genres_from_api(), # <--- Añadir esto
+        'platforms': get_all_platforms(), 
+        'genres': get_all_genres_from_api(), 
         'selected_platform': selected_platform,
         'selected_genre': selected_genre,
         'sort_rating': sort_rating,
@@ -353,7 +353,7 @@ def _resolve_content(ctype, cid):
         return api_content, local_content
 
     defaults = {
-        'synopsis': api_content.get('synopsis', ''),
+        'synopsis': api_content.get('synopsis')  or 'No synopsis available.',
         'rating': _safe_float(api_content.get('rating')),
     }
     if ctype == 'series':
