@@ -2,10 +2,10 @@ import requests
 from django.urls import reverse
 from decouple import config
 
-# URL DE LAS MOVIES-API EN LOCAL
-url_local_1 = "http://127.0.0.1:8080" #API LOCAL 1
-url_local_2 = "http://127.0.0.1:8081" #API LOCAL 2
-url_local_3 = "http://127.0.0.1:8082" #API LOCAL 3
+# URL DE LAS MOVIES-API 
+url_local_1 = "https://joinproject-api1.safont.dev" #API  1
+url_local_2 = "https://joinproject-api2.safont.dev" #API  2
+url_local_3 = "https://joinproject-api3.safont.dev" #API  3
      
 # API KEYS DE LAS MOVIES-API EN LOCAL
 api_key_local_1 = config("API_KEY_LOCAL_1")

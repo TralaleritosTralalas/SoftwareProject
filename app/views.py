@@ -15,10 +15,9 @@ from django.core.exceptions import PermissionDenied
 from .models import *
 from .utils import DashboardService
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-from .models import VisualizationProgress, Movie, Series
+from .models import VisualizationProgress, Movie, Series, Platform, Genre
 import json
+from django.db.models import Q
     
 # Create your views here.
 
@@ -126,43 +125,44 @@ def user_settings(request):
     })
 
 def catalog(request):
-    # Obtener parámetros de filtro
-    selected_platform = request.GET.get('platform')
-    selected_genre = request.GET.get('genre')
+    # Parámetros
+    plat_name = request.GET.get('platform')
+    genre_name = request.GET.get('genre')
     sort_rating = request.GET.get('sort_rating')
     sort_year = request.GET.get('sort_year')
 
-    # Obtener datos base
-    movies = get_all_movies(platform_filter=selected_platform)
-    series = get_all_series(platform_filter=selected_platform)
+    # Querysets base con select_related para evitar múltiples consultas a BD
+    movies = Movie.objects.select_related('genre', 'director', 'age_rating')
+    series = Series.objects.select_related('genre', 'director', 'age_rating')
+
+    # Filtrado por Plataforma
+    if plat_name:
+        movies = movies.filter(catalog__platform__platform_name=plat_name)
+        series = series.filter(catalog__platform__platform_name=plat_name)
+
+    # Filtrado por Género
+    if genre_name:
+        movies = movies.filter(genre__name=genre_name)
+        series = series.filter(genre__name=genre_name)
+
+    # Ordenamiento (DB Level)
+    if sort_rating:
+        movies = movies.order_by('-rating' if sort_rating == 'desc' else 'rating')
+        series = series.order_by('-rating' if sort_rating == 'desc' else 'rating')
     
-    # Filtrar por género localmente si se seleccionó uno
-    if selected_genre:
-        movies = [m for m in movies if m.get('genre_name') == selected_genre]
-        series = [s for s in series if s.get('genre_name') == selected_genre]
+    if sort_year:
+        movies = movies.order_by('-year' if sort_year == 'desc' else 'year')
+        series = series.order_by('-start_year' if sort_year == 'desc' else 'start_year')
 
-    # Lógica de ordenamiento
-    def apply_sort(data, key_rating, key_year):
-        if sort_rating:
-            data.sort(key=lambda x: x.get(key_rating, 0), reverse=(sort_rating == 'desc'))
-        if sort_year:
-            data.sort(key=lambda x: x.get(key_year, 0), reverse=(sort_year == 'desc'))
-        return data
+    return render(request, 'pages/catalog.html', {
+        'movies': movies.distinct(),
+        'series': series.distinct(),
+        'platforms': Platform.objects.all(),
+        'genres': Genre.objects.all(),
+        'selected_platform': plat_name,
+        'selected_genre': genre_name,
+    })
 
-    movies = apply_sort(movies, 'rating', 'year')
-    series = apply_sort(series, 'rating', 'start_year')
-
-    context = {
-        'movies': movies,
-        'series': series,
-        'platforms': get_all_platforms(),
-        'genres': get_all_genres_from_api(),
-        'selected_platform': selected_platform,
-        'selected_genre': selected_genre,
-        'sort_rating': sort_rating,
-        'sort_year': sort_year,
-    }
-    return render(request, 'pages/catalog.html', context)
 
 def movies(request):
     selected_platform = request.GET.get('platform')
@@ -226,21 +226,33 @@ def search(request):
     query = request.GET.get('q', '').strip()
     p = request.GET.get('platform')
     g = request.GET.get('genre')
-    sr = request.GET.get('sort_rating')
-    sy = request.GET.get('sort_year')
     
-    results = []
+    movie_results = Movie.objects.none()
+    series_results = Series.objects.none()
+
     if query:
-        # Ahora el servicio devuelve objetos con el campo 'detail_url' ya calculado
-        results = search_content(query, platform=p, genre=g, sort_rating=sr, sort_year=sy)
+        # Búsqueda por título o sinopsis
+        movie_results = Movie.objects.filter(
+            Q(title__icontains=query) | Q(synopsis__icontains=query)
+        )
+        series_results = Series.objects.filter(
+            Q(title__icontains=query) | Q(synopsis__icontains=query)
+        )
+
+        if p:
+            movie_results = movie_results.filter(catalog__platform__platform_name=p)
+            series_results = series_results.filter(catalog__platform__platform_name=p)
+        if g:
+            movie_results = movie_results.filter(genre__name=g)
+            series_results = series_results.filter(genre__name=g)
 
     context = {
         'query': query,
-        'movies': [i for i in results if i['content_type'] == 'movie'],
-        'series': [i for i in results if i['content_type'] == 'series'],
-        'result_count': len(results),
-        'platforms': get_all_platforms(),
-        'genres': get_all_genres_from_api(),
+        'movies': movie_results.distinct(),
+        'series': series_results.distinct(),
+        'result_count': movie_results.count() + series_results.count(),
+        'platforms': Platform.objects.all(),
+        'genres': Genre.objects.all(),
         'selected_platform': p,
         'selected_genre': g,
     }
@@ -256,59 +268,36 @@ def login(request):
 
 
 def content_detail(request, ctype, cid):
-    from django.http import JsonResponse
-    from .models import VisualizationProgress, Favorite, Watchlist
+    # Intentamos buscar por ID, si falla, podrías buscar por título
+    model = Series if ctype == 'series' else Movie
     
-    if ctype == 'series':
-        data = get_all_series()
+    # Si cid es numérico usamos pk, si es texto usamos el título (ejemplo simple)
+    if cid.isdigit():
+        content = get_object_or_404(model, pk=cid)
     else:
-        data = get_all_movies()
-    
-    content = next((item for item in data if slugify(f"{item.get('title', '').replace(' ', '-')}_{item.get('year', item.get('start_year', ''))}") == slugify(str(cid))), None)
-    
-    if content:
-        content['content_type'] = ctype
-        
-        # Obtener estado del usuario si está autenticado
-        user_status = 'not_seen'
-        is_favorite = False
-        is_in_watchlist = False
-        
-        if request.user.is_authenticated:
-            # Buscar el contenido en la base de datos local
-            from app.models import AudiovisualContent, Movie, Series
-            try:
-                if ctype == 'series':
-                    local_content = Series.objects.filter(title=content.get('title')).first()
-                else:
-                    local_content = Movie.objects.filter(title=content.get('title')).first()
-                
-                if local_content:
-                    # Verificar VisualizationProgress
-                    vp = VisualizationProgress.objects.filter(user=request.user, content=local_content).first()
-                    if vp:
-                        if vp.completed:
-                            user_status = 'completed'
-                        elif vp.last_minute > 0:
-                            user_status = 'watching'
-                    
-                    # Verificar Favorite
-                    is_favorite = Favorite.objects.filter(user=request.user, content=local_content).exists()
-                    
-                    # Verificar Watchlist
-                    is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
-            except Exception:
-                pass
-        
-        return render(request, 'pages/content_view.html', {
-            'content': content,
-            'user_status': user_status,
-            'is_favorite': is_favorite,
-            'is_in_watchlist': is_in_watchlist
-        })
-    else:
-        return render(request, 'pages/home.html', status=404)
+        # Reemplazamos guiones por espacios para intentar buscar por título
+        title_guess = cid.replace('-', ' ').split('_')[0]
+        content = get_object_or_404(model, title__icontains=title_guess)
 
+    user_status = 'not_seen'
+    is_favorite = is_in_watchlist = False
+
+    if request.user.is_authenticated:
+        # Usamos el objeto 'content' directamente, el ORM se encarga del ID
+        vp = VisualizationProgress.objects.filter(user=request.user, content=content).first()
+        if vp:
+            user_status = 'completed' if vp.completed else 'watching'
+        
+        is_favorite = Favorite.objects.filter(user=request.user, content=content).exists()
+        is_in_watchlist = Watchlist.objects.filter(user=request.user, content=content).exists()
+
+    return render(request, 'pages/content_view.html', {
+        'content': content,
+        'ctype': ctype,
+        'user_status': user_status,
+        'is_favorite': is_favorite,
+        'is_in_watchlist': is_in_watchlist
+    })
 
 @login_required
 def update_status(request, ctype, cid):
