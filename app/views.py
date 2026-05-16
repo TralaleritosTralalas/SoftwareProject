@@ -431,8 +431,12 @@ def toggle_favorite(request, ctype, cid):
 
     return JsonResponse({'success': False, 'error': 'Invalid method'})
     
+@login_required
 def personal_library(request):
-    return render(request, 'pages/personal_library.html')
+    favorites_count = Favorite.objects.filter(user=request.user).count()
+    return render(request, 'pages/personal_library.html', {
+        'favorites_count': favorites_count
+    })
 
 
 @login_required
