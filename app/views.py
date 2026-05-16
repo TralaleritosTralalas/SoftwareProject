@@ -433,9 +433,25 @@ def toggle_favorite(request, ctype, cid):
     
 @login_required
 def personal_library(request):
+    # Favoritos del usuario
     favorites_count = Favorite.objects.filter(user=request.user).count()
+    
+    # Continue Watching: tiene progreso pero no completado (last_minute > 0)
+    watching_count = VisualizationProgress.objects.filter(
+        user=request.user,
+        completed=False
+    ).exclude(last_minute=0).count()
+    
+    # Completed: marcados como completados
+    completed_count = VisualizationProgress.objects.filter(
+        user=request.user,
+        completed=True
+    ).count()
+    
     return render(request, 'pages/personal_library.html', {
-        'favorites_count': favorites_count
+        'favorites_count': favorites_count,
+        'watching_count': watching_count,
+        'completed_count': completed_count,
     })
 
 
