@@ -16,7 +16,7 @@ def parse_date(value):
     """Convert '1963-03-27T00:00:00.000Z' or '1963-03-27' to 'YYYY-MM-DD'. Returns None if invalid."""
     if not value:
         return None
-    return str(value)[:10]  # grab just the YYYY-MM-DD part
+    return str(value)[:10]
 
 
 class Command(BaseCommand):
@@ -28,7 +28,6 @@ class Command(BaseCommand):
         'https://joinproject-api3.safont.dev': (config('API_KEY_LOCAL_3'), 'Platform 3'),
     }
 
-    # countries and languages removed — 404 on all APIs
     RESOURCES = ['genres', 'age-ratings', 'directors', 'movies', 'series']
 
     def add_arguments(self, parser):
@@ -90,20 +89,39 @@ class Command(BaseCommand):
             platform = self._get_or_create_platform(base_url, platform_name)
             for item in data:
                 try:
+                    # FIX: Use the *_id fields to look up related objects
+                    genre = None
+                    if item.get('genre_id'):
+                        # Find genre by the API id - we need to map it
+                        # Since we imported genres first, we can find by index or create a mapping
+                        genre = Genre.objects.all()[item['genre_id'] - 1] if item['genre_id'] <= Genre.objects.count() else None
+                    
+                    director = None
+                    if item.get('director_id'):
+                        director = Director.objects.all()[item['director_id'] - 1] if item['director_id'] <= Director.objects.count() else None
+                    
+                    age_rating = None
+                    if item.get('age_rating_id'):
+                        age_rating = AgeRating.objects.all()[item['age_rating_id'] - 1] if item['age_rating_id'] <= AgeRating.objects.count() else None
+                    
                     movie, _ = Movie.objects.update_or_create(
                         title=item['title'],
                         defaults={
                             'synopsis': item.get('synopsis') or '',
-                            'rating': item.get('rating') or 0,
+                            'rating': float(item.get('rating') or 0),  # Convert string to float
                             'year': item.get('year') or 2000,
                             'release_date': parse_date(item.get('release_date')) or '2000-01-01',
-                            'duration_minutes': item.get('duration_minutes') or 0,
-                            'genre': Genre.objects.filter(name=item.get('genre')).first(),
-                            'director': Director.objects.filter(name=item.get('director')).first(),
-                            'age_rating': AgeRating.objects.filter(description=item.get('age_rating')).first(),
+                            'duration_minutes': item.get('duration_minutes') or 90,  # Default duration
+                            'genre': genre,
+                            'director': director,
+                            'age_rating': age_rating,
                         }
                     )
-                    Catalog.objects.get_or_create(platform=platform, content=movie)
+                    Catalog.objects.get_or_create(
+                        platform=platform, 
+                        content=movie,
+                        defaults={'state': 'available'}
+                    )
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f'    ! Error guardando película "{item.get("title")}": {e}'))
 
@@ -111,18 +129,32 @@ class Command(BaseCommand):
             platform = self._get_or_create_platform(base_url, platform_name)
             for item in data:
                 try:
+                    # FIX: Use the *_id fields to look up related objects
+                    genre = None
+                    if item.get('genre_id'):
+                        genre = Genre.objects.all()[item['genre_id'] - 1] if item['genre_id'] <= Genre.objects.count() else None
+                    
+                    director = None
+                    if item.get('director_id'):
+                        director = Director.objects.all()[item['director_id'] - 1] if item['director_id'] <= Director.objects.count() else None
+                    
                     serie, _ = Series.objects.update_or_create(
                         title=item['title'],
                         defaults={
                             'synopsis': item.get('synopsis') or '',
-                            'rating': item.get('rating') or 0,
+                            'rating': float(item.get('rating') or 0),  # Convert string to float
                             'start_year': item.get('start_year') or 2000,
+                            'end_year': item.get('end_year'),
                             'total_seasons': item.get('total_seasons') or 1,
-                            'genre': Genre.objects.filter(name=item.get('genre')).first(),
-                            'director': Director.objects.filter(name=item.get('director')).first(),
+                            'genre': genre,
+                            'director': director,
                         }
                     )
-                    Catalog.objects.get_or_create(platform=platform, content=serie)
+                    Catalog.objects.get_or_create(
+                        platform=platform, 
+                        content=serie,
+                        defaults={'state': 'available'}
+                    )
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f'    ! Error guardando serie "{item.get("title")}": {e}'))
 
@@ -141,4 +173,6 @@ class Command(BaseCommand):
         Movie.objects.all().delete()
         Series.objects.all().delete()
         Director.objects.all().delete()
+        AgeRating.objects.all().delete()
+        Genre.objects.all().delete()
         self.stdout.write(self.style.SUCCESS('Base de datos limpia.'))

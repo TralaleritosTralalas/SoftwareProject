@@ -131,32 +131,29 @@ def catalog(request):
     sort_rating = request.GET.get('sort_rating')
     sort_year = request.GET.get('sort_year')
 
-    # Querysets base con select_related para evitar múltiples consultas a BD
-    movies = Movie.objects.select_related('genre', 'director', 'age_rating')
-    series = Series.objects.select_related('genre', 'director', 'age_rating')
+    # Get data from services (returns dicts with unique_id)
+    movies = get_all_movies(platform_filter=plat_name)
+    series = get_all_series(platform_filter=plat_name)
 
-    # Filtrado por Plataforma
-    if plat_name:
-        movies = movies.filter(catalog__platform__platform_name=plat_name)
-        series = series.filter(catalog__platform__platform_name=plat_name)
-
-    # Filtrado por Género
+    # Filtrado por Género (now filtering lists of dicts)
     if genre_name:
-        movies = movies.filter(genre__name=genre_name)
-        series = series.filter(genre__name=genre_name)
+        movies = [m for m in movies if m.get('genre_name') == genre_name]
+        series = [s for s in series if s.get('genre_name') == genre_name]
 
-    # Ordenamiento (DB Level)
+    # Ordenamiento
     if sort_rating:
-        movies = movies.order_by('-rating' if sort_rating == 'desc' else 'rating')
-        series = series.order_by('-rating' if sort_rating == 'desc' else 'rating')
+        reverse = (sort_rating == 'desc')
+        movies = sorted(movies, key=lambda x: x.get('rating', 0), reverse=reverse)
+        series = sorted(series, key=lambda x: x.get('rating', 0), reverse=reverse)
     
     if sort_year:
-        movies = movies.order_by('-year' if sort_year == 'desc' else 'year')
-        series = series.order_by('-start_year' if sort_year == 'desc' else 'start_year')
+        reverse = (sort_year == 'desc')
+        movies = sorted(movies, key=lambda x: x.get('year', 0), reverse=reverse)
+        series = sorted(series, key=lambda x: x.get('start_year', 0), reverse=reverse)
 
     return render(request, 'pages/catalog.html', {
-        'movies': movies.distinct(),
-        'series': series.distinct(),
+        'movies': movies,
+        'series': series,
         'platforms': Platform.objects.all(),
         'genres': Genre.objects.all(),
         'selected_platform': plat_name,
@@ -191,6 +188,7 @@ def movies(request):
         'sort_rating': sort_rating,
         'sort_year': sort_year,
     }
+
     return render(request, 'pages/movies.html', context)
 
 def series(request):
@@ -227,30 +225,22 @@ def search(request):
     p = request.GET.get('platform')
     g = request.GET.get('genre')
     
-    movie_results = Movie.objects.none()
-    series_results = Series.objects.none()
-
+    movies = []
+    series = []
+    
     if query:
-        # Búsqueda por título o sinopsis
-        movie_results = Movie.objects.filter(
-            Q(title__icontains=query) | Q(synopsis__icontains=query)
-        )
-        series_results = Series.objects.filter(
-            Q(title__icontains=query) | Q(synopsis__icontains=query)
-        )
-
-        if p:
-            movie_results = movie_results.filter(catalog__platform__platform_name=p)
-            series_results = series_results.filter(catalog__platform__platform_name=p)
-        if g:
-            movie_results = movie_results.filter(genre__name=g)
-            series_results = series_results.filter(genre__name=g)
+        # Use the search_content function from services.py
+        results = search_content(query=query, platform=p, genre=g)
+        
+        # Separate movies and series
+        movies = [r for r in results if r.get('content_type') == 'movie']
+        series = [r for r in results if r.get('content_type') == 'series']
 
     context = {
         'query': query,
-        'movies': movie_results.distinct(),
-        'series': series_results.distinct(),
-        'result_count': movie_results.count() + series_results.count(),
+        'movies': movies,
+        'series': series,
+        'result_count': len(movies) + len(series),
         'platforms': Platform.objects.all(),
         'genres': Genre.objects.all(),
         'selected_platform': p,
