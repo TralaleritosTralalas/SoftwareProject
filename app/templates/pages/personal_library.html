@@ -33,122 +33,21 @@
     <!-- STATS -->
     <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-      <div class="rounded-2xl border border-white/5 bg-surface-dark p-5">
-        <div class="flex items-center justify-between">
-          <p class="text-sm text-text-secondary">
-            Watching
-          </p>
+    {% with title="Watching" value="12" icon="play_circle" icon_color="text-blue-400" %}
+      {% include "components/stat_card.html" %}
+    {% endwith %}
 
-          <span class="material-symbols-outlined text-blue-400">
-            play_circle
-          </span>
-        </div>
+    {% with title="Completed" value="48" icon="check_circle" icon_color="text-emerald-400" %}
+      {% include "components/stat_card.html" %}
+    {% endwith %}
 
-        <h2 class="text-3xl font-black text-white mt-4">
-          12
-        </h2>
-      </div>
+    {% with title="Favorites" value="18" icon="favorite" icon_color="text-red-400 fill-current" %}
+      {% include "components/stat_card.html" %}
+    {% endwith %}
 
-      <div class="rounded-2xl border border-white/5 bg-surface-dark p-5">
-        <div class="flex items-center justify-between">
-          <p class="text-sm text-text-secondary">
-            Completed
-          </p>
-
-          <span class="material-symbols-outlined text-emerald-400">
-            check_circle
-          </span>
-        </div>
-
-        <h2 class="text-3xl font-black text-white mt-4">
-          48
-        </h2>
-      </div>
-
-      <div class="rounded-2xl border border-white/5 bg-surface-dark p-5">
-        <div class="flex items-center justify-between">
-          <p class="text-sm text-text-secondary">
-            Favorites
-          </p>
-
-          <span class="material-symbols-outlined text-red-400 fill-current">
-            favorite
-          </span>
-        </div>
-
-        <h2 class="text-3xl font-black text-white mt-4">
-          18
-        </h2>
-      </div>
-
-      <div class="rounded-2xl border border-white/5 bg-surface-dark p-5">
-        <div class="flex items-center justify-between">
-          <p class="text-sm text-text-secondary">
-            Lists
-          </p>
-
-          <span class="material-symbols-outlined text-primary">
-            stacks
-          </span>
-        </div>
-
-        <h2 class="text-3xl font-black text-white mt-4">
-          5
-        </h2>
-      </div>
-
-    </section>
-
-    <!-- FILTERS -->
-    <section class="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
-
-      <div class="flex flex-wrap items-center gap-3">
-
-        <button
-          class="h-10 px-4 rounded-full bg-primary text-white text-sm font-semibold shadow-lg shadow-primary/20"
-        >
-          All
-        </button>
-
-        <button
-          class="h-10 px-4 rounded-full bg-surface-dark hover:bg-surface-highlight border border-white/5 text-text-secondary hover:text-white text-sm font-medium transition-all"
-        >
-          Watching
-        </button>
-
-        <button
-          class="h-10 px-4 rounded-full bg-surface-dark hover:bg-surface-highlight border border-white/5 text-text-secondary hover:text-white text-sm font-medium transition-all"
-        >
-          Completed
-        </button>
-
-        <button
-          class="h-10 px-4 rounded-full bg-surface-dark hover:bg-surface-highlight border border-white/5 text-text-secondary hover:text-white text-sm font-medium transition-all"
-        >
-          Favorites
-        </button>
-
-      </div>
-
-      <div class="flex items-center gap-2">
-
-        <button
-          class="size-10 rounded-xl bg-surface-dark border border-white/5 hover:bg-surface-highlight flex items-center justify-center text-text-secondary hover:text-white transition-all"
-        >
-          <span class="material-symbols-outlined text-[20px]">
-            search
-          </span>
-        </button>
-
-        <button
-          class="size-10 rounded-xl bg-surface-dark border border-white/5 hover:bg-surface-highlight flex items-center justify-center text-text-secondary hover:text-white transition-all"
-        >
-          <span class="material-symbols-outlined text-[20px]">
-            sort
-          </span>
-        </button>
-
-      </div>
+    {% with title="Lists" value="5" icon="stacks" icon_color="text-primary" %}
+      {% include "components/stat_card.html" %}
+    {% endwith %}
 
     </section>
 
