@@ -1,8 +1,11 @@
 from django.db.models import Q, Prefetch
 from app.models import (
-    Movie, Series, Genre, Director, 
-    Platform, Catalog, AudiovisualContent
+    Movie, Series, Genre, Platform, Catalog
 )
+import requests
+from django.urls import reverse
+from decouple import config
+from thefuzz import fuzz
 
 
 def get_all_platforms():
@@ -220,79 +223,123 @@ def get_trending(limit=10):
 
 
 def search_content(query, platform=None, genre=None, sort_rating=None, sort_year=None):
-    """Busca contenido en la base de datos."""
-    results = []
-    
-    # Buscar películas
-    movies_q = Q(title__icontains=query)
+    results_dict = {}
+    search_query = query.lower().strip()
+    THRESHOLD = 60
+
+    # Get platform filter if specified
+    platform_filter = Q()
+    if platform:
+        platform_filter = Q(catalog__platform__platform_name=platform)
+
+    # Get genre filter if specified
+    genre_filter = Q()
     if genre:
-        movies_q &= Q(genre__name__icontains=genre)
-    
-    movies = Movie.objects.filter(movies_q).select_related(
-        'genre', 'director', 'age_rating'
-    ).prefetch_related(
-        Prefetch('catalog_set', queryset=Catalog.objects.select_related('platform'))
-    )
-    
-    for movie in movies:
-        platforms = [catalog.platform.platform_name for catalog in movie.catalog_set.all()]
-        
-        # Filtrar por plataforma
-        if platform and platform not in platforms:
-            continue
-        
-        identifier = f"{movie.title}_{movie.year}".lower().strip()
-        
-        results.append({
-            'id': movie.id,
-            'title': movie.title,
-            'synopsis': movie.synopsis,
-            'rating': movie.rating,
-            'year': movie.year,
-            'genre_name': movie.genre.name if movie.genre else "Unknown",
-            'platforms': platforms,
-            'unique_id': identifier,
-            'content_type': 'movie'
-        })
-    
-    # Buscar series
-    series_q = Q(title__icontains=query)
-    if genre:
-        series_q &= Q(genre__name__icontains=genre)
-    
-    series = Series.objects.filter(series_q).select_related(
-        'genre', 'director', 'age_rating'
-    ).prefetch_related(
-        Prefetch('catalog_set', queryset=Catalog.objects.select_related('platform'))
-    )
-    
-    for serie in series:
-        platforms = [catalog.platform.platform_name for catalog in serie.catalog_set.all()]
-        
-        if platform and platform not in platforms:
-            continue
-        
-        identifier = f"{serie.title}_{serie.start_year}".lower().strip()
-        
-        results.append({
-            'id': serie.id,
-            'title': serie.title,
-            'synopsis': serie.synopsis,
-            'rating': serie.rating,
-            'start_year': serie.start_year,
-            'genre_name': serie.genre.name if serie.genre else "Unknown",
-            'platforms': platforms,
-            'unique_id': identifier,
-            'content_type': 'series'
-        })
-    
-    # Ordenar resultados
-    if sort_rating:
-        results.sort(key=lambda x: x.get('rating', 0), reverse=(sort_rating == 'desc'))
-    elif sort_year:
-        results.sort(
-            key=lambda x: x.get('year') or x.get('start_year', 0), 
-            reverse=(sort_year == 'desc')
-        )
-    
-    return results
+        genre_filter = Q(genre__name__icontains=genre)
+
+    # --- Búsqueda en Películas ---
+    try:
+        movies = Movie.objects.select_related('genre', 'director').prefetch_related('catalog_set__platform').filter(
+            platform_filter & genre_filter
+        ).distinct()
+
+        for movie in movies:
+            m_title = movie.title.lower()
+            d_name = movie.director.name.lower() if movie.director else "unknown director"
+            
+            score_title = fuzz.partial_ratio(search_query, m_title)
+            score_director = fuzz.partial_ratio(search_query, d_name)
+            
+            # Lógica Case-Insensitive
+            if search_query not in m_title and search_query not in d_name and score_title < THRESHOLD and score_director < THRESHOLD:
+                continue
+
+            identifier = f"{m_title}_{movie.year}".strip()
+            
+            # Get platforms for this movie
+            platforms_list = [cat.platform.platform_name for cat in movie.catalog_set.all()]
+            
+            if identifier not in results_dict:
+                results_dict[identifier] = {
+                    "id": movie.id,
+                    "title": movie.title,
+                    "synopsis": movie.synopsis,
+                    "rating": movie.rating,
+                    "year": movie.year,
+                    "release_date": str(movie.release_date),
+                    "duration_minutes": movie.duration_minutes,
+                    "content_type": "movie",
+                    "genre_name": movie.genre.name if movie.genre else "Unknown",
+                    "genre_id": movie.genre.id if movie.genre else None,
+                    "director": movie.director.name if movie.director else "Unknown Director",
+                    "director_id": movie.director.id if movie.director else None,
+                    "platforms": platforms_list,
+                    "unique_id": identifier,
+                    "search_score": max(score_title, score_director)
+                }
+            else:
+                # Merge platforms
+                for p in platforms_list:
+                    if p not in results_dict[identifier]["platforms"]:
+                        results_dict[identifier]["platforms"].append(p)
+    except Exception as e:
+        print(f"Error en búsqueda de películas: {e}")
+
+    # --- Búsqueda en Series ---
+    try:
+        series = Series.objects.select_related('genre', 'director').prefetch_related('catalog_set__platform').filter(
+            platform_filter & genre_filter
+        ).distinct()
+
+        for serie in series:
+            s_title = serie.title.lower()
+            s_dir_name = serie.director.name.lower() if serie.director else "unknown director"
+            
+            score_title = fuzz.partial_ratio(search_query, s_title)
+            score_director = fuzz.partial_ratio(search_query, s_dir_name)
+            
+            if search_query not in s_title and search_query not in s_dir_name and score_title < THRESHOLD and score_director < THRESHOLD:
+                continue
+
+            identifier = f"{s_title}_{serie.start_year}".strip()
+            
+            # Get platforms for this series
+            platforms_list = [cat.platform.platform_name for cat in serie.catalog_set.all()]
+            
+            if identifier not in results_dict:
+                results_dict[identifier] = {
+                    "id": serie.id,
+                    "title": serie.title,
+                    "synopsis": serie.synopsis,
+                    "rating": serie.rating,
+                    "start_year": serie.start_year,
+                    "end_year": serie.end_year,
+                    "total_seasons": serie.total_seasons,
+                    "content_type": "series",
+                    "genre_name": serie.genre.name if serie.genre else "Unknown",
+                    "genre_id": serie.genre.id if serie.genre else None,
+                    "director": serie.director.name if serie.director else "Unknown Director",
+                    "director_id": serie.director.id if serie.director else None,
+                    "platforms": platforms_list,
+                    "unique_id": identifier,
+                    "search_score": max(score_title, score_director)
+                }
+            else:
+                # Merge platforms
+                for p in platforms_list:
+                    if p not in results_dict[identifier]["platforms"]:
+                        results_dict[identifier]["platforms"].append(p)
+    except Exception as e:
+        print(f"Error en búsqueda de series: {e}")
+
+    # Convertir a lista
+    final_results = list(results_dict.values())
+
+    # 2. ORDENACIÓN PRIORITARIA: "Empieza por" primero, luego "Contiene"
+    final_results.sort(key=lambda x: (
+        not x.get('title', '').lower().startswith(search_query),
+        -x.get('search_score', 0),  # Negativo para ordenar de mayor a menor score
+        x.get('title', '').lower()
+    ))
+
+    return final_results

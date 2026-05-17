@@ -255,26 +255,64 @@ def login(request):
 
 def content_detail(request, ctype, cid):
     model = Series if ctype == 'series' else Movie
-    if cid.isdigit():
-        content = get_object_or_404(model, pk=cid)
+    
+    if ctype == 'series':
+        all_content = get_all_series()
     else:
-        title_guess = cid.replace('-', ' ').split('_')[0]
-        content = get_object_or_404(model, title__icontains=title_guess)
-
-    user_status = 'not_seen'
-    is_favorite = is_in_watchlist = False
-
-    if request.user.is_authenticated:
-        vp = VisualizationProgress.objects.filter(user=request.user, content=content).first()
-        if vp:
-            user_status = 'completed' if vp.completed else 'watching'
+        all_content = get_all_movies()
+    
+    content = None
+    
+    if cid.isdigit():
+        content = next((item for item in all_content if item.get('id') == int(cid)), None)
+    else:
+        content = next((item for item in all_content if slugify(item.get('unique_id', '')) == slugify(cid)), None)
         
-        is_favorite = Favorite.objects.filter(user=request.user, content=content).exists()
-        is_in_watchlist = Watchlist.objects.filter(user=request.user, content=content).exists()
-
+        if not content:
+            title_guess = cid.replace('-', ' ').replace('_', ' ').lower()
+            content = next((item for item in all_content if title_guess in item.get('title', '').lower()), None)
+    
+    if not content:
+        return render(request, 'pages/main.html', status=404)
+    
+    content['content_type'] = ctype
+    
+    user_status = 'not_seen'
+    is_favorite = False
+    is_in_watchlist = False
+    
+    if request.user.is_authenticated:
+        try:
+            if ctype == 'series':
+                local_content = Series.objects.filter(
+                    title=content.get('title'),
+                    start_year=content.get('start_year')
+                ).first()
+            else:
+                local_content = Movie.objects.filter(
+                    title=content.get('title'),
+                    year=content.get('year')
+                ).first()
+            
+            if local_content:
+                # Verificar VisualizationProgress
+                vp = VisualizationProgress.objects.filter(user=request.user, content=local_content).first()
+                if vp:
+                    if vp.completed:
+                        user_status = 'completed'
+                    elif vp.last_minute > 0:
+                        user_status = 'watching'
+                
+                # Verificar Favorite
+                is_favorite = Favorite.objects.filter(user=request.user, content=local_content).exists()
+                
+                # Verificar Watchlist
+                is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
+        except Exception as e:
+            print(f"Error checking user status: {e}")
+    
     return render(request, 'pages/content_view.html', {
         'content': content,
-        'ctype': ctype,
         'user_status': user_status,
         'is_favorite': is_favorite,
         'is_in_watchlist': is_in_watchlist
@@ -287,7 +325,6 @@ def update_status(request, ctype, cid):
             data = json.loads(request.body)
             status = data.get('status', 'not_seen')
             
-            # Buscar contenido local
             if ctype == 'series':
                 local_content = Series.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
             else:
@@ -327,7 +364,6 @@ def toggle_favorite(request, ctype, cid):
     
     if request.method == 'POST':
         try:
-            # Buscar contenido local
             if ctype == 'series':
                 local_content = Series.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
             else:
@@ -371,20 +407,16 @@ def main(request):
         completed=False
     ).select_related('content').order_by('-id')
 
-    # 2. Enrich the data (Calculations)
+    
     for progress in watch_progress:
-        # Get duration from Movie model (Series fallback to 90m for now)
         movie = Movie.objects.filter(id=progress.content.id).first()
         progress.total_duration = movie.duration_minutes if movie else 90 
         
-        # Calculate time remaining
         progress.minutes_left = max(0, progress.total_duration - progress.last_minute)
         
-        # Find which platform this content belongs to
         catalog_entry = Catalog.objects.filter(content=progress.content).first()
         progress.platform_name = catalog_entry.platform.platform_name if catalog_entry else "StreamSync"
         
-        # Prepare URL data
         progress.ctype = 'movie' if movie else 'series'
         progress.slug = slugify(f"{progress.content.title}_{movie.year if movie else progress.content.id}")
     has_watch_history = watch_progress.exists()
