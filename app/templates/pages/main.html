@@ -6,20 +6,15 @@
 
 <section class="mb-12">
     {% if has_watch_history %}
-    <div class="flex gap-6 overflow-x-auto no-scrollbar pb-4 snap-x snap-mandatory">
-        {% for progress in watch_progress %}
-        <div class="min-w-[85%] md:min-w-[600px] snap-center relative group rounded-2xl overflow-hidden shadow-lg bg-surface-dark">
-           <div 
-                class="aspect-video w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                data-alt="{{ progress.content.title }}"
-                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB8gmG2z7Mt5ql8YqZIB9UncRckA9dVvEIypPTYJsz2Uv9uJVEmJuHGUjuplevC6kQTz3FZzFlEAaRT9aniSjkCyMNhQbqQ7Q5FYKLdRRJUi2ZN0EbI4CLDSqdZIxEQCBpQmWb_ILr-kpkgNZtKr5wSUUG3IOYiCW3mHglRN_SBbZla-bx_uf9DCYKKAiAPt5mATMcehA79Ae5rVymhTnO3jP6k088Sy1Em0RKbuTNTgAClz82PDIx-JXPQV6lEwIbjOCX3-q4uSij-");
-            '>    
-<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent opacity-90"></div>
-            </div>
-            <div class="absolute bottom-0 left-0 w-full p-6 md:p-8">
-                <div class="flex items-center gap-3 mb-2">
-                    <span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-wider uppercase">{{ progress.content.genre_name|default:"Movie" }}</span>
-                    <span class="text-slate-300 text-sm font-medium">{{ progress.last_minute }}m • {{ progress.content.duration_minutes|default:90 }}m left</span>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Continue Watching</h2>
+        
+        <div class="flex gap-6 overflow-x-auto no-scrollbar pb-6 snap-x snap-mandatory">
+            {% for progress in watch_progress %}
+            <div class="min-w-[90%] md:min-w-[540px] snap-center relative group rounded-3xl overflow-hidden shadow-2xl bg-surface-dark border border-white/5">
+                
+                <div class="aspect-video w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" 
+                     style='background-image: url("https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=2070&auto=format&fit=crop");'>
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/60 to-transparent"></div>
                 </div>
 
                 <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
@@ -81,11 +76,13 @@
             {% for serie in series_list %}
             <div class="min-w-[200px] md:min-w-[240px] flex-shrink-0 group">
                 <div class="aspect-[2/3] rounded-xl overflow-hidden relative shadow-md bg-surface-dark">
-                    <img 
-                        alt="{{ serie.title }}"
-                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        src="https://via.placeholder.com/300x450?text=No+Image"
-                    />
+                    {% if serie.image_url %}
+                    <img alt="{{ serie.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="{{ serie.image_url }}"/>
+                    {% else %}
+                    <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-4xl text-slate-500">tv</span>
+                    </div>
+                    {% endif %}
                     <div class="absolute top-2 right-2">
                         <span class="bg-primary text-white text-[10px] px-2 py-0.5 rounded shadow">{{ serie.platforms.0|default:"Series" }}</span>
                     </div>
@@ -136,12 +133,15 @@
                 {% for movie in movies_list %}
                 <div class="flex-shrink-0 w-[200px] md:w-[240px] group">
                     <div class="aspect-[2/3] rounded-xl overflow-hidden relative shadow-md bg-surface-dark">
-                        <img 
-                            alt="{{ movie.title }}" 
-                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="{{'https://via.placeholder.com/300x450?text=No+Image'}}"
-                            src='https://via.placeholder.com/300x450?text=No+Image'
-                        />
+                        {% if movie.image_url %}
+                        <img alt="{{ movie.title }}" 
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                             src="{{ movie.image_url }}"/>
+                        {% else %}
+                        <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-4xl text-slate-500">movie</span>
+                        </div>
+                        {% endif %}
                         
                         <div class="absolute top-2 right-2">
                             <span class="bg-primary text-white text-[10px] px-2 py-0.5 rounded shadow">
@@ -205,9 +205,7 @@
         <div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer">
             <a href="{% url 'app:content_detail' item.content_type item.unique_id %}">
                 <div class="aspect-video rounded-lg overflow-hidden relative shadow-sm bg-surface-dark">
-                    {% if item.poster_url %}
-                    <img alt="{{ item.title }}" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-50" src="{{ item.poster_url }}"/>
-                    {% elif item.image_url %}
+                    {% if item.image_url %}
                     <img alt="{{ item.title }}" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-50" src="{{ item.image_url }}"/>
                     {% else %}
                     <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
