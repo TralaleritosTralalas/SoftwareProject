@@ -19,8 +19,6 @@ from .models import VisualizationProgress, Movie, Series, Platform, Genre
 import json
 from django.db.models import Q
     
-# Create your views here.
-
 def home(request):
     return render(request, 'pages/home.html')
 
@@ -131,7 +129,6 @@ def catalog(request):
     sort_rating = request.GET.get('sort_rating')
     sort_year = request.GET.get('sort_year')
 
-    # Get data from services (returns dicts with unique_id)
     movies = get_all_movies(platform_filter=plat_name)
     series = get_all_series(platform_filter=plat_name)
 
@@ -211,8 +208,8 @@ def series(request):
 
     context = {
         'series': series_list,
-        'platforms': get_all_platforms(), # <--- Añadir esto
-        'genres': get_all_genres_from_api(), # <--- Añadir esto
+        'platforms': get_all_platforms(),
+        'genres': get_all_genres_from_api(),
         'selected_platform': selected_platform,
         'selected_genre': selected_genre,
         'sort_rating': sort_rating,
@@ -229,7 +226,6 @@ def search(request):
     series = []
     
     if query:
-        # Use the search_content function from services.py
         results = search_content(query=query, platform=p, genre=g)
         
         # Separate movies and series
@@ -258,14 +254,10 @@ def login(request):
 
 
 def content_detail(request, ctype, cid):
-    # Intentamos buscar por ID, si falla, podrías buscar por título
     model = Series if ctype == 'series' else Movie
-    
-    # Si cid es numérico usamos pk, si es texto usamos el título (ejemplo simple)
     if cid.isdigit():
         content = get_object_or_404(model, pk=cid)
     else:
-        # Reemplazamos guiones por espacios para intentar buscar por título
         title_guess = cid.replace('-', ' ').split('_')[0]
         content = get_object_or_404(model, title__icontains=title_guess)
 
@@ -273,7 +265,6 @@ def content_detail(request, ctype, cid):
     is_favorite = is_in_watchlist = False
 
     if request.user.is_authenticated:
-        # Usamos el objeto 'content' directamente, el ORM se encarga del ID
         vp = VisualizationProgress.objects.filter(user=request.user, content=content).first()
         if vp:
             user_status = 'completed' if vp.completed else 'watching'

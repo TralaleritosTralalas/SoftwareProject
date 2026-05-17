@@ -5,7 +5,7 @@ from django.db import transaction
 from django.contrib.auth import get_user_model
 from app.models import (
     Genre, Director, AgeRating,
-    Movie, Series, Platform, Catalog
+    Movie, Series, Platform, Catalog, Country
 )
 from decouple import config
 
@@ -37,6 +37,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if options['clear']:
             self.clear_data()
+
+        self.import_countries()
 
         target_apis = list(self.API_CONFIG.items())
         if options['api']:
@@ -74,7 +76,7 @@ class Command(BaseCommand):
             for item in data:
                 AgeRating.objects.get_or_create(
                     description=item['description'],
-                    defaults={'minimum_age': item.get('minimum_age') or 0}
+                    defaults={'minimum_age': item.get('minimum_age') or 0}  # Default to 0 if not provided
                 )
 
         elif r_type == 'directors':
@@ -89,11 +91,8 @@ class Command(BaseCommand):
             platform = self._get_or_create_platform(base_url, platform_name)
             for item in data:
                 try:
-                    # FIX: Use the *_id fields to look up related objects
                     genre = None
                     if item.get('genre_id'):
-                        # Find genre by the API id - we need to map it
-                        # Since we imported genres first, we can find by index or create a mapping
                         genre = Genre.objects.all()[item['genre_id'] - 1] if item['genre_id'] <= Genre.objects.count() else None
                     
                     director = None
@@ -107,11 +106,11 @@ class Command(BaseCommand):
                     movie, _ = Movie.objects.update_or_create(
                         title=item['title'],
                         defaults={
-                            'synopsis': item.get('synopsis') or '',
-                            'rating': float(item.get('rating') or 0),  # Convert string to float
-                            'year': item.get('year') or 2000,
-                            'release_date': parse_date(item.get('release_date')) or '2000-01-01',
-                            'duration_minutes': item.get('duration_minutes') or 90,  # Default duration
+                            'synopsis': item.get('synopsis') or '', #default to empty string if not provided
+                            'rating': float(item.get('rating') or 0), #default to 0 if not provided
+                            'year': item.get('year') or 2000, # Default to 2000 if not provided
+                            'release_date': parse_date(item.get('release_date')) or '2000-01-01', # Default to '2000-01-01' if not provided
+                            'duration_minutes': item.get('duration_minutes') or 0, # Default to 0 if not provided
                             'genre': genre,
                             'director': director,
                             'age_rating': age_rating,
@@ -129,7 +128,7 @@ class Command(BaseCommand):
             platform = self._get_or_create_platform(base_url, platform_name)
             for item in data:
                 try:
-                    # FIX: Use the *_id fields to look up related objects
+                
                     genre = None
                     if item.get('genre_id'):
                         genre = Genre.objects.all()[item['genre_id'] - 1] if item['genre_id'] <= Genre.objects.count() else None
@@ -142,7 +141,7 @@ class Command(BaseCommand):
                         title=item['title'],
                         defaults={
                             'synopsis': item.get('synopsis') or '',
-                            'rating': float(item.get('rating') or 0),  # Convert string to float
+                            'rating': float(item.get('rating') or 0),
                             'start_year': item.get('start_year') or 2000,
                             'end_year': item.get('end_year'),
                             'total_seasons': item.get('total_seasons') or 1,
@@ -166,6 +165,37 @@ class Command(BaseCommand):
             defaults={'url_api': base_url, 'p_manager': manager}
         )
         return platform
+    
+    def import_countries(self):
+        """Import initial countries into the database"""
+        self.stdout.write(self.style.WARNING('\n--- Importando países ---'))
+        countries = [
+            ('US', 'USA'),
+            ('GB', 'United Kingdom'),
+            ('ES', 'Spain'),
+            ('MX', 'Mexico'),
+            ('AR', 'Argentina'),
+            ('BR', 'Brazil'),
+            ('CA', 'Canada'),
+            ('AU', 'Australia'),
+            ('DE', 'Germany'),
+            ('FR', 'France'),
+            ('PT', 'Portugal'),
+            ('DK', 'Denmark'),
+            ('IT', 'Italy'),
+            ('KR', 'South Korea'),
+            ('JP', 'Japan'),
+            ('CN', 'China'),
+            ('RU', 'Russia'),
+            ('NZ', 'New Zealand'),
+            ('CL', 'Chile'),
+        ]
+        for iso, name in countries:
+            Country.objects.get_or_create(
+                iso_code=iso,
+                defaults={'name': name}
+            )
+        self.stdout.write(self.style.SUCCESS(f'  ✓ Países creados: {Country.objects.count()}'))
 
     def clear_data(self):
         self.stdout.write(self.style.WARNING('Limpiando base de datos...'))
@@ -175,4 +205,5 @@ class Command(BaseCommand):
         Director.objects.all().delete()
         AgeRating.objects.all().delete()
         Genre.objects.all().delete()
+        Country.objects.all().delete()
         self.stdout.write(self.style.SUCCESS('Base de datos limpia.'))
