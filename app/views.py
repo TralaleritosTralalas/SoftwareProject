@@ -513,7 +513,23 @@ def main(request):
     
     trending = get_trending(limit=4)
     
-    watch_progress = VisualizationProgress.objects.filter(user=user, completed=False).select_related('content')
+    watch_progress = VisualizationProgress.objects.filter(
+        user=user,  
+        completed=False
+    ).select_related('content').order_by('-id')
+
+    
+    for progress in watch_progress:
+        movie = Movie.objects.filter(id=progress.content.id).first()
+        progress.total_duration = movie.duration_minutes if movie else 90 
+        
+        progress.minutes_left = max(0, progress.total_duration - progress.last_minute)
+        
+        catalog_entry = Catalog.objects.filter(content=progress.content).first()
+        progress.platform_name = catalog_entry.platform.platform_name if catalog_entry else "StreamSync"
+        
+        progress.ctype = 'movie' if movie else 'series'
+        progress.slug = slugify(f"{progress.content.title}_{movie.year if movie else progress.content.id}")
     has_watch_history = watch_progress.exists()
     
     return render(request, 'pages/main.html', {
