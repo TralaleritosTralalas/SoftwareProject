@@ -316,7 +316,7 @@ def content_detail(request, ctype, cid):
             'is_in_watchlist': is_in_watchlist
         })
     else:
-        return render(request, 'pages/home.html', status=404)
+        return render(request, 'pages/main.html', status=404)
 
 
 def _safe_int(value, default=0):

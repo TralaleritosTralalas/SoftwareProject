@@ -72,10 +72,13 @@
 <span class="material-symbols-outlined text-xl">play_arrow</span>
 </div>
 <h2 class="text-lg font-bold leading-tight tracking-tight">StreamSync</h2>
-</div>
-<div class="hidden md:flex flex-1 justify-end gap-8 items-center">
-<div class="flex items-center gap-8">
-</div>
+</div> 
+    
+<nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+    <a href="{% url 'app:catalog' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+        Full Catalog
+    </a>
+</nav>
 <div class="flex gap-3">
     <a href="/accounts/login">
         <button class="h-10 px-5 rounded-lg text-slate-900 dark:text-white text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all" >

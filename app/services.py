@@ -1,6 +1,7 @@
 import requests
 from django.urls import reverse
 from decouple import config
+from thefuzz import fuzz
 
 # URL DE LAS MOVIES-API EN LOCAL
 url_local_1 = "http://127.0.0.1:8080" #API LOCAL 1
@@ -315,18 +316,34 @@ def get_trending(limit=10):
 
 def search_content(query, platform=None, genre=None, sort_rating=None, sort_year=None):
     results_dict = {}
+    search_query = query.lower().strip()
+    THRESHOLD = 60
 
     for url, key, platform_name in PLATFORMS:
         if platform and platform_name != platform:
             continue
 
+        # 1. PREPARAR MAPAS (Necesarios para traducir IDs a nombres)
         genre_map = {g["id"]: g["name"] for g in get_genre(url, key)}
+        # Obtenemos los directores para esta plataforma específica
+        directors_data = get_directors(url, key)
+        director_map = {d["id"]: d.get("name", "Unknown Director") for d in directors_data}
 
         # --- Búsqueda en Películas ---
         try:
-            res = requests.get(f"{url}/movies", headers={"X-API-KEY": key}, params={"title": query}, timeout=5)
+            res = requests.get(f"{url}/movies", headers={"X-API-KEY": key}, timeout=5)
             if res.status_code == 200:
                 for movie in res.json():
+                    # Obtener nombre del director desde el mapa
+                    d_name = director_map.get(movie.get("director_id"), "Unknown Director").lower()
+                    m_title = movie.get("title", "").lower()
+                    score_title = fuzz.partial_ratio(search_query, m_title)
+                    score_director = fuzz.partial_ratio(search_query, d_name)
+                    # Lógica Case-Insensitive
+                    if search_query not in m_title and search_query not in d_name and score_title < THRESHOLD and score_director < THRESHOLD:
+                        continue
+
+                    # Filtro de género
                     movie_genre = genre_map.get(movie.get("genre_id"), "Unknown")
                     if genre and genre.lower() not in movie_genre.lower():
                         continue
@@ -334,44 +351,69 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
                     clean_title = movie.get('title', '').lower().strip()
                     year = movie.get('year', '')
                     identifier = f"{clean_title}_{year}" 
+                    movie["search_score"] = max(score_title, score_director)
+                    identifier = f"{m_title}_{movie.get('year', '')}".strip()
                     
                     if identifier not in results_dict:
                         movie["content_type"] = "movie"
                         movie["genre_name"] = movie_genre
+                        movie["director"] = director_map.get(movie.get("director_id"), "Unknown Director")
                         movie["platforms"] = [platform_name]
                         movie["unique_id"] = identifier  
+                        movie["unique_id"] = identifier 
+                        
                         results_dict[identifier] = movie
                     else:
                         if platform_name not in results_dict[identifier]["platforms"]:
                             results_dict[identifier]["platforms"].append(platform_name)
-        except:
-            pass
+        except Exception as e:
+            print(f"Error en búsqueda de películas: {e}")
 
         # --- Búsqueda en Series ---
         try:
-            res = requests.get(f"{url}/series", headers={"X-API-KEY": key}, params={"title": query}, timeout=5)
+            res = requests.get(f"{url}/series", headers={"X-API-KEY": key}, timeout=5)
             if res.status_code == 200:
                 for serie in res.json():
+                    s_title = serie.get("title", "").lower()
+                    
+                    # Resolver nombre del director para series
+                    dir_data = serie.get("director")
+                    if isinstance(dir_data, dict):
+                        s_dir_name = dir_data.get("name", "Unknown Director").lower()
+                    else:
+                        s_dir_name = director_map.get(serie.get("director_id"), "Unknown Director").lower()
+
+                    if search_query not in s_title and search_query not in s_dir_name:
+                        continue
+
                     serie_genre = genre_map.get(serie.get("genre_id"), "Unknown")
                     if genre and genre.lower() not in serie_genre.lower():
                         continue
                     
-                    # CAMBIO AQUÍ: Eliminamos el prefijo 'series_'
-                    clean_title = serie.get('title', '').lower().strip()
-                    year = serie.get('start_year', '')
-                    identifier = f"{clean_title}_{year}"
+                    identifier = f"{s_title}_{serie.get('start_year', '')}".strip()
                     
                     if identifier not in results_dict:
                         serie["content_type"] = "series"
                         serie["genre_name"] = serie_genre
+                        serie["director"] = s_dir_name.title() # Aseguramos que tenga el campo director
                         serie["platforms"] = [platform_name]
                         serie["unique_id"] = identifier
                         results_dict[identifier] = serie
                     else:
                         if platform_name not in results_dict[identifier]["platforms"]:
                             results_dict[identifier]["platforms"].append(platform_name)
-        except:
-            pass
+        except Exception as e:
+            print(f"Error en búsqueda de series: {e}")
 
-    # ... (resto de la lógica de ordenación y retorno)
-    return list(results_dict.values())
+    # Convertir a lista
+    final_results = list(results_dict.values())
+
+    # 2. ORDENACIÓN PRIORITARIA: "Empieza por" primero, luego "Contiene"
+    # True se ordena después de False, por eso usamos 'not' para que los que SI empiezan sean 0 (primero)
+    final_results.sort(key=lambda x: (
+        not x.get('title', '').lower().startswith(search_query),
+        x.get('search_score', 0),  # Per relevancia de busqueda
+        x.get('title', '').lower()
+    ))
+
+    return final_results
