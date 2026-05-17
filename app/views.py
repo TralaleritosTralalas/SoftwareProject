@@ -433,8 +433,50 @@ def toggle_favorite(request, ctype, cid):
     
 @login_required
 def personal_library(request):
+    from app.models import Movie, Series
+    
     # Favoritos del usuario
-    favorites_count = Favorite.objects.filter(user=request.user).count()
+    favorites = Favorite.objects.filter(user=request.user).select_related('content', 'content__genre')
+    favorites_count = favorites.count()
+    
+    # Separar movies y series
+    favorite_movies = []
+    favorite_series = []
+    
+    for fav in favorites:
+        content = fav.content
+
+        # Intentar downcast a Movie
+        try:
+            movie = content.movie  # accede a la tabla Movie vía el OneToOne implícito
+            item = {
+                'title': movie.title,
+                'rating': movie.rating,
+                'genre_name': movie.genre.name if movie.genre else 'Unknown',
+                'platforms': [],
+                'year': movie.year,
+                'unique_id': f"{movie.title.lower().replace(' ', '-')}_{movie.year}",
+            }
+            favorite_movies.append(item)
+            continue
+        except Movie.DoesNotExist:
+            pass
+
+        # Intentar downcast a Series
+        try:
+            series = content.series
+            item = {
+                'title': series.title,
+                'rating': series.rating,
+                'genre_name': series.genre.name if series.genre else 'Unknown',
+                'platforms': [],
+                'start_year': series.start_year,
+                'unique_id': f"{series.title.lower().replace(' ', '-')}_{series.start_year}",
+            }
+            favorite_series.append(item)
+        except Series.DoesNotExist:
+            pass
+
     
     # Continue Watching: tiene progreso pero no completado (last_minute > 0)
     watching_count = VisualizationProgress.objects.filter(
@@ -452,6 +494,8 @@ def personal_library(request):
         'favorites_count': favorites_count,
         'watching_count': watching_count,
         'completed_count': completed_count,
+        'favorite_movies': favorite_movies,
+        'favorite_series': favorite_series
     })
 
 
