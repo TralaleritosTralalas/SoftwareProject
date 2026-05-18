@@ -433,69 +433,167 @@ def toggle_favorite(request, ctype, cid):
     
 @login_required
 def personal_library(request):
-    from app.models import Movie, Series
+
+    # HELPERS
+    def build_movie_item(movie, extra=None):
+        data = {
+            'title': movie.title,
+            'rating': movie.rating,
+            'genre_name': movie.genre.name if movie.genre else 'Unknown',
+            'platforms': [],
+            'year': movie.year,
+            'unique_id': f"{movie.title.lower().replace(' ', '-')}_{movie.year}",
+        }
+
+        if extra:
+            data.update(extra)
+
+        return data
+
+    def build_series_item(series, extra=None):
+        data = {
+            'title': series.title,
+            'rating': series.rating,
+            'genre_name': series.genre.name if series.genre else 'Unknown',
+            'platforms': [],
+            'start_year': series.start_year,
+            'unique_id': f"{series.title.lower().replace(' ', '-')}_{series.start_year}",
+        }
+
+        if extra:
+            data.update(extra)
+
+        return data
     
-    # Favoritos del usuario
-    favorites = Favorite.objects.filter(user=request.user).select_related('content', 'content__genre')
-    favorites_count = favorites.count()
-    
-    # Separar movies y series
+    # FAVORITES
+    favorites_qs = (
+        Favorite.objects
+        .filter(user=request.user)
+        .select_related(
+            'content',
+            'content__movie',
+            'content__movie__genre',
+            'content__series',
+            'content__series__genre',
+        )
+    )
+
     favorite_movies = []
     favorite_series = []
-    
-    for fav in favorites:
+
+    favorites_count = 0
+
+    for fav in favorites_qs:
+        favorites_count += 1
+
         content = fav.content
 
-        # Intentar downcast a Movie
-        try:
-            movie = content.movie  # accede a la tabla Movie vía el OneToOne implícito
-            item = {
-                'title': movie.title,
-                'rating': movie.rating,
-                'genre_name': movie.genre.name if movie.genre else 'Unknown',
-                'platforms': [],
-                'year': movie.year,
-                'unique_id': f"{movie.title.lower().replace(' ', '-')}_{movie.year}",
-            }
-            favorite_movies.append(item)
-            continue
-        except Movie.DoesNotExist:
-            pass
+        if hasattr(content, 'movie'):
+            favorite_movies.append(
+                build_movie_item(content.movie)
+            )
 
-        # Intentar downcast a Series
-        try:
-            series = content.series
-            item = {
-                'title': series.title,
-                'rating': series.rating,
-                'genre_name': series.genre.name if series.genre else 'Unknown',
-                'platforms': [],
-                'start_year': series.start_year,
-                'unique_id': f"{series.title.lower().replace(' ', '-')}_{series.start_year}",
-            }
-            favorite_series.append(item)
-        except Series.DoesNotExist:
-            pass
+        elif hasattr(content, 'series'):
+            favorite_series.append(
+                build_series_item(content.series)
+            )
 
-    
-    # Continue Watching: tiene progreso pero no completado (last_minute > 0)
-    watching_count = VisualizationProgress.objects.filter(
-        user=request.user,
-        completed=False
-    ).exclude(last_minute=0).count()
-    
-    # Completed: marcados como completados
-    completed_count = VisualizationProgress.objects.filter(
-        user=request.user,
-        completed=True
-    ).count()
-    
+    # CONTINUE WATCHING
+    continue_qs = (
+        VisualizationProgress.objects
+        .filter(
+            user=request.user,
+            completed=False
+        )
+        .exclude(last_minute=0)
+        .select_related(
+            'content',
+            'content__movie',
+            'content__movie__genre',
+            'content__series',
+            'content__series__genre',
+        )
+    )
+
+    continue_watching_movies = []
+    continue_watching_series = []
+
+    watching_count = 0
+
+    for vp in continue_qs:
+        watching_count += 1
+
+        content = vp.content
+
+        if hasattr(content, 'movie'):
+            movie = content.movie
+
+
+            continue_watching_movies.append(
+                build_movie_item(movie, {
+                    'last_minute': vp.last_minute,
+                    'total_duration': movie.duration_minutes,
+                })
+            )
+
+        elif hasattr(content, 'series'):
+            continue_watching_series.append(
+                build_series_item(content.series, {
+                    'progress': 0,
+                    'last_minute': vp.last_minute,
+                    'total_duration': 0,
+                })
+            )
+
+    # COMPLETED
+    completed_qs = (
+        VisualizationProgress.objects
+        .filter(
+            user=request.user,
+            completed=True
+        )
+        .select_related(
+            'content',
+            'content__movie',
+            'content__movie__genre',
+            'content__series',
+            'content__series__genre',
+        )
+    )
+
+    completed_movies = []
+    completed_series = []
+
+    completed_count = 0
+
+    for vp in completed_qs:
+        completed_count += 1
+
+        content = vp.content
+
+        if hasattr(content, 'movie'):
+            completed_movies.append(
+                build_movie_item(content.movie)
+            )
+
+        elif hasattr(content, 'series'):
+            completed_series.append(
+                build_series_item(content.series)
+            )
+
     return render(request, 'pages/personal_library.html', {
         'favorites_count': favorites_count,
         'watching_count': watching_count,
         'completed_count': completed_count,
+
         'favorite_movies': favorite_movies,
-        'favorite_series': favorite_series
+        'favorite_series': favorite_series,
+
+        'continue_watching_movies': continue_watching_movies,
+        'continue_watching_series': continue_watching_series,
+
+        'completed_movies': completed_movies,
+        'completed_series': completed_series,
     })
 
 
