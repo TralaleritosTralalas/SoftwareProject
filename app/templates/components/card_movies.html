@@ -1,4 +1,7 @@
 
+{% load i18n %}
+
+
 <!-- Movies -->
 <h1 class="text-3xl font-bold mb-6">{% trans "Movies" %}</h1>
 
@@ -12,7 +15,7 @@
             <div class="aspect-[2/3] rounded-xl overflow-hidden relative cinematic-shadow hover-electric">
 
                 <!-- Image -->
-                <img src="https://via.placeholder.com/300x450?text=No+Image"
+                <img src="{{ movie.poster_url|default:'https://via.placeholder.com/300x450?text=No+Image' }}"
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
 
                 <!-- Gradient -->
