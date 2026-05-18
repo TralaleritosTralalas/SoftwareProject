@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
 from datetime import date
 
+
 class User(AbstractUser):
     GENDER_CHOICES = [
         ('male', 'Male'),
@@ -48,11 +49,10 @@ class User(AbstractUser):
     def age(self):
         if not self.birth_date:
             return None
-
         today = date.today()
-
         return today.year - self.birth_date.year - (
-                    (today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+            (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
+        )
 
 
 class Country(models.Model):
@@ -186,12 +186,14 @@ class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.ForeignKey(AudiovisualContent, on_delete=models.CASCADE)
 
+
 # SIGNALS
 @receiver(post_save, sender=User)
 def sync_user_groups(sender, instance, **kwargs):
     if instance.role:
         instance.groups.clear()
         instance.groups.add(instance.role)
+
 
 @receiver(m2m_changed, sender=User.groups.through)
 def sync_profile_role_from_group(sender, instance, action, pk_set, **kwargs):
