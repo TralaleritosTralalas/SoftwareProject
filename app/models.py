@@ -107,6 +107,8 @@ class AudiovisualContent(models.Model):
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
     language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
     age_rating = models.ForeignKey(AgeRating, on_delete=models.SET_NULL, null=True)
+    poster_url = models.URLField(max_length=500, null=True, blank=True, verbose_name="Poster URL")
+    backdrop_url = models.URLField(max_length=500, null=True, blank=True, verbose_name="Backdrop URL")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

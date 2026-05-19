@@ -2,10 +2,25 @@
 
 {% block content %}
 <!-- Content Canvas -->
-<main class="relative min-h-screen">
+<main class="relative min-h-screen mb-20 md:mb-0">
+
+<!-- Backdrop Image with Gradient Overlay: Fixed positioning to fill viewport -->
+  <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden" style="height: 100vh; top: 0; left: 0; right: 0;">
+    {% if content.backdrop_url %}
+      <img src="{{ content.backdrop_url }}" 
+           alt="{{ content.title }} backdrop" 
+           class="w-full h-full object-cover object-top" />
+      <!-- Gradient overlays for readability -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-[#0f1419]/90 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-[#0f1419] via-transparent to-[#0f1419]/50"></div>
+    {% else %}
+      <!-- Fallback gradient if no backdrop -->
+      <div class="w-full h-full bg-gradient-to-br from-[#0f1419] via-[#1a2333] to-[#0f1419]"></div>
+    {% endif %}
+  </div>
 
   <!-- Detail Content -->
-  <div class="relative z-10 pt-64 px-8 md:px-24 pb-24 max-w-7xl mx-auto">
+  <div class="relative z-10 pt-64 px-8 md:px-24 pb-48 md:pb-32 max-w-7xl mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
       <!-- Main Info Col -->
       <div class="lg:col-span-8 space-y-12">
@@ -139,26 +154,6 @@
     </div>
   </div>
 </main>
-<!-- BottomNavBar (Shared Component - Mobile Only) -->
-<nav
-  class="md:hidden fixed bottom-0 w-full z-50 bg-[#1a2333]/60 backdrop-blur-md flex justify-around items-center py-4 px-6 border-t border-white/5">
-  <button class="flex flex-col items-center gap-1 text-[#256af4] font-bold">
-    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
-    <span class="text-[10px]">Home</span>
-  </button>
-  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
-    <span class="material-symbols-outlined">explore</span>
-    <span class="text-[10px]">Discovery</span>
-  </button>
-  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
-    <span class="material-symbols-outlined">bookmark</span>
-    <span class="text-[10px]">Watchlist</span>
-  </button>
-  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
-    <span class="material-symbols-outlined">settings</span>
-    <span class="text-[10px]">Settings</span>
-  </button>
-</nav>
 {% endblock %}
 
 {% block extra_scripts %} 

@@ -59,7 +59,9 @@ def get_all_movies(platform_filter=None):
             'director_nationality': movie.director.country.name if movie.director and movie.director.country else "Unknown",
             'age_rating': str(movie.age_rating) if movie.age_rating else "NR",
             'platforms': platforms,
-            'unique_id': identifier,  # This should never be empty now
+            'poster_url': movie.poster_url or '',
+            'backdrop_url': movie.backdrop_url or '',
+            'unique_id': identifier,
             'content_type': 'movie'
         }
         
@@ -110,7 +112,9 @@ def get_all_series(platform_filter=None):
             'director_nationality': serie.director.country.name if serie.director and serie.director.country else "Unknown",
             'age_rating': str(serie.age_rating) if serie.age_rating else "NR",
             'platforms': platforms,
-            'unique_id': identifier,  # This should never be empty now
+            'poster_url': serie.poster_url or '',
+            'backdrop_url': serie.backdrop_url or '',
+            'unique_id': identifier, 
             'content_type': 'series'
         }
         
@@ -274,6 +278,8 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
                     "director": movie.director.name if movie.director else "Unknown Director",
                     "director_id": movie.director.id if movie.director else None,
                     "platforms": platforms_list,
+                    'poster_url': movie.poster_url or '',  # Add this
+                    'backdrop_url': movie.backdrop_url or '',
                     "unique_id": identifier,
                     "search_score": max(score_title, score_director)
                 }
@@ -322,7 +328,9 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
                     "director_id": serie.director.id if serie.director else None,
                     "platforms": platforms_list,
                     "unique_id": identifier,
-                    "search_score": max(score_title, score_director)
+                    "search_score": max(score_title, score_director),
+                    "poster_url": serie.poster_url or '',
+                    "backdrop_url": serie.backdrop_url or ''
                 }
             else:
                 # Merge platforms
