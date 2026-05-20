@@ -231,45 +231,58 @@ window.contentInLists = [];
 
       </div>
 
-      <div id="lists-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div id="lists-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {% if user_lists %}
           {% for list in user_lists %}
-          <div class="group rounded-3xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all duration-300 p-5 flex flex-col gap-5 hover:-translate-y-1 cursor-pointer" onclick="openListDetail({{ list.id }})">
+          <div class="group rounded-3xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all duration-300 p-5 flex flex-col gap-4 hover:-translate-y-1"
+               style="cursor:pointer" onclick="openListDetail({{ list.id }})">
+
+            <!-- Header: nombre completo + botones acción -->
             <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
-                  <span class="material-symbols-outlined">
-                    stacks
-                  </span>
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                  <span class="material-symbols-outlined">stacks</span>
                 </div>
-                <div>
-                  <h3 class="text-white font-bold">{{ list.name }}</h3>
-                  <p class="text-xs text-text-secondary mt-1">{{ list.item_count }} titles</p>
+                <div class="min-w-0">
+                  <h3 class="text-white font-bold text-sm leading-snug break-words">{{ list.name }}</h3>
+                  <p class="text-xs text-text-secondary mt-0.5">
+                    {{ list.item_count }} title{{ list.item_count|pluralize }}
+                  </p>
                 </div>
               </div>
-              <div class="flex items-center gap-2">
-                <button onclick="event.stopPropagation(); openRenameListModal({{ list.id }}, '{{ list.name|escapejs }}')" class="p-2 rounded-lg hover:bg-white/5 text-text-secondary hover:text-white transition-all">
+              <div class="flex items-center gap-1 flex-shrink-0 ml-2">
+                <button onclick="event.stopPropagation(); openRenameListModal({{ list.id }}, '{{ list.name|escapejs }}')"
+                        class="p-2 rounded-lg hover:bg-white/5 text-text-secondary hover:text-white transition-all"
+                        title="Rename list">
                   <span class="material-symbols-outlined text-sm">edit</span>
                 </button>
-                <button onclick="event.stopPropagation(); confirmDeleteList({{ list.id }})" class="p-2 rounded-lg hover:bg-red-500/10 text-text-secondary hover:text-red-400 transition-all">
+                <button onclick="event.stopPropagation(); confirmDeleteList({{ list.id }})"
+                        class="p-2 rounded-lg hover:bg-red-500/10 text-text-secondary hover:text-red-400 transition-all"
+                        title="Delete list">
                   <span class="material-symbols-outlined text-sm">delete</span>
                 </button>
               </div>
             </div>
-            <div class="flex -space-x-4">
+
+            <!-- Preview: lista vertical con icono + título completo -->
+            <div class="border-t border-white/5 pt-3">
               {% for item in list.preview_items|slice:":3" %}
-              <div class="size-20 rounded-xl overflow-hidden border-2 border-surface-dark">
-                <div class="w-full h-full bg-surface-highlight flex items-center justify-center text-text-secondary text-xs p-2 text-center">{{ item.title|truncatechars:15 }}</div>
+              <div class="flex items-center gap-2 py-1.5 {% if not forloop.last %}border-b border-white/5{% endif %}">
+                <span class="material-symbols-outlined text-text-secondary text-sm flex-shrink-0">
+                  {% if item.content_type == "series" %}live_tv{% else %}movie{% endif %}
+                </span>
+                <span class="text-xs text-slate-300 font-medium truncate">{{ item.title }}</span>
               </div>
               {% empty %}
-              <div class="size-20 rounded-xl border-2 border-surface-dark bg-surface-highlight flex items-center justify-center text-text-secondary text-xs">Empty</div>
+              <p class="text-xs text-text-secondary italic">No items yet — start adding content!</p>
               {% endfor %}
               {% if list.item_count > 3 %}
-              <div class="size-20 rounded-xl border-2 border-surface-dark bg-surface-highlight flex items-center justify-center text-white font-bold text-sm">
-                +{{ list.item_count|add:"-3" }}
+              <div class="mt-1.5 text-xs text-primary font-semibold">
+                +{{ list.item_count|add:"-3" }} more title{{ list.item_count|add:"-3"|pluralize }}
               </div>
               {% endif %}
             </div>
+
           </div>
           {% endfor %}
         {% else %}
@@ -289,6 +302,7 @@ window.contentInLists = [];
     </section>
 
     {% include "components/watchlist_modal.html" %}
+    {% include "pages/rename_list_modal.html" %}
 
   </div>
 </main>

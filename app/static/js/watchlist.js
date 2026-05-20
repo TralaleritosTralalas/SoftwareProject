@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadUserLists();
+    initRenameModal();
 });
 
 function getCookie(name) {
@@ -69,12 +70,54 @@ function createList(name) {
     });
 }
 
-function openRenameListModal(listId, currentName) {
-    const newName = prompt('Enter new name:', currentName);
-    if (newName && newName.trim() && newName !== currentName) {
-        renameList(listId, newName.trim());
-    }
+// ── Rename Modal ────────────────────────────────────────────────────────────
+
+function initRenameModal() {
+    const modal = document.getElementById('rename-list-modal');
+    if (!modal) return;
+
+    const overlay = document.getElementById('rename-modal-overlay');
+    const cancelBtn = document.getElementById('rename-cancel-btn');
+    const form = document.getElementById('rename-list-form');
+
+    overlay && overlay.addEventListener('click', closeRenameModal);
+    cancelBtn && cancelBtn.addEventListener('click', closeRenameModal);
+
+    form && form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const input = document.getElementById('rename-list-input');
+        const listId = modal.dataset.listId;
+        const newName = input.value.trim();
+        if (newName && listId) {
+            renameList(parseInt(listId), newName);
+        }
+    });
 }
+
+function openRenameListModal(listId, currentName) {
+    const modal = document.getElementById('rename-list-modal');
+    if (!modal) return;
+    const input = document.getElementById('rename-list-input');
+    const errorEl = document.getElementById('rename-list-error');
+
+    modal.dataset.listId = listId;
+    input.value = currentName;
+    errorEl && (errorEl.textContent = '');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => input.select(), 50);
+}
+
+function closeRenameModal() {
+    const modal = document.getElementById('rename-list-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeRenameModal();
+});
 
 function renameList(listId, newName) {
     fetch(`/api/watchlist/lists/${listId}/rename/`, {
@@ -88,9 +131,14 @@ function renameList(listId, newName) {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            location.reload();
+            window.location.href = '/personal_library/';
         } else {
-            alert(data.error || 'Failed to rename list');
+            const errorEl = document.getElementById('rename-list-error');
+            if (errorEl) {
+                errorEl.textContent = data.error || 'Failed to rename list';
+            } else {
+                alert(data.error || 'Failed to rename list');
+            }
         }
     })
     .catch(err => {
@@ -116,7 +164,7 @@ function deleteList(listId) {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            location.reload();
+            window.location.href = '/personal_library/';
         } else {
             alert(data.error || 'Failed to delete list');
         }
