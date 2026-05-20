@@ -70,7 +70,7 @@ function createList(name) {
     });
 }
 
-// ── Rename Modal ────────────────────────────────────────────────────────────
+// ── Renonmbrar el modal
 
 function initRenameModal() {
     const modal = document.getElementById('rename-list-modal');
