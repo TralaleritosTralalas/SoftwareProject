@@ -1,180 +1,129 @@
+from django.db.models import Q, Prefetch
+from app.models import (
+    Movie, Series, Genre, Platform, Catalog
+)
 import requests
 from django.urls import reverse
 from decouple import config
 from thefuzz import fuzz
 
-# URL DE LAS MOVIES-API EN LOCAL
-url_local_1 = "http://127.0.0.1:8080" #API LOCAL 1
-url_local_2 = "http://127.0.0.1:8081" #API LOCAL 2
-url_local_3 = "http://127.0.0.1:8082" #API LOCAL 3
-     
-# API KEYS DE LAS MOVIES-API EN LOCAL
-api_key_local_1 = config("API_KEY_LOCAL_1")
-api_key_local_2 = config("API_KEY_LOCAL_2")
-api_key_local_3 = config("API_KEY_LOCAL_3")
-
-#PLATAFORMAS
-PLATFORMS = [
-    (url_local_1, api_key_local_1, "Platform 1"),
-    (url_local_2, api_key_local_2, "Platform 2"),
-    (url_local_3, api_key_local_3, "Platform 3"),
-]
-
-
-def get_local_movies(url, api_key): #de una "plataforma" obtengo sus peliculas
-    try:
-        response = requests.get(
-            f"{url}/movies", 
-            headers={"X-API-KEY": api_key},
-            timeout=5
-        )
-        response.raise_for_status() 
-        print(response.status_code, response.text)
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error connecting to API: {e}")
-        return []
-
-def get_local_series(url, api_key): #de una "plataforma" obtengo sus series
-    try:
-        response = requests.get(
-            f"{url}/series", 
-            headers={"X-API-KEY": api_key},
-            timeout=5
-        )
-        response.raise_for_status() 
-        print(response.status_code, response.text)
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error connecting to API: {e}")
-        return []
-
-def get_genre(url, api_key):
-    try:
-        response = requests.get(
-            f"{url}/genres", 
-            headers={"X-API-KEY": api_key}, 
-            timeout=5
-        )
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error connecting to API: {e}")
-        return []
-    
-def get_directors(url, api_key):
-    try:
-        response = requests.get(
-            f"{url}/directors", 
-            headers={"X-API-KEY": api_key}, 
-            timeout=5
-        )
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error connecting to API: {e}")
-        return []
 
 def get_all_platforms():
     """Retorna los nombres de las plataformas configuradas."""
-    return [p[2] for p in PLATFORMS]
+    return list(Platform.objects.values_list('platform_name', flat=True))
+
 
 def get_all_genres_from_api():
-    """Obtiene géneros únicos consultando todas las APIs configuradas."""
-    all_genres = set()
-    for url, key, _ in PLATFORMS:
-        genres = get_genre(url, key)
-        for g in genres:
-            all_genres.add(g["name"])
-    return sorted(list(all_genres))
+    """Obtiene géneros únicos desde la base de datos."""
+    return list(Genre.objects.values_list('name', flat=True).order_by('name'))
 
-def get_all_movies(platform_filter= None):  # obtener todas las peliculas de todas las "plataformas"
 
-    movies_dict = {} #diccionario para saber el contenido
-
-    for url, key, platform_name in PLATFORMS:
-        if platform_filter and platform_name != platform_filter:
+def get_all_movies(platform_filter=None):
+    """Obtener todas las películas desde la base de datos."""
+    movies_queryset = Movie.objects.select_related(
+        'genre', 'director', 'director__country', 'age_rating'
+    ).prefetch_related(
+        Prefetch('catalog_set', queryset=Catalog.objects.select_related('platform'))
+    )
+    
+    movies_list = []
+    
+    for movie in movies_queryset:
+        # Skip movies with invalid data
+        if not movie.title or not movie.year:
+            continue
+            
+        # Obtener todas las plataformas donde está disponible
+        platforms = [
+            catalog.platform.platform_name 
+            for catalog in movie.catalog_set.all()
+        ]
+        
+        # Filtrar por plataforma si se especifica
+        if platform_filter and platform_filter not in platforms:
             continue
         
-        # mapa de generos x plataforma
-        genre_map = {}
-        director_map = {}
-
-        genres = get_genre(url, key)
-        for g in genres:
-            genre_map[g["id"]] = g["name"]
-
-        directors = get_directors(url, key)
-        for d in directors:
-            director_map[d["id"]] = {
-                "name": d.get("name", "Unknown Director"),
-                "nationality": d.get("country", {}).get("name") if isinstance(d.get("country"), dict) else "Unknown"
-            }
-
-        movies = get_local_movies(url, key)
-        for movie in movies:
-            identifier = f"{movie.get('title')}_{movie.get('year')}".lower().strip() #identificador del contenido
-            
-            if identifier not in movies_dict:
-                # Género y descripción
-                movie["genre_name"] = genre_map.get(movie.get('genre_id'), "Unknown")
-                dir_info = director_map.get(movie.get("director_id"), {})
-                movie["director"] = dir_info.get("name", "Unknown Director")
-                movie["director_nationality"] = dir_info.get("nationality", "Unknown")             
-                # Otros datos
-                movie["age_rating"] = movie.get("age_rating", {}).get("title", "NR")
-                movie["duration_minutes"] = movie.get("duration_minutes", "—")
-                movie['unique_id'] = identifier 
-
-                movie["platforms"] = [platform_name]
-                movie.pop("platform_name", None)
-                movies_dict[identifier] = movie
-                print(f"DEBUG MOVIE DATA: {movie}")
-                
-            else:
-                if platform_name not in movies_dict[identifier]["platforms"]:
-                    movies_dict[identifier]["platforms"].append(platform_name)
-    return list(movies_dict.values())
-
-
-def get_all_series(platform_filter = None):  # obtener todas las peliculas de todas las "plataformas"
-    series_dict = {}
-
-    for url, key, platform_name in PLATFORMS:
-        if platform_filter and platform_name != platform_filter:
-            continue
-        genre_map = {}
-        genres = get_genre(url, key)
-        for g in genres:
-            genre_map[g["id"]] = g["name"]
-
-        series = get_local_series(url, key)
-
-        for serie in series:
-            identifier = f"{serie.get('title')}_{serie.get('start_year', '')}".lower().strip()
-
-            if identifier not in series_dict:
-                serie["genre_name"] = serie.get("genre", {}).get("name") or genre_map.get(serie.get("genre_id"), "Unknown")
-                serie["synopsis"] = serie.get("synopsis", "No synopsis available.")
-                
-                director_data = serie.get("director", {})
-                serie["director"] = director_data.get("name", "Unknown Director")
-                serie["director_nationality"] = director_data.get("country", {}).get("name", "Unknown")
-                serie["genre_description"] = serie.get("genre", {}).get("description", "")
-                serie["age_rating"] = serie.get("age_rating", {}).get("title", "NR")
-                serie['unique_id'] = identifier
-
-                serie["platforms"] = [platform_name]
-                serie.pop("platform_name", None)
-                series_dict[identifier] = serie
-            else:
-                if platform_name not in series_dict[identifier]["platforms"]:
-                    series_dict[identifier]["platforms"].append(platform_name)
+        # FIX: Ensure identifier is never empty
+        identifier = f"{movie.title.lower().strip()}_{movie.year}"
+        
+        movie_data = {
+            'id': movie.id,
+            'title': movie.title,
+            'synopsis': movie.synopsis or '',
+            'rating': movie.rating or 0.0,
+            'year': movie.year,
+            'release_date': str(movie.release_date) if movie.release_date else None,
+            'duration_minutes': movie.duration_minutes or 0,
+            'genre_name': movie.genre.name if movie.genre else "Unknown",
+            'director': movie.director.name if movie.director else "Unknown Director",
+            'director_nationality': movie.director.country.name if movie.director and movie.director.country else "Unknown",
+            'age_rating': str(movie.age_rating) if movie.age_rating else "NR",
+            'platforms': platforms,
+            'poster_url': movie.poster_url or '',
+            'backdrop_url': movie.backdrop_url or '',
+            'unique_id': identifier,
+            'content_type': 'movie'
+        }
+        
+        movies_list.append(movie_data)
     
-    return list(series_dict.values())
+    return movies_list
 
+
+def get_all_series(platform_filter=None):
+    """Obtener todas las series desde la base de datos."""
+    series_queryset = Series.objects.select_related(
+        'genre', 'director', 'director__country', 'age_rating'
+    ).prefetch_related(
+        Prefetch('catalog_set', queryset=Catalog.objects.select_related('platform'))
+    )
+    
+    series_list = []
+    
+    for serie in series_queryset:
+        # Skip series with invalid data
+        if not serie.title or not serie.start_year:
+            continue
+            
+        # Obtener todas las plataformas donde está disponible
+        platforms = [
+            catalog.platform.platform_name 
+            for catalog in serie.catalog_set.all()
+        ]
+        
+        # Filtrar por plataforma si se especifica
+        if platform_filter and platform_filter not in platforms:
+            continue
+        
+        # FIX: Ensure identifier is never empty
+        identifier = f"{serie.title.lower().strip()}_{serie.start_year}"
+        
+        serie_data = {
+            'id': serie.id,
+            'title': serie.title,
+            'synopsis': serie.synopsis or '',
+            'rating': serie.rating or 0.0,
+            'start_year': serie.start_year,
+            'end_year': serie.end_year,
+            'total_seasons': serie.total_seasons or 1,
+            'genre_name': serie.genre.name if serie.genre else "Unknown",
+            'genre_description': serie.genre.description if serie.genre else "",
+            'director': serie.director.name if serie.director else "Unknown Director",
+            'director_nationality': serie.director.country.name if serie.director and serie.director.country else "Unknown",
+            'age_rating': str(serie.age_rating) if serie.age_rating else "NR",
+            'platforms': platforms,
+            'poster_url': serie.poster_url or '',
+            'backdrop_url': serie.backdrop_url or '',
+            'unique_id': identifier, 
+            'content_type': 'series'
+        }
+        
+        series_list.append(serie_data)
+    
+    return series_list
 
 def get_movies_by_genres(genre_names, min_total=5):
+    """Obtiene películas agrupadas por géneros desde la base de datos."""
     all_movies = get_all_movies()
     
     result = {}
@@ -188,10 +137,9 @@ def get_movies_by_genres(genre_names, min_total=5):
         ]
         genre_movies.sort(key=lambda x: x.get('rating', 0), reverse=True)
         
-        # Tomar hasta 3 películas de este género
         selected = []
         for m in genre_movies:
-            if m not in used_movies:
+            if m['unique_id'] not in [um['unique_id'] for um in used_movies]:
                 selected.append(m)
                 used_movies.append(m)
                 if len(selected) >= 3:
@@ -205,39 +153,29 @@ def get_movies_by_genres(genre_names, min_total=5):
     # Si no llega a min_total, completar con otros géneros
     if current_total < min_total:
         remaining = min_total - current_total
-        # Recolectar movies adicionales de otros géneros
         extra_movies = []
         for m in all_movies:
-            if m not in used_movies and len(extra_movies) < remaining:
+            if m['unique_id'] not in [um['unique_id'] for um in used_movies] and len(extra_movies) < remaining:
                 extra_movies.append(m)
         
-        # Distribuir los extras entre los géneros
         genre_list = list(result.keys())
         idx = 0
         for m in extra_movies:
             while len(result[genre_list[idx]]) >= 5 and idx < len(genre_list) - 1:
                 idx += 1
             if idx < len(genre_list):
-                m_copy = m.copy()
-                m_copy['unique_id'] = f"{m.get('title', '').lower().replace(' ', '-')}_{m.get('year', '')}"
-                result[genre_list[idx]].append(m_copy)
-    
-    # Asignar unique_id a cada movie que no lo tenga
-    for genre_name, movies in result.items():
-        for m in movies:
-            if 'unique_id' not in m:
-                m['unique_id'] = f"{m.get('title', '').lower().replace(' ', '-')}_{m.get('year', '')}"
+                result[genre_list[idx]].append(m)
     
     return result
 
 
 def get_series_by_genres(genre_names, min_total=5):
+    """Obtiene series agrupadas por géneros desde la base de datos."""
     all_series = get_all_series()
     
     result = {}
     used_series = []
     
-    # Primero: intentar 3+ de cada género
     for genre_name in genre_names:
         genre_series = [
             s for s in all_series 
@@ -245,10 +183,9 @@ def get_series_by_genres(genre_names, min_total=5):
         ]
         genre_series.sort(key=lambda x: x.get('rating', 0), reverse=True)
         
-        # Tomar hasta 3 series de este género
         selected = []
         for s in genre_series:
-            if s not in used_series:
+            if s['unique_id'] not in [us['unique_id'] for us in used_series]:
                 selected.append(s)
                 used_series.append(s)
                 if len(selected) >= 3:
@@ -256,58 +193,34 @@ def get_series_by_genres(genre_names, min_total=5):
         
         result[genre_name] = selected
     
-    # Contar total actual
     current_total = sum(len(series_list) for series_list in result.values())
     
-    # Si no llega a min_total, completar con otros géneros
     if current_total < min_total:
         remaining = min_total - current_total
-        # Recolectar series adicionales de otros géneros
         extra_series = []
         for s in all_series:
-            if s not in used_series and len(extra_series) < remaining:
+            if s['unique_id'] not in [us['unique_id'] for us in used_series] and len(extra_series) < remaining:
                 extra_series.append(s)
         
-        # Distribuir los extras entre los géneros
         genre_list = list(result.keys())
         idx = 0
         for s in extra_series:
             while len(result[genre_list[idx]]) >= 5 and idx < len(genre_list) - 1:
                 idx += 1
             if idx < len(genre_list):
-                s_copy = s.copy()
-                s_copy['unique_id'] = f"{s.get('title', '').lower().replace(' ', '-')}_{s.get('start_year', '')}"
-                result[genre_list[idx]].append(s_copy)
-    
-    # Asignar unique_id a cada serie que no lo tenga
-    for genre_name, series_list in result.items():
-        for s in series_list:
-            if 'unique_id' not in s:
-                s['unique_id'] = f"{s.get('title', '').lower().replace(' ', '-')}_{s.get('start_year', '')}"
+                result[genre_list[idx]].append(s)
     
     return result
 
 
 def get_trending(limit=10):
     """
-    Obtiene las películas y series mejor valoradas (Top Rated).
-    Combina movies y series, ordena por rating descendente.
+    Obtiene las películas y series mejor valoradas (Top Rated) desde la DB.
     """
     all_movies = get_all_movies()
     all_series = get_all_series()
     
-    all_content = []
-    
-    for m in all_movies:
-        m['content_type'] = 'movie'
-        m['unique_id'] = f"{m.get('title', '').lower().replace(' ', '-')}_{m.get('year', '')}"
-        all_content.append(m)
-    
-    for s in all_series:
-        s['content_type'] = 'series'
-        s['unique_id'] = f"{s.get('title', '').lower().replace(' ', '-')}_{s.get('start_year', '')}"
-        all_content.append(s)
-    
+    all_content = all_movies + all_series
     all_content.sort(key=lambda x: x.get('rating', 0), reverse=True)
     
     return all_content[:limit]
@@ -318,96 +231,122 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
     search_query = query.lower().strip()
     THRESHOLD = 60
 
-    for url, key, platform_name in PLATFORMS:
-        if platform and platform_name != platform:
-            continue
+    # Get platform filter if specified
+    platform_filter = Q()
+    if platform:
+        platform_filter = Q(catalog__platform__platform_name=platform)
 
-        # 1. PREPARAR MAPAS (Necesarios para traducir IDs a nombres)
-        genre_map = {g["id"]: g["name"] for g in get_genre(url, key)}
-        # Obtenemos los directores para esta plataforma específica
-        directors_data = get_directors(url, key)
-        director_map = {d["id"]: d.get("name", "Unknown Director") for d in directors_data}
+    # Get genre filter if specified
+    genre_filter = Q()
+    if genre:
+        genre_filter = Q(genre__name__icontains=genre)
 
-        # --- Búsqueda en Películas ---
-        try:
-            res = requests.get(f"{url}/movies", headers={"X-API-KEY": key}, timeout=5)
-            if res.status_code == 200:
-                for movie in res.json():
-                    # Obtener nombre del director desde el mapa
-                    d_name = director_map.get(movie.get("director_id"), "Unknown Director").lower()
-                    m_title = movie.get("title", "").lower()
-                    score_title = fuzz.partial_ratio(search_query, m_title)
-                    score_director = fuzz.partial_ratio(search_query, d_name)
-                    # Lógica Case-Insensitive
-                    if search_query not in m_title and search_query not in d_name and score_title < THRESHOLD and score_director < THRESHOLD:
-                        continue
+    # --- Búsqueda en Películas ---
+    try:
+        movies = Movie.objects.select_related('genre', 'director').prefetch_related('catalog_set__platform').filter(
+            platform_filter & genre_filter
+        ).distinct()
 
-                    # Filtro de género
-                    movie_genre = genre_map.get(movie.get("genre_id"), "Unknown")
-                    if genre and genre.lower() not in movie_genre.lower():
-                        continue
-                    
-                    movie["search_score"] = max(score_title, score_director)
-                    identifier = f"{m_title}_{movie.get('year', '')}".strip()
-                    
-                    if identifier not in results_dict:
-                        movie["content_type"] = "movie"
-                        movie["genre_name"] = movie_genre
-                        movie["director"] = director_map.get(movie.get("director_id"), "Unknown Director")
-                        movie["platforms"] = [platform_name]
-                        movie["unique_id"] = identifier 
-                        
-                        results_dict[identifier] = movie
-                    else:
-                        if platform_name not in results_dict[identifier]["platforms"]:
-                            results_dict[identifier]["platforms"].append(platform_name)
-        except Exception as e:
-            print(f"Error en búsqueda de películas: {e}")
+        for movie in movies:
+            m_title = movie.title.lower()
+            d_name = movie.director.name.lower() if movie.director else "unknown director"
+            
+            score_title = fuzz.partial_ratio(search_query, m_title)
+            score_director = fuzz.partial_ratio(search_query, d_name)
+            
+            # Lógica Case-Insensitive
+            if search_query not in m_title and search_query not in d_name and score_title < THRESHOLD and score_director < THRESHOLD:
+                continue
 
-        # --- Búsqueda en Series ---
-        try:
-            res = requests.get(f"{url}/series", headers={"X-API-KEY": key}, timeout=5)
-            if res.status_code == 200:
-                for serie in res.json():
-                    s_title = serie.get("title", "").lower()
-                    
-                    # Resolver nombre del director para series
-                    dir_data = serie.get("director")
-                    if isinstance(dir_data, dict):
-                        s_dir_name = dir_data.get("name", "Unknown Director").lower()
-                    else:
-                        s_dir_name = director_map.get(serie.get("director_id"), "Unknown Director").lower()
+            identifier = f"{m_title}_{movie.year}".strip()
+            
+            # Get platforms for this movie
+            platforms_list = [cat.platform.platform_name for cat in movie.catalog_set.all()]
+            
+            if identifier not in results_dict:
+                results_dict[identifier] = {
+                    "id": movie.id,
+                    "title": movie.title,
+                    "synopsis": movie.synopsis,
+                    "rating": movie.rating,
+                    "year": movie.year,
+                    "release_date": str(movie.release_date),
+                    "duration_minutes": movie.duration_minutes,
+                    "content_type": "movie",
+                    "genre_name": movie.genre.name if movie.genre else "Unknown",
+                    "genre_id": movie.genre.id if movie.genre else None,
+                    "director": movie.director.name if movie.director else "Unknown Director",
+                    "director_id": movie.director.id if movie.director else None,
+                    "platforms": platforms_list,
+                    'poster_url': movie.poster_url or '',  # Add this
+                    'backdrop_url': movie.backdrop_url or '',
+                    "unique_id": identifier,
+                    "search_score": max(score_title, score_director)
+                }
+            else:
+                # Merge platforms
+                for p in platforms_list:
+                    if p not in results_dict[identifier]["platforms"]:
+                        results_dict[identifier]["platforms"].append(p)
+    except Exception as e:
+        print(f"Error en búsqueda de películas: {e}")
 
-                    if search_query not in s_title and search_query not in s_dir_name:
-                        continue
+    # --- Búsqueda en Series ---
+    try:
+        series = Series.objects.select_related('genre', 'director').prefetch_related('catalog_set__platform').filter(
+            platform_filter & genre_filter
+        ).distinct()
 
-                    serie_genre = genre_map.get(serie.get("genre_id"), "Unknown")
-                    if genre and genre.lower() not in serie_genre.lower():
-                        continue
-                    
-                    identifier = f"{s_title}_{serie.get('start_year', '')}".strip()
-                    
-                    if identifier not in results_dict:
-                        serie["content_type"] = "series"
-                        serie["genre_name"] = serie_genre
-                        serie["director"] = s_dir_name.title() # Aseguramos que tenga el campo director
-                        serie["platforms"] = [platform_name]
-                        serie["unique_id"] = identifier
-                        results_dict[identifier] = serie
-                    else:
-                        if platform_name not in results_dict[identifier]["platforms"]:
-                            results_dict[identifier]["platforms"].append(platform_name)
-        except Exception as e:
-            print(f"Error en búsqueda de series: {e}")
+        for serie in series:
+            s_title = serie.title.lower()
+            s_dir_name = serie.director.name.lower() if serie.director else "unknown director"
+            
+            score_title = fuzz.partial_ratio(search_query, s_title)
+            score_director = fuzz.partial_ratio(search_query, s_dir_name)
+            
+            if search_query not in s_title and search_query not in s_dir_name and score_title < THRESHOLD and score_director < THRESHOLD:
+                continue
+
+            identifier = f"{s_title}_{serie.start_year}".strip()
+            
+            # Get platforms for this series
+            platforms_list = [cat.platform.platform_name for cat in serie.catalog_set.all()]
+            
+            if identifier not in results_dict:
+                results_dict[identifier] = {
+                    "id": serie.id,
+                    "title": serie.title,
+                    "synopsis": serie.synopsis,
+                    "rating": serie.rating,
+                    "start_year": serie.start_year,
+                    "end_year": serie.end_year,
+                    "total_seasons": serie.total_seasons,
+                    "content_type": "series",
+                    "genre_name": serie.genre.name if serie.genre else "Unknown",
+                    "genre_id": serie.genre.id if serie.genre else None,
+                    "director": serie.director.name if serie.director else "Unknown Director",
+                    "director_id": serie.director.id if serie.director else None,
+                    "platforms": platforms_list,
+                    "unique_id": identifier,
+                    "search_score": max(score_title, score_director),
+                    "poster_url": serie.poster_url or '',
+                    "backdrop_url": serie.backdrop_url or ''
+                }
+            else:
+                # Merge platforms
+                for p in platforms_list:
+                    if p not in results_dict[identifier]["platforms"]:
+                        results_dict[identifier]["platforms"].append(p)
+    except Exception as e:
+        print(f"Error en búsqueda de series: {e}")
 
     # Convertir a lista
     final_results = list(results_dict.values())
 
     # 2. ORDENACIÓN PRIORITARIA: "Empieza por" primero, luego "Contiene"
-    # True se ordena después de False, por eso usamos 'not' para que los que SI empiezan sean 0 (primero)
     final_results.sort(key=lambda x: (
         not x.get('title', '').lower().startswith(search_query),
-        x.get('search_score', 0),  # Per relevancia de busqueda
+        -x.get('search_score', 0),  # Negativo para ordenar de mayor a menor score
         x.get('title', '').lower()
     ))
 

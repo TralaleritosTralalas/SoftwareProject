@@ -3,7 +3,9 @@ from django.contrib.auth.models import AbstractUser, Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
+from django.utils import timezone
 from datetime import date
+
 
 class User(AbstractUser):
     GENDER_CHOICES = [
@@ -48,11 +50,10 @@ class User(AbstractUser):
     def age(self):
         if not self.birth_date:
             return None
-
         today = date.today()
-
         return today.year - self.birth_date.year - (
-                    (today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+            (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
+        )
 
 
 class Country(models.Model):
@@ -107,6 +108,8 @@ class AudiovisualContent(models.Model):
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
     language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
     age_rating = models.ForeignKey(AgeRating, on_delete=models.SET_NULL, null=True)
+    poster_url = models.URLField(max_length=500, null=True, blank=True, verbose_name="Poster URL")
+    backdrop_url = models.URLField(max_length=500, null=True, blank=True, verbose_name="Backdrop URL")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -184,7 +187,21 @@ class Favorite(models.Model):
 
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.ForeignKey(AudiovisualContent, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    content = models.ManyToManyField(AudiovisualContent, blank=True, related_name='user_lists')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('user', 'name')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.name}"
+
+    @property
+    def item_count(self):
+        return self.content.count()
+
 
 # SIGNALS
 @receiver(post_save, sender=User)
@@ -192,6 +209,7 @@ def sync_user_groups(sender, instance, **kwargs):
     if instance.role:
         instance.groups.clear()
         instance.groups.add(instance.role)
+
 
 @receiver(m2m_changed, sender=User.groups.through)
 def sync_profile_role_from_group(sender, instance, action, pk_set, **kwargs):
