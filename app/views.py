@@ -281,8 +281,6 @@ def content_detail(request, ctype, cid):
         is_in_watchlist = False
         
         if request.user.is_authenticated:
-            # Buscar el contenido en la base de datos local
-            from app.models import AudiovisualContent, Movie, Series
             try:
                 if ctype == 'series':
                     local_content = Series.objects.filter(title=content.get('title')).first()
