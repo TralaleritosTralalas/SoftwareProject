@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending, get_all_platforms, get_all_genres_from_api, search_content
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, logout
 from .models import VisualizationProgress
 from django.utils.text import slugify
 from app.models import Country
@@ -121,6 +121,15 @@ def user_settings(request):
         'user': request.user,
         'countries': countries
     })
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()
+
+    return redirect('app:home')
 
 def catalog(request):
     # Parámetros
@@ -263,6 +272,50 @@ def content_detail(request, ctype, cid):
     
     content = None
     
+    if content:
+        content['content_type'] = ctype
+        
+        # Obtener estado del usuario si está autenticado
+        user_status = 'not_seen'
+        is_favorite = False
+        is_in_watchlist = False
+        
+        if request.user.is_authenticated:
+            try:
+                if ctype == 'series':
+                    local_content = Series.objects.filter(title=content.get('title')).first()
+                else:
+                    local_content = Movie.objects.filter(title=content.get('title')).first()
+                
+                if local_content:
+                    # Verificar VisualizationProgress
+                    vp = VisualizationProgress.objects.filter(user=request.user, content=local_content).first()
+                    if vp:
+                        if vp.completed:
+                            user_status = 'completed'
+                        elif vp.last_minute > 0:
+                            user_status = 'watching'
+                    
+                    # Verificar Favorite
+                    is_favorite = Favorite.objects.filter(user=request.user, content=local_content).exists()
+                    
+                    # Verificar Watchlist
+                    is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
+                    
+                    content_in_lists = list(Watchlist.objects.filter(
+                        user=request.user,
+                        content=local_content
+                    ).values_list('id', flat=True))
+            except Exception:
+                pass
+        
+        return render(request, 'pages/content_view.html', {
+            'content': content,
+            'user_status': user_status,
+            'is_favorite': is_favorite,
+            'is_in_watchlist': is_in_watchlist,
+            'content_in_lists': content_in_lists if 'content_in_lists' in locals() else []
+        })
     if cid.isdigit():
         content = next((item for item in all_content if item.get('id') == int(cid)), None)
     else:
@@ -318,74 +371,472 @@ def content_detail(request, ctype, cid):
         'is_in_watchlist': is_in_watchlist
     })
 
+def _safe_int(value, default=0):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return default
+
+
+def _safe_float(value, default=0.0):
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        return default
+
+
+def _resolve_content(ctype, cid):
+    """Find API content dict and local ORM object from ctype/cid."""
+    from datetime import date
+
+    data = get_all_series() if ctype == 'series' else get_all_movies()
+    api_content = next(
+        (item for item in data 
+         if slugify(f"{item.get('title', '').replace(' ', '-')}_{item.get('year', item.get('start_year', ''))}") 
+            == slugify(str(cid))),
+        None
+    )
+    if not api_content:
+        return None, None
+
+    model_class = Series if ctype == 'series' else Movie
+    local_content = model_class.objects.filter(title=api_content['title']).first()
+    if local_content:
+        return api_content, local_content
+
+    defaults = {
+        'synopsis': api_content.get('synopsis')  or 'No synopsis available.',
+        'rating': _safe_float(api_content.get('rating')),
+    }
+    if ctype == 'series':
+        defaults.update({
+            'start_year': _safe_int(api_content.get('start_year')),
+            'end_year': _safe_int(api_content.get('end_year')) if api_content.get('end_year') else None,
+            'total_seasons': _safe_int(api_content.get('total_seasons')),
+        })
+    else:
+        release_date_str = api_content.get('release_date')
+        try:
+            release_date = date.fromisoformat(release_date_str) if release_date_str else date.today()
+        except (ValueError, TypeError):
+            release_date = date.today()
+        defaults.update({
+            'year': _safe_int(api_content.get('year')),
+            'release_date': release_date,
+            'duration_minutes': _safe_int(api_content.get('duration_minutes')),
+        })
+
+    local_content = model_class.objects.create(title=api_content['title'], **defaults)
+    return api_content, local_content
+
+
 @login_required
 def update_status(request, ctype, cid):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             status = data.get('status', 'not_seen')
-            
-            if ctype == 'series':
-                local_content = Series.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
+
+            _, local_content = _resolve_content(ctype, cid)
+            if not local_content:
+                return JsonResponse({'success': False, 'error': 'Content not found'})
+
+            vp, created = VisualizationProgress.objects.get_or_create(
+                user=request.user,
+                content=local_content
+            )
+
+            if status == 'completed':
+                vp.completed = True
+            elif status == 'watching':
+                vp.completed = False
+                vp.last_minute = vp.last_minute if vp.last_minute > 0 else 1
             else:
-                local_content = Movie.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
-            
-            if local_content:
-                vp, created = VisualizationProgress.objects.get_or_create(
-                    user=request.user,
-                    content=local_content
-                )
-                
-                if status == 'completed':
-                    vp.completed = True
-                elif status == 'watching':
-                    vp.completed = False
-                    vp.last_minute = vp.last_minute if vp.last_minute > 0 else 1
-                else:  # not_seen
-                    vp.completed = False
-                    vp.last_minute = 0
-                
-                vp.save()
-                
-                return JsonResponse({'success': True, 'status': status})
-            
-            return JsonResponse({'success': False, 'error': 'Content not found'})
+                vp.completed = False
+                vp.last_minute = 0
+
+            vp.save()
+            return JsonResponse({'success': True, 'status': status})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
-    
+
     return JsonResponse({'success': False, 'error': 'Invalid method'})
 
 
 @login_required
 def toggle_favorite(request, ctype, cid):
-    from django.http import JsonResponse
-    from .models import Favorite, Movie, Series
-    import json
-    
     if request.method == 'POST':
         try:
-            if ctype == 'series':
-                local_content = Series.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
+            _, local_content = _resolve_content(ctype, cid)
+            if not local_content:
+                return JsonResponse({'success': False, 'error': 'Content not found'})
+
+            favorite = Favorite.objects.filter(user=request.user, content=local_content).first()
+            if favorite:
+                favorite.delete()
+                return JsonResponse({'success': True, 'is_favorite': False})
             else:
-                local_content = Movie.objects.filter(title__icontains=cid.replace('-', ' ').split('_')[0]).first()
-            
-            if local_content:
-                favorite = Favorite.objects.filter(user=request.user, content=local_content).first()
-                if favorite:
-                    favorite.delete()
-                    return JsonResponse({'success': True, 'is_favorite': False})
-                else:
-                    Favorite.objects.create(user=request.user, content=local_content)
-                    return JsonResponse({'success': True, 'is_favorite': True})
-            
-            return JsonResponse({'success': False, 'error': 'Content not found'})
+                Favorite.objects.create(user=request.user, content=local_content)
+                return JsonResponse({'success': True, 'is_favorite': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
-    
+
     return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def get_user_lists(request):
+    if request.method == 'GET':
+        try:
+            lists = Watchlist.objects.filter(user=request.user).prefetch_related('content')
+            data = []
+            for wl in lists:
+                data.append({
+                    'id': wl.id,
+                    'name': wl.name,
+                    'item_count': wl.item_count,
+                    'created_at': wl.created_at.isoformat() if wl.created_at else None
+                })
+            return JsonResponse({'success': True, 'lists': data})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def create_list(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            name = data.get('name', '').strip()
+            
+            if not name:
+                return JsonResponse({'success': False, 'error': 'List name is required'})
+            
+            wl, created = Watchlist.objects.get_or_create(
+                user=request.user,
+                name=name
+            )
+            return JsonResponse({
+                'success': True,
+                'list': {
+                    'id': wl.id,
+                    'name': wl.name,
+                    'item_count': wl.item_count,
+                    'created_at': wl.created_at.isoformat() if wl.created_at else None
+                },
+                'created': created
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def rename_list(request, list_id):
+    if request.method == 'PUT':
+        try:
+            wl = Watchlist.objects.get(id=list_id, user=request.user)
+            data = json.loads(request.body)
+            new_name = data.get('name', '').strip()
+            
+            if not new_name:
+                return JsonResponse({'success': False, 'error': 'Name is required'})
+            
+            if Watchlist.objects.filter(user=request.user, name=new_name).exclude(id=list_id).exists():
+                return JsonResponse({'success': False, 'error': 'A list with this name already exists'})
+            
+            wl.name = new_name
+            wl.save()
+            return JsonResponse({'success': True})
+        except Watchlist.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'List not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def delete_list(request, list_id):
+    if request.method == 'POST':
+        try:
+            wl = Watchlist.objects.get(id=list_id, user=request.user)
+            wl.delete()
+            return JsonResponse({'success': True})
+        except Watchlist.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'List not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def add_to_list(request, ctype, cid, list_id):
+    if request.method == 'POST':
+        try:
+            wl = Watchlist.objects.get(id=list_id, user=request.user)
+            _, local_content = _resolve_content(ctype, cid)
+            if not local_content:
+                return JsonResponse({'success': False, 'error': 'Content not found'})
+            wl.content.add(local_content)
+            return JsonResponse({'success': True, 'item_count': wl.item_count})
+        except Watchlist.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'List not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def remove_from_list(request, ctype, cid, list_id):
+    if request.method == 'POST':
+        try:
+            wl = Watchlist.objects.get(id=list_id, user=request.user)
+            _, local_content = _resolve_content(ctype, cid)
+            if not local_content:
+                return JsonResponse({'success': False, 'error': 'Content not found'})
+            wl.content.remove(local_content)
+            return JsonResponse({'success': True, 'item_count': wl.item_count})
+        except Watchlist.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'List not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def list_detail(request, list_id):
+    try:
+        wl = Watchlist.objects.get(id=list_id, user=request.user)
+    except Watchlist.DoesNotExist:
+        return render(request, 'pages/main.html', status=404)
     
+    movies = []
+    series = []
+    
+    for content in wl.content.select_related('movie', 'series', 'genre').all():
+        if hasattr(content, 'movie') and content.movie:
+            movie = content.movie
+            movies.append({
+                'title': movie.title,
+                'year': movie.year,
+                'rating': movie.rating,
+                'genre_name': movie.genre.name if movie.genre else 'Unknown',
+                'platforms': [],
+                'unique_id': f"{movie.title.lower().replace(' ', '-')}_{movie.year}",
+                'poster_url': movie.poster_url or '',
+            })
+        elif hasattr(content, 'series') and content.series:
+            s = content.series
+            series.append({
+                'title': s.title,
+                'start_year': s.start_year,
+                'rating': s.rating,
+                'genre_name': s.genre.name if s.genre else 'Unknown',
+                'platforms': [],
+                'unique_id': f"{s.title.lower().replace(' ', '-')}_{s.start_year}",
+                'poster_url': s.poster_url or '',
+            })
+    
+    return render(request, 'pages/list_detail.html', {
+        'list_name': wl.name,
+        'list_id': wl.id,
+        'movies': movies,
+        'series': series,
+        'item_count': len(movies) + len(series),
+    })
+
+    
+@login_required
 def personal_library(request):
-    return render(request, 'pages/personal_library.html')
+
+    # HELPERS
+    def build_movie_item(movie, extra=None):
+        data = {
+            'title': movie.title,
+            'rating': movie.rating,
+            'genre_name': movie.genre.name if movie.genre else 'Unknown',
+            'platforms': [],
+            'year': movie.year,
+            'unique_id': f"{movie.title.lower().replace(' ', '-')}_{movie.year}",
+            'poster_url': movie.poster_url or '',
+        }
+
+        if extra:
+            data.update(extra)
+
+        return data
+
+    def build_series_item(series, extra=None):
+        data = {
+            'title': series.title,
+            'rating': series.rating,
+            'genre_name': series.genre.name if series.genre else 'Unknown',
+            'platforms': [],
+            'start_year': series.start_year,
+            'unique_id': f"{series.title.lower().replace(' ', '-')}_{series.start_year}",
+            'poster_url': series.poster_url or '',
+        }
+
+        if extra:
+            data.update(extra)
+
+        return data
+    
+    # FAVORITES
+    favorites_qs = (
+        Favorite.objects
+        .filter(user=request.user)
+        .select_related(
+            'content',
+            'content__movie',
+            'content__movie__genre',
+            'content__series',
+            'content__series__genre',
+        )
+    )
+
+    favorite_movies = []
+    favorite_series = []
+
+    favorites_count = 0
+
+    for fav in favorites_qs:
+        favorites_count += 1
+
+        content = fav.content
+
+        if hasattr(content, 'movie'):
+            favorite_movies.append(
+                build_movie_item(content.movie)
+            )
+
+        elif hasattr(content, 'series'):
+            favorite_series.append(
+                build_series_item(content.series)
+            )
+
+    # CONTINUE WATCHING
+    continue_qs = (
+        VisualizationProgress.objects
+        .filter(
+            user=request.user,
+            completed=False
+        )
+        .exclude(last_minute=0)
+        .select_related(
+            'content',
+            'content__movie',
+            'content__movie__genre',
+            'content__series',
+            'content__series__genre',
+        )
+    )
+
+    continue_watching_movies = []
+    continue_watching_series = []
+
+    watching_count = 0
+
+    for vp in continue_qs:
+        watching_count += 1
+
+        content = vp.content
+
+        if hasattr(content, 'movie'):
+            movie = content.movie
+
+
+            continue_watching_movies.append(
+                build_movie_item(movie, {
+                    'last_minute': vp.last_minute,
+                    'total_duration': movie.duration_minutes,
+                })
+            )
+
+        elif hasattr(content, 'series'):
+            continue_watching_series.append(
+                build_series_item(content.series, {
+                    'progress': 0,
+                    'last_minute': vp.last_minute,
+                    'total_duration': 0,
+                })
+            )
+
+    # COMPLETED
+    completed_qs = (
+        VisualizationProgress.objects
+        .filter(
+            user=request.user,
+            completed=True
+        )
+        .select_related(
+            'content',
+            'content__movie',
+            'content__movie__genre',
+            'content__series',
+            'content__series__genre',
+        )
+    )
+
+    completed_movies = []
+    completed_series = []
+
+    completed_count = 0
+
+    for vp in completed_qs:
+        completed_count += 1
+
+        content = vp.content
+
+        if hasattr(content, 'movie'):
+            completed_movies.append(
+                build_movie_item(content.movie)
+            )
+
+        elif hasattr(content, 'series'):
+            completed_series.append(
+                build_series_item(content.series)
+            )
+
+    # WATCHLIST LISTS
+    user_lists = []
+    watchlists = Watchlist.objects.filter(user=request.user).prefetch_related('content').select_related()
+    
+    for wl in watchlists:
+        items = []
+        for content in wl.content.all()[:3]:
+            if hasattr(content, 'movie') and content.movie:
+                items.append({'title': content.movie.title})
+            elif hasattr(content, 'series') and content.series:
+                items.append({'title': content.series.title})
+        
+        user_lists.append({
+            'id': wl.id,
+            'name': wl.name,
+            'item_count': wl.item_count,
+            'preview_items': items
+        })
+    
+    lists_count = len(user_lists)
+
+    return render(request, 'pages/personal_library.html', {
+        'favorites_count': favorites_count,
+        'watching_count': watching_count,
+        'completed_count': completed_count,
+        'lists_count': lists_count,
+
+        'favorite_movies': favorite_movies,
+        'favorite_series': favorite_series,
+
+        'continue_watching_movies': continue_watching_movies,
+        'continue_watching_series': continue_watching_series,
+
+        'completed_movies': completed_movies,
+        'completed_series': completed_series,
+        
+        'user_lists': user_lists,
+    })
 
 
 @login_required
