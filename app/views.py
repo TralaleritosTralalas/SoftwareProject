@@ -624,6 +624,7 @@ def list_detail(request, list_id):
                 'genre_name': movie.genre.name if movie.genre else 'Unknown',
                 'platforms': [],
                 'unique_id': f"{movie.title.lower().replace(' ', '-')}_{movie.year}",
+                'poster_url': movie.poster_url or '',
             })
         elif hasattr(content, 'series') and content.series:
             s = content.series
@@ -634,6 +635,7 @@ def list_detail(request, list_id):
                 'genre_name': s.genre.name if s.genre else 'Unknown',
                 'platforms': [],
                 'unique_id': f"{s.title.lower().replace(' ', '-')}_{s.start_year}",
+                'poster_url': s.poster_url or '',
             })
     
     return render(request, 'pages/list_detail.html', {
@@ -657,6 +659,7 @@ def personal_library(request):
             'platforms': [],
             'year': movie.year,
             'unique_id': f"{movie.title.lower().replace(' ', '-')}_{movie.year}",
+            'poster_url': movie.poster_url or '',
         }
 
         if extra:
@@ -672,6 +675,7 @@ def personal_library(request):
             'platforms': [],
             'start_year': series.start_year,
             'unique_id': f"{series.title.lower().replace(' ', '-')}_{series.start_year}",
+            'poster_url': series.poster_url or '',
         }
 
         if extra:
