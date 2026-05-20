@@ -1,3 +1,4 @@
+{% load i18n %}
 <header class="sticky top-0 z-50 w-full border-b border-solid border-border-light dark:border-border-dark bg-surface-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-4">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
 
@@ -14,16 +15,16 @@
 
       <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
         <a href="{% url 'app:catalog' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          Full Catalog
+          {% trans "Full Catalog" %}
         </a>
         <a href="{% url 'app:movies' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          Movies
+          {% trans "Movies" %}
         </a>
         <a href="{% url 'app:series' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          Series
+          {% trans "Series" %}
         </a>
         <a href="#" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          My List
+          {% trans "My List" %}
         </a>
       </nav>
 
@@ -48,6 +49,20 @@
 
       </form>
     </div>
+
+    {% get_current_language as LANGUAGE_CODE %}
+    <form action="{% url 'set_language' %}" method="post" class="flex items-center">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{{ request.path }}">
+        <div class="relative">
+            <select name="language" onchange="this.form.submit()" class="appearance-none bg-slate-100 dark:bg-[#1e293b] border-none rounded-xl py-1.5 pl-3 pr-8 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer shadow-sm">
+                <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>EN</option>
+                <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>ES</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none text-sm">expand_more</span>
+        </div>
+    </form>
+
 
     <div class="flex items-center gap-4">
   {% if user.is_authenticated %}
