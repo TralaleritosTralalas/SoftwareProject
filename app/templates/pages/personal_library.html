@@ -2,6 +2,11 @@
 
 {% block title %}Library · StreamSync{% endblock %}
 
+{% block extra_scripts %}
+{% load static %}
+<script src="{% static 'js/watchlist.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 
 <main class="flex-1 px-4 lg:px-8 py-8">
@@ -45,7 +50,7 @@
       {% include "components/stat_card.html" %}
     {% endwith %}
 
-    {% with title="Lists" value="5" icon="stacks" icon_color="text-primary" %}
+    {% with title="Lists" value=lists_count|default:0 icon="stacks" icon_color="text-primary" %}
       {% include "components/stat_card.html" %}
     {% endwith %}
 
@@ -213,77 +218,68 @@
           </p>
         </div>
 
-        <button
-          class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-surface-highlight text-white text-sm font-semibold transition-all"
+        <button onclick="openCreateListModal()"
+          class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-surface-highlight text-white text-sm font-semibold transition-all flex items-center gap-2"
         >
+          <span class="material-symbols-outlined text-sm">add</span>
           New List
         </button>
 
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-
-        <!-- LIST CARD -->
-        <div
-          class="group rounded-3xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all duration-300 p-5 flex flex-col gap-5 hover:-translate-y-1"
-        >
-
-          <div class="flex items-center justify-between">
-
-            <div class="flex items-center gap-3">
-
-              <div
-                class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center"
-              >
-                <span class="material-symbols-outlined">
-                  stacks
-                </span>
+      <div id="lists-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        {% if user_lists %}
+          {% for list in user_lists %}
+          <div class="group rounded-3xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all duration-300 p-5 flex flex-col gap-5 hover:-translate-y-1 cursor-pointer" onclick="openListDetail({{ list.id }})">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                  <span class="material-symbols-outlined">
+                    stacks
+                  </span>
+                </div>
+                <div>
+                  <h3 class="text-white font-bold">{{ list.name }}</h3>
+                  <p class="text-xs text-text-secondary mt-1">{{ list.item_count }} titles</p>
+                </div>
               </div>
-
-              <div>
-                <h3 class="text-white font-bold">
-                  Weekend Binge
-                </h3>
-
-                <p class="text-xs text-text-secondary mt-1">
-                  8 titles
-                </p>
+              <div class="flex items-center gap-2">
+                <button onclick="event.stopPropagation(); openRenameListModal({{ list.id }}, '{{ list.name|escapejs }}')" class="p-2 rounded-lg hover:bg-white/5 text-text-secondary hover:text-white transition-all">
+                  <span class="material-symbols-outlined text-sm">edit</span>
+                </button>
+                <button onclick="event.stopPropagation(); confirmDeleteList({{ list.id }})" class="p-2 rounded-lg hover:bg-red-500/10 text-text-secondary hover:text-red-400 transition-all">
+                  <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
               </div>
-
             </div>
-
-            <span class="material-symbols-outlined text-text-secondary">
-              chevron_right
-            </span>
-
+            <div class="flex -space-x-4">
+              {% for item in list.preview_items|slice:":3" %}
+              <div class="size-20 rounded-xl overflow-hidden border-2 border-surface-dark">
+                <div class="w-full h-full bg-surface-highlight flex items-center justify-center text-text-secondary text-xs p-2 text-center">{{ item.title|truncatechars:15 }}</div>
+              </div>
+              {% empty %}
+              <div class="size-20 rounded-xl border-2 border-surface-dark bg-surface-highlight flex items-center justify-center text-text-secondary text-xs">Empty</div>
+              {% endfor %}
+              {% if list.item_count > 3 %}
+              <div class="size-20 rounded-xl border-2 border-surface-dark bg-surface-highlight flex items-center justify-center text-white font-bold text-sm">
+                +{{ list.item_count|add:"-3" }}
+              </div>
+              {% endif %}
+            </div>
           </div>
-
-          <div class="flex -space-x-4">
-
-            <div class="size-20 rounded-xl overflow-hidden border-2 border-surface-dark">
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDW5XoUJIvkRuZ2SukHriq6IfI0bDKHMu3EGRtlHS7-5W1gdCfjNxThLWbLzxEHoJKj8sBCc_rlVjR2DxFGUfKW40rTAl-5JLHYAyVCK3KUXDaEHUNiuMJRZnVjVF7UQP-iKGJn4WMuYBEXGClpWXBKD5zyIs1t1gdgYjcvpDuznVmsdpL427OmCFVM8fCLEwo_tnIwzQdTBGhfVC9dyflDVfa_hKBauna9Gzo0Zudq5Kc5IiG0Oi8mlrAKyK4-MyVmDptABtLOoZ36"
-                class="w-full h-full object-cover"
-              >
+          {% endfor %}
+        {% else %}
+          <div id="empty-lists-placeholder" class="col-span-full text-center py-16">
+            <div class="size-20 rounded-full bg-surface-highlight mx-auto flex items-center justify-center mb-6">
+              <span class="material-symbols-outlined text-4xl text-text-secondary">playlist_add</span>
             </div>
-
-            <div class="size-20 rounded-xl overflow-hidden border-2 border-surface-dark">
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAk67r9IkPtCHUUaj0QbHO_zhM9htuV23McSZwI-V6P4bP_DR86Pib2yH0e5OxmSCzyDpbbPE5s_lOB15ZkeaWL0Dund2MEra6wEJJPpAhEXCqz4bq2Wqmi4LibyGwgPSWvJ87q-K_l8MK_RabraXK1Rew3ColsIaSa3UfdkBHnVJ6Frhl-4sXuwX_uRMYZkbIoYyfjEzC3OaS3xsT_0MR8gWGZlTcJo8RrBxWnLB2BA2E646JDkbt_T6X6koQs57BDPTX_QLdCz1CK"
-                class="w-full h-full object-cover"
-              >
-            </div>
-
-            <div
-              class="size-20 rounded-xl border-2 border-surface-dark bg-surface-highlight flex items-center justify-center text-white font-bold text-sm"
-            >
-              +6
-            </div>
-
+            <h3 class="text-xl font-bold text-white mb-2">No lists yet</h3>
+            <p class="text-text-secondary mb-6">Create your first list to organize your favorite content</p>
+            <button onclick="openCreateListModal()" class="px-6 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/80 transition-all">
+              Create your first list
+            </button>
           </div>
-
-        </div>
-
+        {% endif %}
       </div>
 
     </section>

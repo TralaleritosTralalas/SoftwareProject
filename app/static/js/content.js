@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
     statusIcon.textContent = statusIcons[userStatus] || 'visibility_off';
   }
   
+  // Actualizar botón de watchlist si el contenido ya está en listas
+  updateWatchlistButton();
+  
   // Toggle dropdown de Status
   const statusBtn = document.getElementById('status-btn');
   const statusDropdown = document.getElementById('status-dropdown');
@@ -34,14 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
       statusDropdown.classList.toggle('hidden');
     });
     
-    // Cerrar dropdown al hacer click fuera
     document.addEventListener('click', function(e) {
       if (!statusBtn.contains(e.target) && !statusDropdown.contains(e.target)) {
         statusDropdown.classList.add('hidden');
       }
     });
     
-    // Manejar cambio de estado
     const statusOptions = statusDropdown.querySelectorAll('button[data-status]');
     statusOptions.forEach(btn => {
       btn.addEventListener('click', function(e) {
@@ -60,7 +61,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Función para actualizar estado
+  // Toggle Watchlist modal
+  const watchlistBtn = document.getElementById('watchlist-btn');
+  if (watchlistBtn) {
+    watchlistBtn.addEventListener('click', function() {
+      openWatchlistModal();
+    });
+  }
+  
+  function updateWatchlistButton() {
+    const watchlistIcon = document.getElementById('watchlist-icon');
+    const watchlistText = document.getElementById('watchlist-text');
+    
+    if (window.contentInLists && window.contentInLists.length > 0) {
+      if (watchlistIcon) watchlistIcon.textContent = 'bookmark';
+      if (watchlistText) watchlistText.textContent = 'In Watchlist';
+    }
+  }
+  
   function updateStatus(status) {
     fetch(`/content/${contentType}/${contentId}/update-status/`, {
       method: 'POST',
@@ -83,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
     .catch(error => console.error('Error:', error));
   }
   
-  // Función para toggle favorite
   function toggleFavorite() {
     fetch(`/content/${contentType}/${contentId}/toggle-favorite/`, {
       method: 'POST',
@@ -110,7 +127,6 @@ document.addEventListener('DOMContentLoaded', function() {
     .catch(error => console.error('Error:', error));
   }
   
-  // Función para obtener CSRF token
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {

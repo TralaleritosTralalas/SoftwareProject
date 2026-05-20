@@ -306,6 +306,11 @@ def content_detail(request, ctype, cid):
                     
                     # Verificar Watchlist
                     is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
+                    
+                    content_in_lists = list(Watchlist.objects.filter(
+                        user=request.user,
+                        content=local_content
+                    ).values_list('id', flat=True))
             except Exception:
                 pass
         
@@ -313,7 +318,8 @@ def content_detail(request, ctype, cid):
             'content': content,
             'user_status': user_status,
             'is_favorite': is_favorite,
-            'is_in_watchlist': is_in_watchlist
+            'is_in_watchlist': is_in_watchlist,
+            'content_in_lists': content_in_lists if 'content_in_lists' in locals() else []
         })
     else:
         return render(request, 'pages/main.html', status=404)
@@ -430,6 +436,55 @@ def toggle_favorite(request, ctype, cid):
             return JsonResponse({'success': False, 'error': str(e)})
 
     return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def get_user_lists(request):
+    if request.method == 'GET':
+        try:
+            lists = Watchlist.objects.filter(user=request.user).prefetch_related('content')
+            data = []
+            for wl in lists:
+                data.append({
+                    'id': wl.id,
+                    'name': wl.name,
+                    'item_count': wl.item_count,
+                    'created_at': wl.created_at.isoformat() if wl.created_at else None
+                })
+            return JsonResponse({'success': True, 'lists': data})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def create_list(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            name = data.get('name', '').strip()
+            
+            if not name:
+                return JsonResponse({'success': False, 'error': 'List name is required'})
+            
+            wl, created = Watchlist.objects.get_or_create(
+                user=request.user,
+                name=name
+            )
+            return JsonResponse({
+                'success': True,
+                'list': {
+                    'id': wl.id,
+                    'name': wl.name,
+                    'item_count': wl.item_count,
+                    'created_at': wl.created_at.isoformat() if wl.created_at else None
+                },
+                'created': created
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
     
 @login_required
 def personal_library(request):
@@ -581,10 +636,32 @@ def personal_library(request):
                 build_series_item(content.series)
             )
 
+    # WATCHLIST LISTS
+    user_lists = []
+    watchlists = Watchlist.objects.filter(user=request.user).prefetch_related('content').select_related()
+    
+    for wl in watchlists:
+        items = []
+        for content in wl.content.all()[:3]:
+            if hasattr(content, 'movie') and content.movie:
+                items.append({'title': content.movie.title})
+            elif hasattr(content, 'series') and content.series:
+                items.append({'title': content.series.title})
+        
+        user_lists.append({
+            'id': wl.id,
+            'name': wl.name,
+            'item_count': wl.item_count,
+            'preview_items': items
+        })
+    
+    lists_count = len(user_lists)
+
     return render(request, 'pages/personal_library.html', {
         'favorites_count': favorites_count,
         'watching_count': watching_count,
         'completed_count': completed_count,
+        'lists_count': lists_count,
 
         'favorite_movies': favorite_movies,
         'favorite_series': favorite_series,
@@ -594,6 +671,8 @@ def personal_library(request):
 
         'completed_movies': completed_movies,
         'completed_series': completed_series,
+        
+        'user_lists': user_lists,
     })
 
 
