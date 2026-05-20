@@ -116,10 +116,11 @@
         </div>
         
         <!-- Action Buttons -->
-        <button
-          class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 active:scale-95">
-          <span class="material-symbols-outlined text-blue-400">bookmark_add</span>
-          Add to Watchlist
+        <button id="watchlist-btn"
+          onclick="openWatchlistModal()"
+          class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 active:scale-95">
+          <span class="material-symbols-outlined text-blue-400" id="watchlist-icon">bookmark_border</span>
+          <span id="watchlist-text">Add to Watchlist</span>
         </button>
 
         <button id="favorite-btn"
@@ -154,9 +155,42 @@
     </div>
   </div>
 </main>
+<!-- BottomNavBar (Shared Component - Mobile Only) -->
+<nav
+  class="md:hidden fixed bottom-0 w-full z-50 bg-[#1a2333]/60 backdrop-blur-md flex justify-around items-center py-4 px-6 border-t border-white/5">
+  <button class="flex flex-col items-center gap-1 text-[#256af4] font-bold">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+    <span class="text-[10px]">Home</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
+    <span class="material-symbols-outlined">explore</span>
+    <span class="text-[10px]">Discovery</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
+    <span class="material-symbols-outlined">bookmark</span>
+    <span class="text-[10px]">Watchlist</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
+    <span class="material-symbols-outlined">settings</span>
+    <span class="text-[10px]">Settings</span>
+  </button>
+</nav>
+
+{% include "components/watchlist_modal.html" %}
 {% endblock %}
 
 {% block extra_scripts %} 
     {% load static %}
+    <link rel="stylesheet" href="{% static 'css/watchlist.css' %}">
+    <script src="{% static 'js/watchlist-utils.js' %}"></script>
+    <script src="{% static 'js/watchlist-modal.js' %}"></script>
+    <script>
+      window.CONTENT_DATA = {
+        id: '{{ content.unique_id|default:content.id }}',
+        type: '{{ content.content_type|default:"movie" }}',
+        userStatus: '{{ user_status|default:"not_seen" }}'
+      };
+      window.contentInLists = {% firstof content_in_lists "[]" %};
+    </script>
     <script src="{% static 'js/content.js' %}"></script>
 {% endblock %}
