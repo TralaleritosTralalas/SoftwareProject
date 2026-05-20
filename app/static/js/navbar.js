@@ -36,8 +36,8 @@ function markNotificationSeen(notificationId, itemEl) {
                 list.innerHTML = `
                     <div class="p-8 text-center flex flex-col items-center gap-2">
                         <span class="material-symbols-outlined text-3xl text-green-500">check_circle</span>
-                        <p class="text-sm text-slate-400">No hay notificaciones</p>
-                        <p class="text-xs text-slate-500">Estarás al día cuando haya novedades.</p>
+                        <p class="text-sm text-slate-400">There are no notifications</p>
+                        <p class="text-xs text-slate-500">You'll be up to date when there are new updates.</p>
                     </div>
                 `;
                 const markBtn = document.getElementById('mark-all-seen');
@@ -64,8 +64,8 @@ function markAllNotificationsSeen() {
             list.innerHTML = `
                 <div class="p-8 text-center flex flex-col items-center gap-2">
                     <span class="material-symbols-outlined text-3xl text-green-500">check_circle</span>
-                    <p class="text-sm text-slate-400">No hay notificaciones</p>
-                    <p class="text-xs text-slate-500">Estarás al día cuando haya novedades.</p>
+                    <p class="text-sm text-slate-400">There are no notifications</p>
+                    <p class="text-xs text-slate-500">You'll be up to date when there are new updates.</p>
                 </div>
             `;
         }

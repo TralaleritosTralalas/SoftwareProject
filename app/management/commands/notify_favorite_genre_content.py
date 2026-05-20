@@ -56,7 +56,7 @@ class Command(BaseCommand):
 
             created_count = 0
             for user in users:
-                msg = "'%s' - Nuevo contenido que coincide con tus géneros favoritos" % content.title
+                msg = "'%s' - New content matching your favorite genres" % content.title
                 notification, created = Notification.objects.get_or_create(
                     user=user,
                     message=msg,

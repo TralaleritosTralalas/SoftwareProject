@@ -60,7 +60,7 @@
       </button>
       <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 origin-top-right rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl z-[60] overflow-hidden">
         <div class="flex items-center justify-between p-3 border-b border-slate-100 dark:border-slate-800">
-          <p class="text-sm font-semibold text-slate-900 dark:text-white">Notificaciones</p>
+          <p class="text-sm font-semibold text-slate-900 dark:text-white">Notifications</p>
           {% if unread_count > 0 %}
             <button id="mark-all-seen" class="text-xs text-primary font-medium hover:text-primary/80 transition-colors">
               ✓ Mark all as read
@@ -78,8 +78,8 @@
           {% empty %}
             <div class="p-8 text-center flex flex-col items-center gap-2" id="notif-empty">
               <span class="material-symbols-outlined text-3xl text-green-500">check_circle</span>
-              <p class="text-sm text-slate-400">No notifications</p>
-              <p class="text-xs text-slate-500">You'll be up to date when there are updates.</p>
+              <p class="text-sm text-slate-400">There are no notifications</p>
+              <p class="text-xs text-slate-500">You'll be up to date when there are new updates.</p>
             </div>
           {% endfor %}
         </div>

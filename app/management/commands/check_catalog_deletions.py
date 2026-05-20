@@ -35,7 +35,7 @@ class Command(BaseCommand):
             content = entry.content
             platform = entry.platform
             title = content.title
-            msg = f"'{title}' ya no está disponible en {platform.platform_name}"
+            msg = f"'{title}' is no longer available on {platform.platform_name}"
 
             affected = User.objects.filter(
                 Q(favorite__content=content) |
