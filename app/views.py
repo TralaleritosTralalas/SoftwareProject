@@ -629,21 +629,17 @@ def direction_dashboard(request):
     if request.GET.get('export') == 'csv':
         return DashboardService.get_csv_response(trending, totals, top_p)
 
-    # --- Trend chart (clicks over time) ---
     chart_qs = stats_qs.values('week').annotate(c=Sum('total_clicks')).order_by('week')
     labels = [d['week'].strftime('%d %b') for d in chart_qs] if chart_qs.exists() else ["No Data"]
     values = [d['c'] for d in chart_qs] if chart_qs.exists() else [0]
 
-    # --- Genre distribution (bar chart) ---
     genre_qs = content_qs.values('genre__name').annotate(cnt=Count('id')).order_by('-cnt')[:8]
     genre_labels = [g['genre__name'] or 'Unknown' for g in genre_qs] if genre_qs.exists() else ["No Data"]
     genre_values = [g['cnt'] for g in genre_qs] if genre_qs.exists() else [0]
 
-    # --- Clicks vs Favorites (doughnut) ---
     donut_labels = ['Clicks', 'Favorites']
     donut_values = [totals['clicks'], totals['favs']]
 
-    # --- Platform comparison (grouped bar chart) ---
     platform_qs = stats_qs.values('platform__platform_name').annotate(
         total_c=Sum('total_clicks'),
         total_f=Sum('total_favorites')
@@ -658,11 +654,9 @@ def direction_dashboard(request):
         platform_clicks = [0]
         platform_favs = [0]
 
-    # --- Top content horizontal bar ---
     top_content_labels = [c.title for c in trending] if trending.exists() else ["No Data"]
     top_content_values = [c.fav_count for c in trending] if trending.exists() else [0]
 
-    # Mapeo limpio de filtros para los selects del Sidebar
     filters_data = {
         'range': request.GET.get('range', ''),
         'start_date': request.GET.get('start_date', ''),
@@ -680,20 +674,15 @@ def direction_dashboard(request):
         'platforms': Platform.objects.all(),
         'countries': Country.objects.all(),
         'genres': Genre.objects.all(),
-        # Trend chart
         'chart_labels': json.dumps(labels),
         'chart_values': json.dumps(values),
-        # Genre bar chart
         'genre_labels': json.dumps(genre_labels),
         'genre_values': json.dumps(genre_values),
-        # Doughnut
         'donut_labels': json.dumps(donut_labels),
         'donut_values': json.dumps(donut_values),
-        # Platform bar
         'platform_labels': json.dumps(platform_labels),
         'platform_clicks': json.dumps(platform_clicks),
         'platform_favs': json.dumps(platform_favs),
-        # Top content bar
         'top_content_labels': json.dumps(top_content_labels),
         'top_content_values': json.dumps(top_content_values),
         'filters': filters_data
@@ -702,7 +691,6 @@ def direction_dashboard(request):
 
 @login_required
 def manager_dashboard(request):
-    # Se obtiene la plataforma asignada al Manager actual (según campo p_manager en tu modelo Platform)
     platform = Platform.objects.filter(p_manager=request.user).first()
 
     if not platform:
@@ -720,25 +708,20 @@ def manager_dashboard(request):
     if request.GET.get('export') == 'csv':
         return DashboardService.get_csv_response(trending, totals, None)
 
-    # --- Trend chart (clicks over time) ---
     chart_qs = stats_qs.values('week').annotate(c=Sum('total_clicks')).order_by('week')
     labels = [d['week'].strftime('%d %b') for d in chart_qs] if chart_qs.exists() else ["No Data"]
     values = [d['c'] for d in chart_qs] if chart_qs.exists() else [0]
 
-    # --- Genre distribution (bar chart) ---
     genre_qs = content_qs.values('genre__name').annotate(cnt=Count('id')).order_by('-cnt')[:8]
     genre_labels = [g['genre__name'] or 'Unknown' for g in genre_qs] if genre_qs.exists() else ["No Data"]
     genre_values = [g['cnt'] for g in genre_qs] if genre_qs.exists() else [0]
 
-    # --- Clicks vs Favorites (doughnut) ---
     donut_labels = ['Clicks', 'Favorites']
     donut_values = [totals['clicks'], totals['favs']]
 
-    # --- Top content horizontal bar ---
     top_content_labels = [c.title for c in trending] if trending.exists() else ["No Data"]
     top_content_values = [c.fav_count for c in trending] if trending.exists() else [0]
 
-    # Mapeo de filtros para persistencia de búsqueda en Manager
     filters_data = {
         'range': request.GET.get('range', ''),
         'start_date': request.GET.get('start_date', ''),
@@ -754,16 +737,12 @@ def manager_dashboard(request):
         'trending_content': trending,
         'genres': Genre.objects.all(),
         'countries': Country.objects.all(),
-        # Trend chart
         'chart_labels': json.dumps(labels),
         'chart_values': json.dumps(values),
-        # Genre bar chart
         'genre_labels': json.dumps(genre_labels),
         'genre_values': json.dumps(genre_values),
-        # Doughnut
         'donut_labels': json.dumps(donut_labels),
         'donut_values': json.dumps(donut_values),
-        # Top content bar
         'top_content_labels': json.dumps(top_content_labels),
         'top_content_values': json.dumps(top_content_values),
         'filters': filters_data

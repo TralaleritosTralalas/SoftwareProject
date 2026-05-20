@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    /* ── Shared configuration ── */
     const GRID_COLOR  = 'rgba(255,255,255,0.05)';
     const TICK_COLOR  = '#64748b';
     const BLUE        = '#3b82f6';
@@ -26,12 +25,21 @@ document.addEventListener('DOMContentLoaded', function () {
         link.click();
     };
 
-    /* ── Helpers de Validación de Datos ── */
+    window.setQuickRange = function(v) {
+        document.getElementById('range-input').value = v;
+        document.getElementById('start_date').value = '';
+        document.getElementById('end_date').value = '';
+        document.getElementById('filter-form').submit();
+    };
+
+    window.clearQuickRange = function() {
+        document.getElementById('range-input').value = '';
+    };
+
+
     function hasValidData(labels, datasets) {
-        // Falla si no hay labels o el backend mandó "No Data"
         if (!labels || labels.length === 0 || labels[0] === "No Data") return false;
 
-        // Falla si todos los valores en todos los arrays son exactamente 0
         let hasValue = false;
         for (let dataArray of datasets) {
             if (dataArray && dataArray.some(val => Number(val) > 0)) {
@@ -47,12 +55,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!canvas) return;
 
         const parent = canvas.parentElement;
-        canvas.style.display = 'none'; // Ocultamos el canvas
+        canvas.style.display = 'none';
 
-        // Evitar renderizar múltiples placeholders
         if (parent.querySelector('.no-data-placeholder')) return;
 
-        // FIX: Forzamos al padre a ser 'relative' para que el div absoluto no se escape al centro de la pantalla
         parent.classList.add('relative', 'flex', 'items-center', 'justify-center');
 
         const placeholder = document.createElement('div');
@@ -64,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function () {
         parent.appendChild(placeholder);
     }
 
-    /* ── 1. TREND LINE ── */
     const trendEl = document.getElementById('trendChart');
     if (trendEl) {
         const labels = JSON.parse(trendEl.dataset.labels || '[]');
@@ -98,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    /* ── 2. DOUGHNUT ── */
     const donutEl = document.getElementById('donutChart');
     if (donutEl) {
         const labels = JSON.parse(donutEl.dataset.labels || '[]');
@@ -128,7 +132,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    /* ── 3. GENRE BAR ── */
     const genreEl = document.getElementById('genreChart');
     if (genreEl) {
         const labels = JSON.parse(genreEl.dataset.labels || '[]');
@@ -155,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    /* ── 4. PLATFORM GROUPED BAR ── */
     const platformEl = document.getElementById('platformChart');
     if (platformEl) {
         const labels = JSON.parse(platformEl.dataset.labels || '[]');
@@ -186,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    /* ── 5. TOP CONTENT HORIZONTAL BAR ── */
     const topEl = document.getElementById('topContentChart');
     if (topEl) {
         const labels = JSON.parse(topEl.dataset.labels || '[]');
