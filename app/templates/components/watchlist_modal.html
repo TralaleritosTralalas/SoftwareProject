@@ -2,6 +2,12 @@
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeWatchlistModal()"></div>
     
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md glass-panel border border-white/10 rounded-3xl p-6 shadow-2xl">
+        <!-- Toast notification -->
+        <div id="watchlist-toast" class="hidden fixed top-8 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-xl bg-emerald-500 text-white font-semibold shadow-lg flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">check_circle</span>
+            <span id="toast-message">Saved!</span>
+        </div>
+        
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-3">
                 <div class="size-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
@@ -132,20 +138,60 @@ function isContentInList(listId) {
     return window.contentInLists && window.contentInLists.includes(listId);
 }
 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showToast(message) {
+    const toast = document.getElementById('watchlist-toast');
+    const msgEl = document.getElementById('toast-message');
+    if (!toast || !msgEl) return;
+    
+    msgEl.textContent = message;
+    toast.classList.remove('hidden');
+    toast.style.animation = 'slideDown 0.3s ease';
+    
+    setTimeout(() => {
+        toast.classList.add('hidden');
+    }, 2500);
+}
+
 function toggleListContent(listId, btnElement) {
-    const contentType = window.CONTENT_DATA.type;
-    const contentId = window.CONTENT_DATA.id;
+    const contentType = window.CONTENT_DATA ? window.CONTENT_DATA.type : null;
+    const contentId = window.CONTENT_DATA ? window.CONTENT_DATA.id : null;
     const isInList = isContentInList(listId);
     const icon = btnElement.querySelector('.material-symbols-outlined');
+    const nameEl = btnElement.querySelector('.text-white.font-semibold');
+    const listName = nameEl ? nameEl.textContent : 'list';
+    
+    if (!contentType || !contentId) {
+        showToast('Cannot add - no content selected');
+        return;
+    }
     
     const url = isInList 
         ? `/content/${contentType}/${contentId}/remove-from-list/${listId}/`
         : `/content/${contentType}/${contentId}/add-to-list/${listId}/`;
     
-    const method = 'POST';
-    
     fetch(url, {
-        method,
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCookie('csrftoken')
@@ -160,15 +206,22 @@ function toggleListContent(listId, btnElement) {
                 icon.textContent = 'check_box_outline_blank';
                 icon.classList.remove('text-blue-400');
                 btnElement.classList.remove('border-blue-500/50');
+                showToast(`Removed from "${listName}"`);
             } else {
                 window.contentInLists.push(listId);
                 icon.textContent = 'check_box';
                 icon.classList.add('text-blue-400');
                 btnElement.classList.add('border-blue-500/50');
+                showToast(`Added to "${listName}"`);
             }
+        } else {
+            showToast(data.error || 'Something went wrong');
         }
     })
-    .catch(err => console.error('Error:', err));
+    .catch(err => {
+        console.error('Error:', err);
+        showToast('Connection error');
+    });
 }
 
 function createNewList() {
@@ -192,45 +245,42 @@ function createNewList() {
     .then(data => {
         if (data.success) {
             hideCreateListInput();
+            showToast(`List "${name}" created!`);
             
-            const contentType = window.CONTENT_DATA.type;
-            const contentId = window.CONTENT_DATA.id;
-            
-            fetch(`/content/${contentType}/${contentId}/add-to-list/${data.list.id}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ ctype: contentType, cid: contentId })
-            })
-            .then(r => r.json())
-            .then(() => {
-                window.contentInLists.push(data.list.id);
+            if (window.CONTENT_DATA && window.CONTENT_DATA.type && window.CONTENT_DATA.id) {
+                const contentType = window.CONTENT_DATA.type;
+                const contentId = window.CONTENT_DATA.id;
+                
+                fetch(`/content/${contentType}/${contentId}/add-to-list/${data.list.id}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ ctype: contentType, cid: contentId })
+                })
+                .then(r => r.json())
+                .then(() => {
+                    window.contentInLists.push(data.list.id);
+                    loadWatchlistLists();
+                });
+            } else {
                 loadWatchlistLists();
-            });
+            }
+        } else {
+            showToast(data.error || 'Failed to create list');
         }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        showToast('Connection error');
     });
 }
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
 </script>
+
+<style>
+@keyframes slideDown {
+    from { opacity: 0; transform: translate(-50%, -20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+</style>

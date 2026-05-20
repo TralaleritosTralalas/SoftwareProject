@@ -5,6 +5,10 @@
 {% block extra_scripts %}
 {% load static %}
 <script src="{% static 'js/watchlist.js' %}"></script>
+<script>
+window.CONTENT_DATA = { type: null, id: null };
+window.contentInLists = [];
+</script>
 {% endblock %}
 
 {% block content %}
@@ -284,7 +288,7 @@
 
     </section>
 
-    
+    {% include "components/watchlist_modal.html" %}
 
   </div>
 </main>

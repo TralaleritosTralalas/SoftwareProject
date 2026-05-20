@@ -13,6 +13,8 @@ urlpatterns = [
     path('content/<str:ctype>/<str:cid>/', views.content_detail, name='content_detail'),
     path('content/<str:ctype>/<str:cid>/update-status/', views.update_status, name='update_status'),
     path('content/<str:ctype>/<str:cid>/toggle-favorite/', views.toggle_favorite, name='toggle_favorite'),
+    path('content/<str:ctype>/<str:cid>/add-to-list/<int:list_id>/', views.add_to_list, name='add_to_list'),
+    path('content/<str:ctype>/<str:cid>/remove-from-list/<int:list_id>/', views.remove_from_list, name='remove_from_list'),
     path('personal_library/',views.personal_library, name='personal_library'),
     path('user_settings/',views.user_settings, name='user_settings'),
     path('onboarding/', views.onboarding, name='onboarding'),
@@ -23,4 +25,6 @@ urlpatterns = [
     
     path('api/watchlist/lists/', views.get_user_lists, name='get_user_lists'),
     path('api/watchlist/lists/create/', views.create_list, name='create_list'),
+    path('api/watchlist/lists/<int:list_id>/rename/', views.rename_list, name='rename_list'),
+    path('api/watchlist/lists/<int:list_id>/', views.delete_list, name='delete_list'),
 ]

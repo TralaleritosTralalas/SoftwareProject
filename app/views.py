@@ -485,6 +485,78 @@ def create_list(request):
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Invalid method'})
 
+
+@login_required
+def rename_list(request, list_id):
+    if request.method == 'PUT':
+        try:
+            wl = Watchlist.objects.get(id=list_id, user=request.user)
+            data = json.loads(request.body)
+            new_name = data.get('name', '').strip()
+            
+            if not new_name:
+                return JsonResponse({'success': False, 'error': 'Name is required'})
+            
+            if Watchlist.objects.filter(user=request.user, name=new_name).exclude(id=list_id).exists():
+                return JsonResponse({'success': False, 'error': 'A list with this name already exists'})
+            
+            wl.name = new_name
+            wl.save()
+            return JsonResponse({'success': True})
+        except Watchlist.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'List not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def delete_list(request, list_id):
+    if request.method == 'POST':
+        try:
+            wl = Watchlist.objects.get(id=list_id, user=request.user)
+            wl.delete()
+            return JsonResponse({'success': True})
+        except Watchlist.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'List not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def add_to_list(request, ctype, cid, list_id):
+    if request.method == 'POST':
+        try:
+            wl = Watchlist.objects.get(id=list_id, user=request.user)
+            _, local_content = _resolve_content(ctype, cid)
+            if not local_content:
+                return JsonResponse({'success': False, 'error': 'Content not found'})
+            wl.content.add(local_content)
+            return JsonResponse({'success': True, 'item_count': wl.item_count})
+        except Watchlist.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'List not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def remove_from_list(request, ctype, cid, list_id):
+    if request.method == 'POST':
+        try:
+            wl = Watchlist.objects.get(id=list_id, user=request.user)
+            _, local_content = _resolve_content(ctype, cid)
+            if not local_content:
+                return JsonResponse({'success': False, 'error': 'Content not found'})
+            wl.content.remove(local_content)
+            return JsonResponse({'success': True, 'item_count': wl.item_count})
+        except Watchlist.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'List not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
     
 @login_required
 def personal_library(request):

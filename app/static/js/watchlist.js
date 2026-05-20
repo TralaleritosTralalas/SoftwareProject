@@ -43,10 +43,7 @@ function updateListsCount(count) {
 }
 
 function openCreateListModal() {
-    const name = prompt('Enter list name:');
-    if (name && name.trim()) {
-        createList(name.trim());
-    }
+    openWatchlistModal();
 }
 
 function createList(name) {
