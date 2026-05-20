@@ -52,7 +52,7 @@ class User(AbstractUser):
             return None
         today = date.today()
         return today.year - self.birth_date.year - (
-            (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
+                (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
         )
 
 
@@ -203,7 +203,6 @@ class Watchlist(models.Model):
         return self.content.count()
 
 
-# SIGNALS
 @receiver(post_save, sender=User)
 def sync_user_groups(sender, instance, **kwargs):
     if instance.role:

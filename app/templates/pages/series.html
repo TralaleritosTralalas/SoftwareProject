@@ -1,10 +1,10 @@
 {% extends "base/base.html" %}
 {% block content %}
 
-<div class="flex justify-between items-center mb-8">
-    <form method="GET" action="{% url 'app:series' %}" class="flex flex-wrap gap-4 mb-8 p-4">
-        {% include "components/platforms_filter.html" with selected_platform=selected_platform %}
-    </form>
-</div>
-{% include "components/card_series.html" with series=series %}
+    <div class="flex justify-between items-center mb-8">
+        <form method="GET" action="{% url 'app:series' %}" class="flex flex-wrap gap-4 mb-8 p-4">
+            {% include "components/platforms_filter.html" with selected_platform=selected_platform %}
+        </form>
+    </div>
+    {% include "components/card_series.html" with series=series %}
 {% endblock %}

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile menu toggle
     const mobileMenuBtn = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
 
@@ -9,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // User dropdown toggle
     const userMenuBtn = document.getElementById('user-menu-button');
     const userDropdown = document.getElementById('user-dropdown');
 
@@ -19,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
             userDropdown.classList.toggle('hidden');
         });
 
-        // Cerrar al hacer click fuera
         document.addEventListener('click', () => {
             userDropdown.classList.add('hidden');
         });

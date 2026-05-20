@@ -6,7 +6,6 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 
 from app.models import User
 
-
 username_validator = UnicodeUsernameValidator()
 
 
@@ -86,7 +85,8 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'terms_of_service', 'privacy_policy')
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'terms_of_service',
+                  'privacy_policy')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
