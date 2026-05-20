@@ -4,6 +4,9 @@
 
 {% block extra_scripts %}
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/watchlist.css' %}">
+<script src="{% static 'js/watchlist-utils.js' %}"></script>
+<script src="{% static 'js/watchlist-modal.js' %}"></script>
 <script src="{% static 'js/watchlist.js' %}"></script>
 <script>
 window.CONTENT_DATA = { type: null, id: null };

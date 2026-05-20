@@ -1,5 +1,14 @@
 <!-- Series -->
 <section class="mb-14">
+    <!-- Section Header -->
+    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+        <div class="size-9 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+            <span class="material-symbols-outlined text-lg">live_tv</span>
+        </div>
+        <h3 class="text-lg font-bold text-white">Series</h3>
+        <span class="text-sm text-text-secondary">({{ series|length }})</span>
+    </div>
+
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         {% for serie in series %}
         <div class="group flex flex-col gap-3 transition-all duration-500 hover:scale-105">
