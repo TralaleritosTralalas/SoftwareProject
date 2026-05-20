@@ -80,10 +80,12 @@ msgid "Filter by:"
 msgstr "Filtrar por:"
 
 #: app/templates/components/platforms_filter.html:7
+#: app/templates/pages/direction_dashboard.html:81
 msgid "All Platforms"
 msgstr "Todas las plataformas"
 
 #: app/templates/components/platforms_filter.html:15
+#: app/templates/pages/direction_dashboard.html:99
 msgid "All Genres"
 msgstr "Todos los géneros"
 
@@ -219,17 +221,9 @@ msgstr "Segmentación"
 msgid "Categorical filters"
 msgstr "Filtros categóricos"
 
-#: app/templates/pages/direction_dashboard.html:81
-msgid "All Platforms"
-msgstr "Todas las plataformas"
-
 #: app/templates/pages/direction_dashboard.html:89
 msgid "All Countries"
 msgstr "Todos los países"
-
-#: app/templates/pages/direction_dashboard.html:99
-msgid "All Genres"
-msgstr "Todos los géneros"
 
 #: app/templates/pages/direction_dashboard.html:113
 msgid "Direction Dashboard"
@@ -298,3 +292,88 @@ msgstr "Interacciones (Favs)"
 #: app/templates/pages/direction_dashboard.html:205
 msgid "No content matches the selected filters."
 msgstr "Ningún contenido coincide con los filtros seleccionados."
+
+#: app/templates/pages/home.html:81
+msgid "Log In"
+msgstr "Iniciar Sesión"
+
+#: app/templates/pages/home.html:86
+msgid "Sign Up"
+msgstr "Registrarse"
+
+#: app/templates/pages/home.html:99
+msgid "The Future of Streaming"
+msgstr "El Futuro del Streaming"
+
+#: app/templates/pages/home.html:102
+msgid "All your streaming platforms in"
+msgstr "Todas tus plataformas de streaming en"
+
+#: app/templates/pages/home.html:102
+msgid "one place"
+msgstr "un solo lugar"
+
+#: app/templates/pages/home.html:105
+msgid "Experience entertainment management reimagined. StreamSync unifies Netflix, Hulu, HBO, and more into a single, seamless cinematic interface."
+msgstr "Experimenta la gestión del entretenimiento reorganizada. StreamSync unifica Netflix, Hulu, HBO y más en una interfaz cinematográfica única y fluida."
+
+#: app/templates/pages/home.html:122
+msgid "Services Integrated"
+msgstr "Servicios Integrados"
+
+#: app/templates/pages/home.html:126
+msgid "Movies Indexed"
+msgstr "Películas Indexadas"
+
+#: app/templates/pages/home.html:130
+msgid "Active Users"
+msgstr "Usuarios Activos"
+
+#: app/templates/pages/home.html:138
+msgid "Premium Tools"
+msgstr "Herramientas Premium"
+
+#: app/templates/pages/home.html:140
+msgid "Unlock your full viewing potential"
+msgstr "Desbloquea todo tu potencial de visualización"
+
+#: app/templates/pages/home.html:142
+msgid "Powerful features designed to save you time and help you discover your next obsession."
+msgstr "Potentes funciones diseñadas para ahorrarte tiempo y ayudarte a descubrir tu próxima obsesión."
+
+#: app/templates/pages/home.html:145
+#: app/templates/pages/home.html:201
+msgid "Explore all features"
+msgstr "Explorar todas las funciones"
+
+#: app/templates/pages/home.html:159
+msgid "Unified Search"
+msgstr "Búsqueda Unificada"
+
+#: app/templates/pages/home.html:162
+msgid "Stop jumping between tabs. Search across Netflix, Hulu, HBO, and Disney+ instantly from one bar."
+msgstr "Deja de saltar entre pestañas. Busca en Netflix, Hulu, HBO y Disney+ al instante desde una sola barra."
+
+#: app/templates/pages/home.html:170
+msgid "Series Tracking"
+msgstr "Seguimiento de Series"
+
+#: app/templates/pages/home.html:173
+msgid "Never forget which episode you're on. Keep track of every season and episode automatically."
+msgstr "No olvides nunca en qué episodio te quedaste. Haz un seguimiento automático de cada temporada y episodio."
+
+#: app/templates/pages/home.html:181
+msgid "Smart Recs"
+msgstr "Recomendaciones Inteligentes"
+
+#: app/templates/pages/home.html:183
+msgid "AI-driven suggestions that understand your unique taste better than any single platform algorithm."
+msgstr "Sugerencias basadas en IA que entienden tus gustos únicos mejor que el algoritmo de cualquier plataforma individual."
+
+#: app/templates/pages/home.html:191
+msgid "Availability Alerts"
+msgstr "Alertas de Disponibilidad"
+
+#: app/templates/pages/home.html:193
+msgid "Get notified the second a movie on your watchlist becomes available on your subscribed services."
+msgstr "Recibe notificaciones en el segundo en que una película de tu lista de seguimiento esté disponible en tus servicios suscritos."
