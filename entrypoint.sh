@@ -5,4 +5,9 @@ uv run python manage.py migrate
 
 uv run python manage.py collectstatic --noinput
 
+# when in production 
+# uv run python manage.py import_content
+# when in production 
+# uv run python manage.py fetch_images
+
 exec uv run gunicorn SoftwareProject.wsgi:application --bind 0.0.0.0:8000

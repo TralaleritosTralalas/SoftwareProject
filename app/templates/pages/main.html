@@ -76,8 +76,8 @@
             {% for serie in series_list %}
             <div class="min-w-[200px] md:min-w-[240px] flex-shrink-0 group">
                 <div class="aspect-[2/3] rounded-xl overflow-hidden relative shadow-md bg-surface-dark">
-                    {% if serie.image_url %}
-                    <img alt="{{ serie.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="{{ serie.image_url }}"/>
+                    {% if serie.poster_url %}
+                    <img alt="{{ serie.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="{{ serie.poster_url }}"/>
                     {% else %}
                     <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
                         <span class="material-symbols-outlined text-4xl text-slate-500">tv</span>
@@ -133,10 +133,10 @@
                 {% for movie in movies_list %}
                 <div class="flex-shrink-0 w-[200px] md:w-[240px] group">
                     <div class="aspect-[2/3] rounded-xl overflow-hidden relative shadow-md bg-surface-dark">
-                        {% if movie.image_url %}
+                        {% if movie.poster_url %}
                         <img alt="{{ movie.title }}" 
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                             src="{{ movie.image_url }}"/>
+                             src="{{ movie.poster_url }}"/>
                         {% else %}
                         <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
                             <span class="material-symbols-outlined text-4xl text-slate-500">movie</span>
@@ -205,8 +205,8 @@
         <div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer">
             <a href="{% url 'app:content_detail' item.content_type item.unique_id %}">
                 <div class="aspect-video rounded-lg overflow-hidden relative shadow-sm bg-surface-dark">
-                    {% if item.image_url %}
-                    <img alt="{{ item.title }}" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-50" src="{{ item.image_url }}"/>
+                    {% if item.poster_url %}
+                    <img alt="{{ item.title }}" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-50" src="{{ item.poster_url }}"/>
                     {% else %}
                     <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
                         <span class="material-symbols-outlined text-4xl text-slate-500">movie</span>
