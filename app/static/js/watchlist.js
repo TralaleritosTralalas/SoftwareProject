@@ -128,5 +128,5 @@ function deleteList(listId) {
 }
 
 function openListDetail(listId) {
-    window.location.href = `/api/watchlist/lists/${listId}/contents/`;
+    window.location.href = `/personal_library/list/${listId}/`;
 }

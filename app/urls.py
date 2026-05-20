@@ -16,6 +16,7 @@ urlpatterns = [
     path('content/<str:ctype>/<str:cid>/add-to-list/<int:list_id>/', views.add_to_list, name='add_to_list'),
     path('content/<str:ctype>/<str:cid>/remove-from-list/<int:list_id>/', views.remove_from_list, name='remove_from_list'),
     path('personal_library/',views.personal_library, name='personal_library'),
+    path('personal_library/list/<int:list_id>/', views.list_detail, name='list_detail'),
     path('user_settings/',views.user_settings, name='user_settings'),
     path('onboarding/', views.onboarding, name='onboarding'),
     path('onboarding/genres/', views.onboarding_genres, name='onboarding_genres'),

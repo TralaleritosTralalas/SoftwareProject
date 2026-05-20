@@ -557,6 +557,47 @@ def remove_from_list(request, ctype, cid, list_id):
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Invalid method'})
 
+
+@login_required
+def list_detail(request, list_id):
+    try:
+        wl = Watchlist.objects.get(id=list_id, user=request.user)
+    except Watchlist.DoesNotExist:
+        return render(request, 'pages/main.html', status=404)
+    
+    movies = []
+    series = []
+    
+    for content in wl.content.select_related('movie', 'series', 'genre').all():
+        if hasattr(content, 'movie') and content.movie:
+            movie = content.movie
+            movies.append({
+                'title': movie.title,
+                'year': movie.year,
+                'rating': movie.rating,
+                'genre_name': movie.genre.name if movie.genre else 'Unknown',
+                'platforms': [],
+                'unique_id': f"{movie.title.lower().replace(' ', '-')}_{movie.year}",
+            })
+        elif hasattr(content, 'series') and content.series:
+            s = content.series
+            series.append({
+                'title': s.title,
+                'start_year': s.start_year,
+                'rating': s.rating,
+                'genre_name': s.genre.name if s.genre else 'Unknown',
+                'platforms': [],
+                'unique_id': f"{s.title.lower().replace(' ', '-')}_{s.start_year}",
+            })
+    
+    return render(request, 'pages/list_detail.html', {
+        'list_name': wl.name,
+        'list_id': wl.id,
+        'movies': movies,
+        'series': series,
+        'item_count': len(movies) + len(series),
+    })
+
     
 @login_required
 def personal_library(request):
