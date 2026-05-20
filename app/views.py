@@ -1,13 +1,13 @@
 from django.contrib.auth.forms import UserCreationForm
-from .services import get_all_movies, get_all_series, search_content, get_movies_by_genres, get_series_by_genres, get_trending, get_all_platforms, get_all_genres_from_api, search_content
+from .services import get_all_movies, get_all_series, get_movies_by_genres, get_series_by_genres, \
+    get_trending, get_all_platforms, get_all_genres_from_api, search_content
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
 from django.contrib.auth import update_session_auth_hash, logout
 from .models import VisualizationProgress
 from django.utils.text import slugify
-from app.models import Country
 from app.models import User, Country
-from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Sum, Count
@@ -17,16 +17,19 @@ from .utils import DashboardService
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from .models import VisualizationProgress, Movie, Series, Platform, Genre, Notification
-import json
 from django.db.models import Q
+import json
+
+
+# Create your views here.
     
+  
 def home(request):
     return render(request, 'pages/home.html')
 
+
 @login_required
 def user_settings(request):
-
-
     countries = Country.objects.all()
 
     if request.method == 'POST':
@@ -168,6 +171,7 @@ def catalog(request):
     })
 
 
+
 def movies(request):
     selected_platform = request.GET.get('platform')
     selected_genre = request.GET.get('genre')
@@ -175,12 +179,10 @@ def movies(request):
     sort_year = request.GET.get('sort_year')
 
     movies_list = get_all_movies(platform_filter=selected_platform)
-    
-    # Filtrado por género
+
     if selected_genre:
         movies_list = [m for m in movies_list if m.get('genre_name') == selected_genre]
 
-    # Ordenamiento
     if sort_rating:
         movies_list.sort(key=lambda x: x.get('rating', 0), reverse=(sort_rating == 'desc'))
     if sort_year:
@@ -188,8 +190,8 @@ def movies(request):
 
     context = {
         'movies': movies_list,
-        'platforms': get_all_platforms(), # <--- Añadir esto
-        'genres': get_all_genres_from_api(), # <--- Añadir esto
+        'platforms': get_all_platforms(),
+        'genres': get_all_genres_from_api(),
         'selected_platform': selected_platform,
         'selected_genre': selected_genre,
         'sort_rating': sort_rating,
@@ -198,6 +200,7 @@ def movies(request):
 
     return render(request, 'pages/movies.html', context)
 
+
 def series(request):
     selected_platform = request.GET.get('platform')
     selected_genre = request.GET.get('genre')
@@ -205,12 +208,10 @@ def series(request):
     sort_year = request.GET.get('sort_year')
 
     series_list = get_all_series(platform_filter=selected_platform)
-    
-    # Filtrado por género
+
     if selected_genre:
         series_list = [s for s in series_list if s.get('genre_name') == selected_genre]
 
-    # Ordenamiento
     if sort_rating:
         series_list.sort(key=lambda x: x.get('rating', 0), reverse=(sort_rating == 'desc'))
     if sort_year:
@@ -226,6 +227,7 @@ def series(request):
         'sort_year': sort_year,
     }
     return render(request, 'pages/series.html', context)
+
 
 def search(request):
     query = request.GET.get('q', '').strip()
@@ -254,10 +256,12 @@ def search(request):
     }
     return render(request, 'pages/search.html', context)
 
+
 def register(request):
-    return render(request, 'streamsync_register.html',{
+    return render(request, 'streamsync_register.html', {
         'form': UserCreationForm
     })
+
 
 def login(request):
     return render(request, 'login.html')
@@ -275,8 +279,7 @@ def content_detail(request, ctype, cid):
     
     if content:
         content['content_type'] = ctype
-        
-        # Obtener estado del usuario si está autenticado
+
         user_status = 'not_seen'
         is_favorite = False
         is_in_watchlist = False
@@ -289,18 +292,14 @@ def content_detail(request, ctype, cid):
                     local_content = Movie.objects.filter(title=content.get('title')).first()
                 
                 if local_content:
-                    # Verificar VisualizationProgress
                     vp = VisualizationProgress.objects.filter(user=request.user, content=local_content).first()
                     if vp:
                         if vp.completed:
                             user_status = 'completed'
                         elif vp.last_minute > 0:
                             user_status = 'watching'
-                    
-                    # Verificar Favorite
+
                     is_favorite = Favorite.objects.filter(user=request.user, content=local_content).exists()
-                    
-                    # Verificar Watchlist
                     is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
                     
                     content_in_lists = list(Watchlist.objects.filter(
@@ -859,7 +858,6 @@ def main(request):
         completed=False
     ).select_related('content').order_by('-id')
 
-    
     for progress in watch_progress:
         movie = Movie.objects.filter(id=progress.content.id).first()
         progress.total_duration = movie.duration_minutes if movie else 90 
@@ -881,21 +879,22 @@ def main(request):
         'watch_progress': watch_progress
     })
 
+
 @login_required
 def login_redirect(request):
     user = request.user
-
-    if not user.onboarding_completed:
-        return redirect('app:onboarding')
 
     if user.is_superuser or user.groups.filter(name='director').exists():
         return redirect('app:direction_dashboard')
 
     elif user.groups.filter(name='technical').exists():
         return redirect('tech_admin:index')
-    
-    elif user.groups.filter(name='plataform').exists():
-        return redirect('app:series')  # provisional redirect
+
+    elif user.groups.filter(name='manager').exists():
+        return redirect('app:manager_dashboard')
+
+    if not user.onboarding_completed:
+        return redirect('app:onboarding')
 
     else:
         return redirect('app:main')
@@ -980,6 +979,8 @@ def onboarding_complete(request):
     if not request.user.onboarding_completed:
         return redirect('app:onboarding')
     return render(request, 'registration/onboarding_complete.html')
+
+
 def tech_add_user_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -1023,6 +1024,7 @@ def tech_add_user_view(request):
     groups = Group.objects.all()
     return render(request, 'admin/tech_add_user.html', {'groups': groups})
 
+
 def tech_edit_user_view(request, user_id):
     user_to_edit = get_object_or_404(User, id=user_id)
     groups = Group.objects.all()
@@ -1063,6 +1065,7 @@ def tech_edit_user_view(request, user_id):
         'groups': groups
     })
 
+
 def tech_delete_user(request, user_id):
     if request.user.id == user_id:
         messages.error(request, "No puedes borrar tu propia cuenta desde aquí.")
@@ -1076,6 +1079,7 @@ def tech_delete_user(request, user_id):
         messages.success(request, f"Usuario {username} eliminado permanentemente.")
 
     return redirect('tech_admin:index')
+
 
 @login_required
 def direction_dashboard(request):
@@ -1097,12 +1101,41 @@ def direction_dashboard(request):
         return DashboardService.get_csv_response(trending, totals, top_p)
 
     chart_qs = stats_qs.values('week').annotate(c=Sum('total_clicks')).order_by('week')
+    labels = [d['week'].strftime('%d %b') for d in chart_qs] if chart_qs.exists() else ["No Data"]
+    values = [d['c'] for d in chart_qs] if chart_qs.exists() else [0]
 
-    if chart_qs.exists():
-        labels = [d['week'].strftime('%d %b') for d in chart_qs]
-        values = [d['c'] for d in chart_qs]
+    genre_qs = content_qs.values('genre__name').annotate(cnt=Count('id')).order_by('-cnt')[:8]
+    genre_labels = [g['genre__name'] or 'Unknown' for g in genre_qs] if genre_qs.exists() else ["No Data"]
+    genre_values = [g['cnt'] for g in genre_qs] if genre_qs.exists() else [0]
+
+    donut_labels = ['Clicks', 'Favorites']
+    donut_values = [totals['clicks'], totals['favs']]
+
+    platform_qs = stats_qs.values('platform__platform_name').annotate(
+        total_c=Sum('total_clicks'),
+        total_f=Sum('total_favorites')
+    ).order_by('-total_c')[:6]
+
+    if platform_qs.exists():
+        platform_labels = [p['platform__platform_name'] for p in platform_qs]
+        platform_clicks = [p['total_c'] or 0 for p in platform_qs]
+        platform_favs = [p['total_f'] or 0 for p in platform_qs]
     else:
-        labels, values = ["No Data"], [0]
+        platform_labels = ["No Data"]
+        platform_clicks = [0]
+        platform_favs = [0]
+
+    top_content_labels = [c.title for c in trending] if trending.exists() else ["No Data"]
+    top_content_values = [c.fav_count for c in trending] if trending.exists() else [0]
+
+    filters_data = {
+        'range': request.GET.get('range', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'platform': request.GET.get('platform', 'all'),
+        'country': request.GET.get('country', 'all'),
+        'genre': request.GET.get('genre', 'all'),
+    }
 
     return render(request, 'pages/direction_dashboard.html', {
         'total_clicks': f"{totals['clicks']:,}".replace(",", "."),
@@ -1114,7 +1147,16 @@ def direction_dashboard(request):
         'genres': Genre.objects.all(),
         'chart_labels': json.dumps(labels),
         'chart_values': json.dumps(values),
-        'filters': request.GET
+        'genre_labels': json.dumps(genre_labels),
+        'genre_values': json.dumps(genre_values),
+        'donut_labels': json.dumps(donut_labels),
+        'donut_values': json.dumps(donut_values),
+        'platform_labels': json.dumps(platform_labels),
+        'platform_clicks': json.dumps(platform_clicks),
+        'platform_favs': json.dumps(platform_favs),
+        'top_content_labels': json.dumps(top_content_labels),
+        'top_content_values': json.dumps(top_content_values),
+        'filters': filters_data
     })
 
 
@@ -1128,3 +1170,61 @@ def mark_notification_seen(request):
         Notification.objects.filter(id=nid, user=request.user).update(seen=True)
     remaining = request.user.notifications.filter(seen=False).count()
     return JsonResponse({'count': remaining})
+@login_required
+def manager_dashboard(request):
+    platform = Platform.objects.filter(p_manager=request.user).first()
+
+    if not platform:
+        raise PermissionDenied("You don't have a platform to manage.")
+
+    stats_qs, content_qs = DashboardService.apply_filters(request.GET, platform=platform)
+
+    metrics = stats_qs.aggregate(sc=Sum('total_clicks'), sf=Sum('total_favorites'))
+    totals = {'clicks': metrics['sc'] or 0, 'favs': metrics['sf'] or 0}
+
+    trending = content_qs.annotate(
+        fav_count=Count('favorite')
+    ).select_related('genre', 'country', 'director').order_by('-fav_count')[:10]
+
+    if request.GET.get('export') == 'csv':
+        return DashboardService.get_csv_response(trending, totals, None)
+
+    chart_qs = stats_qs.values('week').annotate(c=Sum('total_clicks')).order_by('week')
+    labels = [d['week'].strftime('%d %b') for d in chart_qs] if chart_qs.exists() else ["No Data"]
+    values = [d['c'] for d in chart_qs] if chart_qs.exists() else [0]
+
+    genre_qs = content_qs.values('genre__name').annotate(cnt=Count('id')).order_by('-cnt')[:8]
+    genre_labels = [g['genre__name'] or 'Unknown' for g in genre_qs] if genre_qs.exists() else ["No Data"]
+    genre_values = [g['cnt'] for g in genre_qs] if genre_qs.exists() else [0]
+
+    donut_labels = ['Clicks', 'Favorites']
+    donut_values = [totals['clicks'], totals['favs']]
+
+    top_content_labels = [c.title for c in trending] if trending.exists() else ["No Data"]
+    top_content_values = [c.fav_count for c in trending] if trending.exists() else [0]
+
+    filters_data = {
+        'range': request.GET.get('range', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'country': request.GET.get('country', 'all'),
+        'genre': request.GET.get('genre', 'all'),
+    }
+
+    return render(request, 'pages/manager_dashboard.html', {
+        'platform': platform,
+        'total_clicks': f"{totals['clicks']:,}".replace(",", "."),
+        'total_favorites': f"{totals['favs']:,}".replace(",", "."),
+        'trending_content': trending,
+        'genres': Genre.objects.all(),
+        'countries': Country.objects.all(),
+        'chart_labels': json.dumps(labels),
+        'chart_values': json.dumps(values),
+        'genre_labels': json.dumps(genre_labels),
+        'genre_values': json.dumps(genre_values),
+        'donut_labels': json.dumps(donut_labels),
+        'donut_values': json.dumps(donut_values),
+        'top_content_labels': json.dumps(top_content_labels),
+        'top_content_values': json.dumps(top_content_values),
+        'filters': filters_data
+    })

@@ -25,6 +25,8 @@ urlpatterns = [
     path('dashboard/direction/', views.direction_dashboard, name='direction_dashboard'),
     
     path('api/notifications/mark-seen/', views.mark_notification_seen, name='mark_notification_seen'),
+    path('dashboard/manager/', views.manager_dashboard, name='manager_dashboard'),
+    path('content/<str:ctype>/<int:cid>/', views.content_detail, name='content_detail'),
     path('api/watchlist/lists/', views.get_user_lists, name='get_user_lists'),
     path('api/watchlist/lists/create/', views.create_list, name='create_list'),
     path('api/watchlist/lists/<int:list_id>/rename/', views.rename_list, name='rename_list'),
