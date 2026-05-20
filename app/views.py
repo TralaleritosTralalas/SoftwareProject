@@ -15,7 +15,8 @@ from django.core.exceptions import PermissionDenied
 from .models import *
 from .utils import DashboardService
 from django.http import JsonResponse
-from .models import VisualizationProgress, Movie, Series, Platform, Genre
+from django.views.decorators.http import require_POST
+from .models import VisualizationProgress, Movie, Series, Platform, Genre, Notification
 import json
 from django.db.models import Q
     
@@ -1115,3 +1116,15 @@ def direction_dashboard(request):
         'chart_values': json.dumps(values),
         'filters': request.GET
     })
+
+
+@require_POST
+@login_required
+def mark_notification_seen(request):
+    data = json.loads(request.body)
+    if data.get('all'):
+        request.user.notifications.filter(seen=False).update(seen=True)
+    elif nid := data.get('id'):
+        Notification.objects.filter(id=nid, user=request.user).update(seen=True)
+    remaining = request.user.notifications.filter(seen=False).count()
+    return JsonResponse({'count': remaining})
