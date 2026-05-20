@@ -2,11 +2,11 @@
 
 <footer class="fixed bottom-0 left-0 right-0 z-40 border-t border-border-light dark:border-border-dark md:relative md:z-auto md:bottom-auto md:left-auto md:right-auto bg-surface-light/80 dark:bg-background-dark/80 backdrop-blur-md py-8">
     <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p class="text-slate-500 dark:text-slate-400 text-sm">&copy 2026 StreamSync Inc. All rights reserved.</p>
+        <p class="text-slate-500 dark:text-slate-400 text-sm">&copy 2026 StreamSync Inc. {% trans "All rights reserved." %}</p>
         <div class="flex gap-6 text-sm text-slate-500 dark:text-slate-400">
-            <a class="hover:text-primary transition-colors" href="{% url 'privacy_policy' %}">Privacy Policy" %}</a>
-            <a class="hover:text-primary transition-colors" href="{% url 'terms_of_service' %}">Terms of Service" %}</a>
-            <a class="hover:text-primary transition-colors" href="{% url 'help_center' %}">Help Center" %}</a>
+            <a class="hover:text-primary transition-colors" href="{% url 'privacy_policy' %}">{% trans "Privacy Policy" %}</a>
+            <a class="hover:text-primary transition-colors" href="{% url 'terms_of_service' %}">{% trans "Terms of Service" %}</a>
+            <a class="hover:text-primary transition-colors" href="{% url 'help_center' %}">{% trans "Help Center" %}</a>
         </div>
     </div>
 </footer>
