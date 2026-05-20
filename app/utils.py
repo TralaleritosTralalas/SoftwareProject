@@ -7,9 +7,14 @@ from .models import Statistics, AudiovisualContent
 
 class DashboardService:
     @staticmethod
-    def apply_filters(params):
-        stats_qs = Statistics.objects.all()
-        content_qs = AudiovisualContent.objects.all()
+    def apply_filters(params, platform=None):
+        if platform:
+            stats_qs = Statistics.objects.filter(platform=platform)
+            content_qs = AudiovisualContent.objects.filter(catalog__platform=platform).distinct()
+        else:
+            stats_qs = Statistics.objects.all()
+            content_qs = AudiovisualContent.objects.all()
+
         today = timezone.now().date()
 
         range_val = params.get('range')
