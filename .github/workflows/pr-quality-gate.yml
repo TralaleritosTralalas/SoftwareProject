@@ -1,0 +1,41 @@
+name: "PR Quality Gate"
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout from the code to be able to read the commits
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate that all commits are conventional commits
+        uses: wagoid/commitlint-github-action@v6
+        with:
+          configFile: '.github/scripts/commitlint.config.mjs'
+          failOnWarnings: true
+
+      - name: Validate pull request body (text length and image)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body;
+            const minLength = 100;
+            
+            if (!body) {
+              core.setFailed("Error: Pull request description is empty.");
+              return;
+            }
+
+            if (body.length < minLength) {
+              core.setFailed("Error: Pull request description is really short: (${body.length} characters). Minimum length required: ${minLength}.");
+            }
+
+            const imageRegex = /(!\[.*?\]\(.*?\)|<img.*?src=.*?>)/g;
+            if (!imageRegex.test(body)) {
+              core.setFailed("Error: Pull request description doesn't include any description.");
+            }

@@ -1,0 +1,786 @@
+{% extends "base/base.html" %}
+
+{% block title %}StreamSync Dashboard{% endblock %}
+
+{% block content %}
+
+<main class="flex-1 flex flex-col">
+
+    <!-- HERO -->
+    <section class="relative w-full h-[320px] overflow-hidden rounded-3xl group">
+
+        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+             style='background-image:url("https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=2069&auto=format&fit=crop")'>
+        </div>
+
+        <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/40"></div>
+
+        <!-- COVER EDIT -->
+        <button class="absolute top-5 right-5 p-3 bg-black/40 backdrop-blur-md rounded-2xl text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-105">
+            <span class="material-symbols-outlined">edit_square</span>
+        </button>
+
+        <div class="relative max-w-7xl mx-auto px-6 h-full flex items-end pb-12">
+
+            <div class="flex flex-col md:flex-row items-end gap-6">
+
+                <!-- PROFILE -->
+                <div class="relative group/avatar">
+
+                    <img
+                        class="w-32 h-32 md:w-40 md:h-40 rounded-3xl border-4 border-background-dark object-cover shadow-2xl"
+                        src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}https://randomuser.me/api/portraits/men/32.jpg{% endif %}"
+                        id="profile-preview"/>
+
+                    <label
+                        for="avatar-upload"
+                        class="absolute inset-0 flex items-center justify-center bg-black/60 rounded-3xl opacity-0 group-hover/avatar:opacity-100 transition-all cursor-pointer">
+
+                        <span class="material-symbols-outlined text-white text-3xl">
+                            add_a_photo
+                        </span>
+
+                        <input
+                            type="file"
+                            id="avatar-upload"
+                            class="hidden"
+                            accept="image/*"
+                            onchange="previewImage(event)">
+                    </label>
+
+                </div>
+
+                <!-- INFO -->
+                <div class="mb-2">
+
+                    <h2 class="text-4xl font-bold text-white">
+                        {{ user.first_name }} {{ user.last_name }}
+                    </h2>
+
+                    <p class="text-on-surface-variant flex items-center gap-2 mt-2">
+                        <span class="size-2 bg-green-500 rounded-full"></span>
+                        @{{ user.username }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- CONTENT -->
+    <section class="max-w-7xl mx-auto px-6 py-12 w-full">
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- LEFT -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- ACCOUNT SETTINGS -->
+                <form method="POST" enctype="multipart/form-data" class="block">
+                    {% csrf_token %}
+
+                    {% if errors %}
+                    <div class="mb-6 p-4 bg-red-500/20 border border-red-500 rounded-2xl">
+                        {% for error in errors %}
+                        <p class="text-red-400 text-sm">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if success %}
+                    <div class="mb-6 p-4 bg-green-500/20 border border-green-500 rounded-2xl">
+                        <p class="text-green-400 text-sm">{{ success }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="bg-surface-container-low rounded-3xl border border-outline-variant overflow-hidden shadow-xl">
+
+                        <!-- HEADER -->
+                        <div class="flex items-center justify-between px-8 py-6 border-b border-outline-variant">
+
+                            <div>
+                                <h3 class="text-2xl font-bold">
+                                    Account Settings
+                                </h3>
+
+                                <p class="text-sm text-on-surface-variant mt-1">
+                                    Manage your profile information and preferences.
+                                </p>
+                            </div>
+
+                            <!-- EDIT BTN -->
+                            <button
+                                type="button"
+                                id="edit-profile-btn"
+                                onclick="toggleEditProfile()"
+                                class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-background-dark border border-outline-variant hover:border-primary hover:bg-surface-container-high transition-all group">
+
+                                <span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">
+                                    edit
+                                </span>
+
+                                <span class="font-medium">
+                                    Edit Profile
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                        <!-- BODY -->
+                        <div class="p-8">
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+                                <!-- FIRST NAME -->
+                                <div class="space-y-2">
+
+                                    <label class="text-sm text-on-surface-variant">
+                                        First Name
+                                    </label>
+
+                                    <input
+                                        disabled
+                                        type="text"
+                                        name="first_name"
+                                        class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
+                                        value="{{ user.first_name|default:'' }}"/>
+
+                                </div>
+
+                                <!-- LAST NAME -->
+                                <div class="space-y-2">
+
+                                    <label class="text-sm text-on-surface-variant">
+                                        Last Name
+                                    </label>
+
+                                    <input
+                                        disabled
+                                        type="text"
+                                        name="last_name"
+                                        class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
+                                        value="{{ user.last_name|default:'' }}"/>
+
+                                </div>
+
+                                <!-- USERNAME -->
+                                <div class="space-y-2">
+
+                                    <label class="text-sm text-on-surface-variant">
+                                        Username
+                                    </label>
+
+                                    <input
+                                        disabled
+                                        type="text"
+                                        name="username"
+                                        class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"
+                                        value="{{ user.username }}"/>
+
+                                </div>
+
+                                <!-- COUNTRY -->
+                                <div class="space-y-2">
+
+                                    <label class="text-sm text-on-surface-variant">
+                                        Country
+                                    </label>
+
+                                    <select
+                                        disabled
+                                        name="country"
+                                        class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed appearance-none transition-all">
+
+                                    {% for country in countries %}
+                                    <option value="{{ country.id }}" {% if user.country_id == country.id %}selected{% endif %}>
+                                        {{ country.name }}
+                                    </option>
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+                            <!-- GENDER -->
+                            <div class="space-y-2 md:col-span-2">
+
+                                <label class="text-sm text-on-surface-variant">
+                                    Gender
+                                </label>
+
+                                <input type="hidden" name="gender" id="selected-gender" value="{{ user.gender|default:'' }}">
+
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+
+                                    <button type="button" onclick="selectGender('male')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'male' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
+                                        Male
+                                    </button>
+
+                                    <button type="button" onclick="selectGender('female')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'female' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
+                                        Female
+                                    </button>
+
+                                    <button type="button" onclick="selectGender('non-binary')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'non-binary' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
+                                        Non-binary
+                                    </button>
+
+                                    <button type="button" onclick="selectGender('other')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'other' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
+                                        Other
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- BIO -->
+                        <div class="space-y-2 mb-8">
+
+                            <label class="text-sm text-on-surface-variant">
+                                Bio
+                            </label>
+
+                            <textarea
+                                rows="4"
+                                disabled
+                                name="bio"
+                                class="profile-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed resize-none transition-all"
+                            >{{ user.bio|default:'' }}</textarea>
+
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div
+                            id="profile-actions"
+                            class="hidden opacity-0 translate-y-3 flex justify-end gap-4 transition-all duration-300">
+
+                            <button
+                                type="button"
+                                onclick="cancelProfileEdit()"
+                                class="px-6 py-3 text-on-surface-variant hover:text-white transition-colors">
+
+                                Cancel
+
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="px-8 py-3 bg-primary hover:bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all">
+
+                                Save Changes
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    </div>
+
+                </form>
+
+                <!-- SECURITY -->
+                <form method="POST" class="block">
+                    {% csrf_token %}
+
+                    {% if password_errors %}
+                    <div class="mb-6 p-4 bg-red-500/20 border border-red-500 rounded-2xl">
+                        {% for error in password_errors %}
+                        <p class="text-red-400 text-sm">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if password_success %}
+                    <div class="mb-6 p-4 bg-green-500/20 border border-green-500 rounded-2xl">
+                        <p class="text-green-400 text-sm">{{ password_success }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="bg-surface-container-low rounded-3xl border border-outline-variant overflow-hidden shadow-xl">
+
+                        <!-- HEADER -->
+                        <div class="flex items-center justify-between px-8 py-6 border-b border-outline-variant">
+
+                            <div>
+
+                                <h3 class="text-2xl font-bold">
+                                    Security
+                                </h3>
+
+                                <p class="text-sm text-on-surface-variant mt-1">
+                                    Manage your password and security preferences.
+                                </p>
+
+                            </div>
+
+                            <!-- SECURITY BTN -->
+                            <button
+                                type="button"
+                                onclick="toggleSecurityEdit()"
+                                class="flex items-center gap-2 px-5 py-3 rounded-2xl bg-background-dark border border-outline-variant hover:border-primary hover:bg-surface-container-high transition-all group">
+
+                                <span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">
+                                    lock_reset
+                                </span>
+
+                                <span class="font-medium">
+                                    Change Password
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                        <!-- BODY -->
+                        <div class="p-8 space-y-5">
+
+                            <!-- CURRENT -->
+                            <div class="space-y-2">
+
+                                <label class="text-sm text-on-surface-variant">
+                                    Current Password
+                                </label>
+
+                                <input
+                                    disabled
+                                    type="password"
+                                    name="current_password"
+                                    placeholder="••••••••••••"
+                                    class="security-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"/>
+
+                            </div>
+
+                            <!-- NEW -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                                <div class="space-y-2">
+
+                                    <label class="text-sm text-on-surface-variant">
+                                        New Password
+                                    </label>
+
+                                    <input
+                                        disabled
+                                        type="password"
+                                        name="new_password"
+                                        placeholder="Enter new password"
+                                        class="security-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"/>
+
+                                </div>
+
+                                <div class="space-y-2">
+
+                                    <label class="text-sm text-on-surface-variant">
+                                        Confirm Password
+                                    </label>
+
+                                    <input
+                                        disabled
+                                        type="password"
+                                        name="confirm_password"
+                                        placeholder="Confirm new password"
+                                        class="security-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"/>
+
+                                    <div id="password-match" class="text-[11px] text-on-surface-variant mt-2 hidden">
+                                        <span id="match-icon"></span> <span id="match-text"></span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- PASSWORD FEEDBACK -->
+                            <div id="password-feedback" class="space-y-1 mt-2">
+                                <p class="text-[11px] text-on-surface-variant">
+                                    <span id="length-check">○</span> At least 8 characters
+                                </p>
+                                <p class="text-[11px] text-on-surface-variant">
+                                    <span id="common-check">○</span> Not a commonly used password
+                                </p>
+                                <p class="text-[11px] text-on-surface-variant">
+                                    <span id="number-check">○</span> Not entirely numeric
+                                </p>
+                            </div>
+
+                            <!-- ACTIONS -->
+                            <div
+                                id="security-actions"
+                                class="hidden opacity-0 translate-y-3 flex items-center justify-between pt-2 transition-all duration-300">
+
+                                <a
+                                    href="#"
+                                    class="text-sm text-primary hover:underline">
+
+                                    Forgot your password?
+
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    name="action"
+                                    value="change_password"
+                                    class="px-8 py-3 bg-white text-black rounded-2xl font-bold hover:bg-slate-200 transition-all">
+
+                                    Update Password
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <!-- ACTIVITY -->
+                <div class="bg-surface-container-low p-6 rounded-3xl border border-outline-variant shadow-xl">
+
+                    <h4 class="font-bold mb-5 flex items-center gap-2">
+
+                        <span class="material-symbols-outlined text-primary">
+                            analytics
+                        </span>
+
+                        Your Activity
+
+                    </h4>
+
+                    <div class="grid grid-cols-2 gap-4">
+
+                        <div class="p-5 bg-background-dark rounded-2xl border border-outline-variant text-center">
+
+                            <p class="text-3xl font-bold">
+                                142
+                            </p>
+
+                            <p class="text-[10px] uppercase tracking-wider text-on-surface-variant mt-1">
+                                Watched
+                            </p>
+
+                        </div>
+
+                        <div class="p-5 bg-background-dark rounded-2xl border border-outline-variant text-center">
+
+                            <p class="text-3xl font-bold">
+                                24
+                            </p>
+
+                            <p class="text-[10px] uppercase tracking-wider text-on-surface-variant mt-1">
+                                Reviews
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- DELETE ACCOUNT -->
+                <div class="bg-surface-container-low p-6 rounded-3xl border border-outline-variant shadow-xl">
+
+                    <h4 class="font-bold mb-5 flex items-center gap-2 text-red-500">
+
+                        <span class="material-symbols-outlined text-red-500">
+                            delete_forever
+                        </span>
+
+                        Danger Zone
+
+                    </h4>
+
+                    <p class="text-sm text-on-surface-variant mb-5">
+                        Once you delete your account, there is no going back. Please be certain.
+                    </p>
+
+                    <button type="button" onclick="showDeleteModal()"
+                            class="w-full px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                        Delete Account
+                    </button>
+
+                </div>
+
+                <!-- DELETE MODAL -->
+                <div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+
+                    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+
+                    <div class="relative bg-surface-container-low p-8 rounded-3xl border border-outline-variant shadow-2xl max-w-md w-full mx-4 opacity-0 scale-95 transition-all duration-200">
+
+                        <div class="text-center mb-6">
+                            <span class="material-symbols-outlined text-6xl text-red-500">delete_forever</span>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-center mb-2">Delete Account</h3>
+
+                        <p class="text-sm text-on-surface-variant text-center mb-8">
+                            Are you sure you want to delete your account? This action cannot be undone.
+                            All your data will be permanently removed.
+                        </p>
+
+                        <form method="POST" action="{% url 'app:delete_account' %}">
+                            {% csrf_token %}
+                            <div class="flex gap-4">
+                                <button type="button" onclick="closeDeleteModal()"
+                                        class="flex-1 px-6 py-3 rounded-2xl border border-outline-variant text-on-surface-variant hover:text-white transition-all font-medium">
+                                    Cancel
+                                </button>
+                                <button type="submit"
+                                        class="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold transition-all">
+                                    Yes, delete my account
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+function previewImage(event) {
+
+    const reader = new FileReader();
+
+    reader.onload = function() {
+
+        const output = document.getElementById('profile-preview');
+        output.src = reader.result;
+    };
+
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+let isEditing = false;
+
+function toggleEditProfile() {
+    isEditing = !isEditing;
+
+    const fields = document.querySelectorAll('.profile-field');
+    const actions = document.getElementById('profile-actions');
+    const genderBtns = document.querySelectorAll('.gender-btn');
+    const editBtn = document.getElementById('edit-profile-btn');
+
+    fields.forEach(field => {
+        field.disabled = !field.disabled;
+
+        if (!field.disabled) {
+            field.classList.remove(
+                'cursor-not-allowed',
+                'bg-background-dark/60',
+                'opacity-70'
+            );
+            field.classList.add(
+                'focus:ring-2',
+                'focus:ring-primary/50',
+                'bg-background-dark'
+            );
+        } else {
+            field.classList.add(
+                'cursor-not-allowed',
+                'bg-background-dark/60'
+            );
+        }
+    });
+
+    genderBtns.forEach(btn => {
+        if (isEditing) {
+            btn.classList.remove('cursor-not-allowed', 'opacity-70');
+            btn.classList.add('hover:scale-105', 'hover:border-primary');
+        } else {
+            btn.classList.add('cursor-not-allowed', 'opacity-70');
+            btn.classList.remove('hover:scale-105', 'hover:border-primary');
+        }
+    });
+
+    editBtn.querySelector('span:last-child').textContent = isEditing ? 'Cancel' : 'Edit Profile';
+
+    actions.classList.toggle('hidden');
+
+    setTimeout(() => {
+        actions.classList.toggle('opacity-0');
+        actions.classList.toggle('translate-y-3');
+    }, 10);
+}
+
+function selectGender(gender) {
+    if (!isEditing) return;
+
+    document.getElementById('selected-gender').value = gender;
+
+    document.querySelectorAll('.gender-btn').forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white');
+        btn.classList.add('bg-background-dark', 'border', 'border-outline-variant', 'text-on-surface-variant', 'opacity-70');
+    });
+
+    event.target.classList.remove('bg-background-dark', 'border', 'border-outline-variant', 'text-on-surface-variant', 'opacity-70');
+    event.target.classList.add('bg-primary', 'text-white');
+}
+
+function toggleSecurityEdit() {
+
+    const fields = document.querySelectorAll('.security-field');
+    const actions = document.getElementById('security-actions');
+
+    fields.forEach(field => {
+
+        field.disabled = !field.disabled;
+
+        if (!field.disabled) {
+
+            field.classList.remove(
+                'cursor-not-allowed',
+                'bg-background-dark/60'
+            );
+
+            field.classList.add(
+                'focus:ring-2',
+                'focus:ring-primary/50',
+                'bg-background-dark'
+            );
+
+        } else {
+
+            field.classList.add(
+                'cursor-not-allowed',
+                'bg-background-dark/60'
+            );
+        }
+    });
+
+    actions.classList.toggle('hidden');
+
+    setTimeout(() => {
+
+        actions.classList.toggle('opacity-0');
+        actions.classList.toggle('translate-y-3');
+
+    }, 10);
+}
+
+function cancelProfileEdit() {
+    if (isEditing) {
+        location.reload();
+    }
+}
+
+const commonPasswords = [
+    'password', '12345678', '123456789', 'qwerty', 'abc123', 'password1',
+    '1234567', 'password123', 'welcome', 'hello', 'admin', 'letmein',
+    'sunshine', 'princess', 'football', 'monkey', 'dragon'
+];
+
+function validateNewPassword() {
+    const newPassword = document.querySelector('input[name="new_password"]');
+    if (!newPassword) return;
+
+    const pwd = newPassword.value;
+    const lengthCheck = document.getElementById('length-check');
+    const commonCheck = document.getElementById('common-check');
+    const numberCheck = document.getElementById('number-check');
+
+    if (pwd.length >= 8) {
+        lengthCheck.textContent = '✓';
+        lengthCheck.className = 'text-green-500';
+    } else {
+        lengthCheck.textContent = '○';
+        lengthCheck.className = 'text-on-surface-variant';
+    }
+
+    if (!commonPasswords.includes(pwd.toLowerCase())) {
+        commonCheck.textContent = '✓';
+        commonCheck.className = 'text-green-500';
+    } else {
+        commonCheck.textContent = '○';
+        commonCheck.className = 'text-on-surface-variant';
+    }
+
+    if (!/^\d+$/.test(pwd)) {
+        numberCheck.textContent = '✓';
+        numberCheck.className = 'text-green-500';
+    } else {
+        numberCheck.textContent = '○';
+        numberCheck.className = 'text-on-surface-variant';
+    }
+}
+
+function validateConfirmPassword() {
+    const newPassword = document.querySelector('input[name="new_password"]');
+    const confirmPassword = document.querySelector('input[name="confirm_password"]');
+    if (!newPassword || !confirmPassword) return;
+
+    const pwd1 = newPassword.value;
+    const pwd2 = confirmPassword.value;
+    const matchDiv = document.getElementById('password-match');
+    const matchIcon = document.getElementById('match-icon');
+    const matchText = document.getElementById('match-text');
+
+    if (pwd2.length === 0) {
+        matchDiv.classList.add('hidden');
+        return;
+    }
+
+    matchDiv.classList.remove('hidden');
+
+    if (pwd1 === pwd2 && pwd1.length > 0) {
+        matchIcon.textContent = '✓';
+        matchText.textContent = 'Passwords match';
+        matchIcon.className = 'text-green-500';
+        matchText.className = 'text-green-500';
+    } else {
+        matchIcon.textContent = '✗';
+        matchText.textContent = 'Passwords do not match';
+        matchIcon.className = 'text-red-500';
+        matchText.className = 'text-red-500';
+    }
+}
+
+document.querySelectorAll('.security-field').forEach(field => {
+    field.addEventListener('input', function() {
+        if (this.name === 'new_password') {
+            validateNewPassword();
+        } else if (this.name === 'confirm_password') {
+            validateConfirmPassword();
+        }
+    });
+});
+
+function showDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.querySelector('div.relative').classList.remove('opacity-0', 'scale-95');
+        modal.querySelector('div.relative').classList.add('opacity-100', 'scale-100');
+    }, 10);
+}
+
+function closeDeleteModal() {
+    const card = document.querySelector('#deleteModal div.relative');
+    card.classList.remove('opacity-100', 'scale-100');
+    card.classList.add('opacity-0', 'scale-95');
+    setTimeout(() => document.getElementById('deleteModal').classList.add('hidden'), 200);
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,299 @@
+{% extends "base/base.html" %}
+
+{% block title %}StreamSync Dashboard{% endblock %}
+
+{% block content %}
+
+<section class="mb-12">
+    {% if has_watch_history %}
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Continue Watching</h2>
+        
+        <div class="flex gap-6 overflow-x-auto no-scrollbar pb-6 snap-x snap-mandatory">
+            {% for progress in watch_progress %}
+            <div class="min-w-[90%] md:min-w-[540px] snap-center relative group rounded-3xl overflow-hidden shadow-2xl bg-surface-dark border border-white/5">
+                
+                <div class="aspect-video w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" 
+                     style='background-image: url("https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=2070&auto=format&fit=crop");'>
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/60 to-transparent"></div>
+                </div>
+
+                <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-primary/20 text-primary text-[10px] font-black px-2 py-1 rounded-md tracking-widest uppercase border border-primary/30">
+                                {{ progress.platform_name }}
+                            </span>
+                            <span class="text-white/60 text-xs font-bold">{{ progress.minutes_left }}m left</span>
+                        </div>
+                        {% widthratio progress.last_minute progress.total_duration 100 as percentage %}
+                        <span class="text-primary text-xs font-black">{{ percentage }}%</span>
+                    </div>
+
+                    <h3 class="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight group-hover:text-primary transition-colors">
+                        {{ progress.content.title }}
+                    </h3>
+
+                    <div class="flex items-center gap-4 mt-4">
+                        <a href="{% url 'app:content_detail' progress.ctype progress.slug %}?t={{ progress.last_minute }}" 
+                           class="flex items-center gap-2 bg-white text-black hover:bg-primary hover:text-white px-6 py-3 rounded-xl font-black text-sm transition-all transform active:scale-95 shadow-xl">
+                            <span class="material-symbols-outlined fill text-[20px]">play_arrow</span>
+                            <span>RESUME</span>
+                        </a>
+                    </div>
+
+                    <div class="absolute bottom-0 left-0 w-full h-1.5 bg-white/5">
+                        <div class="h-full bg-gradient-to-r from-primary to-blue-400 transition-all duration-1000 ease-out" 
+                             style="width: {{ percentage }}%; box-shadow: 0 0 15px rgba(37, 106, 244, 0.6);"></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="flex flex-col items-center justify-center py-16 bg-slate-100 dark:bg-surface-dark rounded-2xl">
+            <span class="material-symbols-outlined text-6xl text-slate-400 mb-4">movie_filter</span>
+            <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">Oops, you're not watching anything yet</h3>
+            <p class="text-slate-500 dark:text-slate-400 mb-6">Take a look at our catalog!</p>
+            <a href="{% url 'app:catalog' %}" class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg font-semibold transition-all">
+                Browse Catalog
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+<!-- Series Recommended for You -->
+{% if recommended_series_by_genre %}
+<section class="mb-12">
+    <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Series Recommended for You</h2>
+        <div class="relative w-full">
+        <div class="flex gap-6 overflow-x-auto overflow-y-visible pb-4" 
+                style="scrollbar-width: thin; 
+                        overflow-x: scroll; 
+                        overflow-y: visible;
+                        -webkit-overflow-scrolling: touch;
+                        white-space: nowrap;">
+        {% for genre_name, series_list in recommended_series_by_genre.items %}
+            {% for serie in series_list %}
+            <div class="min-w-[200px] md:min-w-[240px] flex-shrink-0 group">
+                <div class="aspect-[2/3] rounded-xl overflow-hidden relative shadow-md bg-surface-dark">
+                    {% if serie.poster_url %}
+                    <img alt="{{ serie.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="{{ serie.poster_url }}"/>
+                    {% else %}
+                    <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-4xl text-slate-500">tv</span>
+                    </div>
+                    {% endif %}
+                    <div class="absolute top-2 right-2">
+                        <span class="bg-primary text-white text-[10px] px-2 py-0.5 rounded shadow">{{ serie.platforms.0|default:"Series" }}</span>
+                    </div>
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                        <a href="{% url 'app:content_detail' 'series' serie.unique_id %}" class="bg-primary text-white text-center text-xs font-bold py-2 rounded-lg hover:bg-primary/80 block">
+                            Watch now
+                        </a>
+                    </div>
+                </div>
+                <div class="mt-3 px-1">
+                    <h4 class="font-semibold text-slate-900 dark:text-white text-sm truncate group-hover:text-primary transition-colors">
+                        <a href="{% url 'app:content_detail' 'series' serie.unique_id %}">{{ serie.title }}</a>
+                    </h4>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-xs text-slate-400">{{ serie.start_year|default:"—" }}</span>
+                        <span class="w-1 h-1 bg-slate-500/40 rounded-full"></span>
+                        <span class="text-xs text-slate-400 truncate">{{ serie.genre_name|default:"Unknown" }}</span>
+                    </div>
+                    {% if serie.rating %}
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="text-xs text-on-surface-variant">{{ serie.rating }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Movies Recommended for You -->
+{% if recommended_by_genre %}
+<section class="mb-12 w-full">
+    <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Movies Recommended for You</h2>
+    
+    <!-- Contenedor del scroll horizontal -->
+    <div class="relative w-full">
+        <div class="flex gap-6 overflow-x-auto overflow-y-visible pb-4" 
+                style="scrollbar-width: thin; 
+                        overflow-x: scroll; 
+                        overflow-y: visible;
+                        -webkit-overflow-scrolling: touch;
+                        white-space: nowrap;">
+                        
+            {% for genre_name, movies_list in recommended_by_genre.items %}
+                {% for movie in movies_list %}
+                <div class="flex-shrink-0 w-[200px] md:w-[240px] group">
+                    <div class="aspect-[2/3] rounded-xl overflow-hidden relative shadow-md bg-surface-dark">
+                        {% if movie.poster_url %}
+                        <img alt="{{ movie.title }}" 
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                             src="{{ movie.poster_url }}"/>
+                        {% else %}
+                        <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-4xl text-slate-500">movie</span>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="absolute top-2 right-2">
+                            <span class="bg-primary text-white text-[10px] px-2 py-0.5 rounded shadow">
+                                {{ movie.platforms.0|default:"Movie" }}
+                            </span>
+                        </div>
+                        
+                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                            <a href="{% url 'app:content_detail' 'movie' movie.unique_id %}" 
+                               class="bg-primary text-white text-center text-xs font-bold py-2 rounded-lg hover:bg-primary/80 block">
+                                Watch now
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 px-1">
+                        <h4 class="font-semibold text-slate-900 dark:text-white text-sm truncate group-hover:text-primary transition-colors">
+                            <a href="{% url 'app:content_detail' 'movie' movie.unique_id %}">{{ movie.title }}</a>
+                        </h4>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-xs text-slate-400">{{ movie.year|default:"—" }}</span>
+                            <span class="w-1 h-1 bg-slate-500/40 rounded-full"></span>
+                            <span class="text-xs text-slate-400 truncate">{{ movie.genre_name|default:"Unknown" }}</span>
+                        </div>
+                        {% if movie.rating %}
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined text-amber-400 text-sm" 
+                                  style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="text-xs text-slate-400">{{ movie.rating }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if not recommended_by_genre and not recommended_series_by_genre %}
+<section class="mb-12">
+    <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Recommended for You</h2>
+    <div class="flex flex-col items-center justify-center py-12 bg-slate-100 dark:bg-surface-dark rounded-2xl">
+        <span class="material-symbols-outlined text-5xl text-slate-400 mb-4">genre</span>
+        <p class="text-slate-500 dark:text-slate-400">Complete your profile to get personalized recommendations</p>
+        <a href="{% url 'app:onboarding_genres' %}" class="mt-4 bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg font-semibold transition-all">
+            Select Genres
+        </a>
+    </div>
+</section>
+{% endif %}
+<!-- Trending Now -->
+{% if trending %}
+<section class="mb-12">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Trending Now</h2>
+    </div>
+    <div class="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+        {% for item in trending %}
+        <div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer">
+            <a href="{% url 'app:content_detail' item.content_type item.unique_id %}">
+                <div class="aspect-video rounded-lg overflow-hidden relative shadow-sm bg-surface-dark">
+                    {% if item.poster_url %}
+                    <img alt="{{ item.title }}" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:brightness-50" src="{{ item.poster_url }}"/>
+                    {% else %}
+                    <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-4xl text-slate-500">movie</span>
+                    </div>
+                    {% endif %}
+                    <span class="absolute top-2 left-2 {% if forloop.counter == 1 %}bg-primary{% else %}bg-slate-700/80{% endif %} text-white text-[10px] font-bold px-1.5 py-0.5 rounded z-10">#{{ forloop.counter }}</span>
+                    <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                        <span class="material-symbols-outlined text-white text-4xl drop-shadow-lg">play_circle</span>
+                    </span>
+                </div>
+            </a>
+            <div class="mt-2">
+                <h4 class="text-slate-900 dark:text-white font-medium text-sm truncate">{{ item.title }}</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400">{{ item.platforms.0|default:"Streaming" }} • {{ item.genre_name|default:"Movie" }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+<!-- New Releases (List Layout) -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">New Releases</h2>
+<a class="text-primary text-sm font-semibold hover:underline" href="#">View All</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<!-- New Release Item 1 -->
+<div class="flex gap-4 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-surface-dark transition-colors group cursor-pointer">
+<div class="w-24 aspect-[2/3] rounded-lg overflow-hidden shrink-0 shadow-sm relative">
+<img alt="Fantasy movie poster" class="w-full h-full object-cover" data-alt="Fantasy movie poster with mystical elements" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO-VEkvvtIsG9LCguTWi-iqw4xpTSWspaKyHtdRz8_mNAgE9EeTpeXrMgCxwk48QrkGkdyx2CSaJOL0w3wBifG4fTKLzwnKm7NuAvlG7x0UG0eLcRqqPDjekhbD67LpI--LoJVGSofVWCJBYe8tFpTUjYaJPqSgIGwI4s9WJODh62cZz-uaXZiT4vj38BbKxvjdFR_GC15HywmtHVlVp7BZFa_UvoxMVl2byoX5g90Ot0IbJtaEk7pju5OS30IUrozviLLVc5MX-EM"/>
+</div>
+<div class="flex flex-col justify-center flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-slate-900 dark:text-white font-semibold truncate pr-2">The Witcher</h4>
+<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">Today</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Season 3 • Episode 1</p>
+<div class="flex items-center gap-2">
+<span class="bg-[#E50914]/20 text-[#E50914] text-[10px] font-bold px-2 py-0.5 rounded border border-[#E50914]/20 uppercase">Netflix</span>
+<span class="text-xs text-slate-400">• Fantasy</span>
+</div>
+</div>
+<div class="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary text-3xl">play_circle</span>
+</div>
+</div>
+<!-- New Release Item 2 -->
+<div class="flex gap-4 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-surface-dark transition-colors group cursor-pointer">
+<div class="w-24 aspect-[2/3] rounded-lg overflow-hidden shrink-0 shadow-sm relative">
+<img alt="Sci-fi movie poster" class="w-full h-full object-cover" data-alt="Minimalist sci-fi movie poster" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0XQMaIvARlSTgtKRzpz_dtqEMbMP7lqbdv_HOrlaZTwAS5Z1xiEDfahbx31kfA3kzBviQfWFjEMn86vJbOPUbTwlfn3uOii2ZSt5-9TZ-wKyodP0Vt8tN4nvduvvJvP9C2jHfHy5TxB2RKb1GZNFt-5XoejKXPUiGt3IxMF2tXEKbe0bBWCb7Iyh--dYaO9bsl-EQI50jmO7cx5OmgOhAKytKSYaPqUXL1V3VEeGXBgOybrAUUT6iXGgPYa9QBIjqK9ivmu1kD1w4"/>
+</div>
+<div class="flex flex-col justify-center flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-slate-900 dark:text-white font-semibold truncate pr-2">Black Mirror</h4>
+<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">Yesterday</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Season 6 • Full Release</p>
+<div class="flex items-center gap-2">
+<span class="bg-[#E50914]/20 text-[#E50914] text-[10px] font-bold px-2 py-0.5 rounded border border-[#E50914]/20 uppercase">Netflix</span>
+<span class="text-xs text-slate-400">• Sci-Fi Anthology</span>
+</div>
+</div>
+<div class="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary text-3xl">play_circle</span>
+</div>
+</div>
+<!-- New Release Item 3 -->
+<div class="flex gap-4 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-surface-dark transition-colors group cursor-pointer">
+<div class="w-24 aspect-[2/3] rounded-lg overflow-hidden shrink-0 shadow-sm relative">
+<img alt="Sports drama poster" class="w-full h-full object-cover" data-alt="Sports drama movie poster" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTzWJDYjhPAXQj5iDWC4DMoDu6pqgFnhdInF8SMqZ3AhjLTnTyieIGnDoyhfyb5UZHBSNz9y-In5uL4zidA3KzeleVaLad98NPPG2oBtjOyY-QXTISOofEX0yrtRuETFQyr5y-ky1tSwsWxSLtJmfejslBk50r4RdSpHJ9_JDSF6IVtCk6eeD10NDPgpcXRTAl_I5DxwIXa2SL0jY22WSinjWFjQq7zcQ1qbWoQ4ABfBgWA3kL_QYWQ0SdvmqoTxu-DmlbzR94xB3b"/>
+</div>
+<div class="flex flex-col justify-center flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-slate-900 dark:text-white font-semibold truncate pr-2">Ted Lasso</h4>
+<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">2 days ago</span>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Season 3 • Finale</p>
+<div class="flex items-center gap-2">
+<span class="bg-slate-200 dark:bg-white/20 text-slate-700 dark:text-white text-[10px] font-bold px-2 py-0.5 rounded border border-slate-300 dark:border-white/20 uppercase">Apple TV+</span>
+<span class="text-xs text-slate-400">• Comedy</span>
+</div>
+</div>
+<div class="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary text-3xl">play_circle</span>
+</div>
+</div>
+</div>
+</section>
+{% endblock %}

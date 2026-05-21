@@ -1,0 +1,10 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "python",
+      "package-name": "softwareproject",
+      "changelog-path": "../../CHANGELOG.md",
+      "version-file": "../../pyproject.toml"
+    }
+  }
+}
