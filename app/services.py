@@ -38,6 +38,11 @@ def get_all_movies(platform_filter=None):
             catalog.platform.platform_name 
             for catalog in movie.catalog_set.all()
         ]
+        platforms_data = [
+            {'name': catalog.platform.platform_name, 'state': catalog.state}
+            for catalog in movie.catalog_set.all()
+        ]
+        is_unavailable = all(p['state'] == 'unavailable' for p in platforms_data) if platforms_data else False
         
         # Filtrar por plataforma si se especifica
         if platform_filter and platform_filter not in platforms:
@@ -59,6 +64,8 @@ def get_all_movies(platform_filter=None):
             'director_nationality': movie.director.country.name if movie.director and movie.director.country else "Unknown",
             'age_rating': str(movie.age_rating) if movie.age_rating else "NR",
             'platforms': platforms,
+            'platforms_data': platforms_data,
+            'is_unavailable': is_unavailable,
             'poster_url': movie.poster_url or '',
             'backdrop_url': movie.backdrop_url or '',
             'unique_id': identifier,
@@ -90,6 +97,11 @@ def get_all_series(platform_filter=None):
             catalog.platform.platform_name 
             for catalog in serie.catalog_set.all()
         ]
+        platforms_data = [
+            {'name': catalog.platform.platform_name, 'state': catalog.state}
+            for catalog in serie.catalog_set.all()
+        ]
+        is_unavailable = all(p['state'] == 'unavailable' for p in platforms_data) if platforms_data else False
         
         # Filtrar por plataforma si se especifica
         if platform_filter and platform_filter not in platforms:
@@ -112,6 +124,8 @@ def get_all_series(platform_filter=None):
             'director_nationality': serie.director.country.name if serie.director and serie.director.country else "Unknown",
             'age_rating': str(serie.age_rating) if serie.age_rating else "NR",
             'platforms': platforms,
+            'platforms_data': platforms_data,
+            'is_unavailable': is_unavailable,
             'poster_url': serie.poster_url or '',
             'backdrop_url': serie.backdrop_url or '',
             'unique_id': identifier, 
