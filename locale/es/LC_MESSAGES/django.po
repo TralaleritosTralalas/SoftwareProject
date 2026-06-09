@@ -312,11 +312,11 @@ msgstr "un solo lugar"
 
 #: .\app\templates\pages\home.html:37
 msgid ""
-"Experience entertainment management reimagined. StreamSync unifies Netflix, "
-"Hulu, HBO, and more into a single, seamless cinematic interface."
+"Experience entertainment management reimagined. StreamSync unifies multiple "
+"platforms into a single, seamless cinematic interface."
 msgstr ""
-"Experimenta la gestión del entretenimiento reorganizada. StreamSync unifica Netflix, "
-"Hulu, HBO y más en una interfaz cinematográfica única y fluida."
+"Experimenta la gestión del entretenimiento reorganizada. StreamSync unifica múltiples "
+"plataformas en una interfaz cinematográfica única y fluida."
 
 #: .\app\templates\pages\home.html:43
 msgid "Get Started for Free"
@@ -359,10 +359,10 @@ msgstr "Búsqueda Unificada"
 
 #: .\app\templates\pages\home.html:93
 msgid ""
-"Stop jumping between tabs. Search across Netflix, Hulu, HBO, and Disney+ "
+"Stop jumping between tabs. Search across multiples platforms "
 "instantly from one bar."
 msgstr ""
-"Deja de saltar entre pestañas. Busca en Netflix, Hulu, HBO y Disney+ al instante desde una sola barra."
+"Deja de saltar entre pestañas. Busca en múltiples plataformas al instante desde una sola barra."
 
 #: .\app\templates\pages\home.html:102
 msgid "Series Tracking"
