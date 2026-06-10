@@ -93,19 +93,16 @@ class Command(BaseCommand):
                 try:
                     genre = None
                     if item.get('genre_id'):
-                        genre = Genre.objects.all()[item['genre_id'] - 1] if item[
-                                                                                 'genre_id'] <= Genre.objects.count() else None
-
+                        genre = Genre.objects.all()[item['genre_id'] - 1] if item['genre_id'] <= Genre.objects.count() else None
+                    
                     director = None
                     if item.get('director_id'):
-                        director = Director.objects.all()[item['director_id'] - 1] if item[
-                                                                                          'director_id'] <= Director.objects.count() else None
-
+                        director = Director.objects.all()[item['director_id'] - 1] if item['director_id'] <= Director.objects.count() else None
+                    
                     age_rating = None
                     if item.get('age_rating_id'):
-                        age_rating = AgeRating.objects.all()[item['age_rating_id'] - 1] if item[
-                                                                                               'age_rating_id'] <= AgeRating.objects.count() else None
-
+                        age_rating = AgeRating.objects.all()[item['age_rating_id'] - 1] if item['age_rating_id'] <= AgeRating.objects.count() else None
+                    
                     movie, created = Movie.objects.get_or_create(
                         title=item['title'],
                         year=item.get('year') or 2000,
@@ -119,16 +116,16 @@ class Command(BaseCommand):
                             'age_rating': age_rating,
                         }
                     )
-
+                    
                     Catalog.objects.get_or_create(
-                        platform=platform,
+                        platform=platform, 
                         content=movie,
                         defaults={'state': 'available'}
                     )
-
+                    
                     if created:
                         self.stdout.write(f'    ✓ Película "{item.get("title")}" creada')
-
+                        
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f'    ! Error guardando película "{item.get("title")}": {e}'))
 
@@ -136,22 +133,22 @@ class Command(BaseCommand):
             platform = self._get_or_create_platform(base_url, platform_name)
             for item in data:
                 try:
-
+                
                     genre = None
                     if item.get('genre_id'):
-                        genre = Genre.objects.all()[item['genre_id'] - 1] if item[
-                                                                                 'genre_id'] <= Genre.objects.count() else None
-
+                        genre = Genre.objects.all()[item['genre_id'] - 1] if item['genre_id'] <= Genre.objects.count() else None
+                    
                     director = None
                     if item.get('director_id'):
-                        director = Director.objects.all()[item['director_id'] - 1] if item[
-                                                                                          'director_id'] <= Director.objects.count() else None
-
+                        director = Director.objects.all()[item['director_id'] - 1] if item['director_id'] <= Director.objects.count() else None
+                    
+                    # Match by rating, start_year, end_year, total_seasons and director
+                    # Only use title if truly different content
                     rating = float(item.get('rating') or 0)
                     start_year = item.get('start_year') or 2000
                     end_year = item.get('end_year')
                     total_seasons = item.get('total_seasons') or 1
-
+                    
                     existing_series = Series.objects.filter(
                         rating=rating,
                         start_year=start_year,
@@ -159,7 +156,7 @@ class Command(BaseCommand):
                         total_seasons=total_seasons,
                         director=director
                     ).first()
-
+                    
                     if existing_series:
                         serie = existing_series
                         if serie.title != item['title']:
@@ -179,18 +176,18 @@ class Command(BaseCommand):
                                 'director': director,
                             }
                         )
-
+                    
                     catalog, catalog_created = Catalog.objects.get_or_create(
-                        platform=platform,
+                        platform=platform, 
                         content=serie,
                         defaults={'state': 'available'}
                     )
-
+                    
                     if created:
                         self.stdout.write(f'    ✓ Serie "{item.get("title")}" creada')
                     elif catalog_created:
                         self.stdout.write(f'    ✓ Serie "{item.get("title")}" añadida a plataforma')
-
+                        
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f'    ! Error guardando serie "{item.get("title")}": {e}'))
 
@@ -202,7 +199,7 @@ class Command(BaseCommand):
             defaults={'url_api': base_url, 'p_manager': manager}
         )
         return platform
-
+    
     def import_countries(self):
         """Import initial countries into the database"""
         self.stdout.write(self.style.WARNING('\n--- Importando países ---'))

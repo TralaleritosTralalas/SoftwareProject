@@ -1,311 +1,313 @@
 {% extends "base/base.html" %}
 
-{% block title %}StreamSync – Library{% endblock %}
+{% block title %}Library · StreamSync{% endblock %}
 
 {% block extra_scripts %}
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/watchlist.css' %}">
-    <script src="{% static 'js/watchlist-utils.js' %}"></script>
-    <script src="{% static 'js/watchlist-modal.js' %}"></script>
-    <script src="{% static 'js/watchlist.js' %}"></script>
-    <script>
-        window.CONTENT_DATA = {type: null, id: null};
-        window.contentInLists = [];
-    </script>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/watchlist.css' %}">
+<script src="{% static 'js/watchlist-utils.js' %}"></script>
+<script src="{% static 'js/watchlist-modal.js' %}"></script>
+<script src="{% static 'js/watchlist.js' %}"></script>
+<script>
+window.CONTENT_DATA = { type: null, id: null };
+window.contentInLists = [];
+</script>
 {% endblock %}
 
 {% block content %}
 
-    <main class="flex-1 px-4 lg:px-8 py-8">
-        <div class="max-w-7xl mx-auto flex flex-col gap-10">
+<main class="flex-1 px-4 lg:px-8 py-8">
+  <div class="max-w-7xl mx-auto flex flex-col gap-10">
 
-            <section class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-                <div class="space-y-3">
-                    <div class="flex items-center gap-3">
-                        <div class="size-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+    <!-- HEADER -->
+    <section class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="size-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
             <span class="material-symbols-outlined text-[28px]">
               movie
             </span>
-                        </div>
+          </div>
 
-                        <div>
-                            <h1 class="text-4xl font-black tracking-tight text-white">
-                                Your Library
-                            </h1>
+          <div>
+            <h1 class="text-4xl font-black tracking-tight text-white">
+              Your Library
+            </h1>
 
-                            <p class="text-text-secondary text-sm mt-1">
-                                Track what you're watching and organize your favorite titles.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <p class="text-text-secondary text-sm mt-1">
+              Track what you're watching and organize your favorite titles.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- STATS -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-                {% with title="Continue Watching" value=watching_count icon="play_circle" icon_color="text-blue-400" %}
-                    {% include "components/stat_card.html" %}
-                {% endwith %}
+    {% with title="Continue Watching" value=watching_count icon="play_circle" icon_color="text-blue-400" %}
+      {% include "components/stat_card.html" %}
+    {% endwith %}
 
-                {% with title="Completed" value=completed_count icon="check_circle" icon_color="text-emerald-400" %}
-                    {% include "components/stat_card.html" %}
-                {% endwith %}
+    {% with title="Completed" value=completed_count icon="check_circle" icon_color="text-emerald-400" %}
+      {% include "components/stat_card.html" %}
+    {% endwith %}
 
-                {% with title="Favorites" value=favorites_count icon="favorite" icon_color="text-red-400 fill-current" %}
-                    {% include "components/stat_card.html" %}
-                {% endwith %}
+    {% with title="Favorites" value=favorites_count icon="favorite" icon_color="text-red-400 fill-current" %}
+      {% include "components/stat_card.html" %}
+    {% endwith %}
 
-                {% with title="Lists" value=lists_count|default:0 icon="stacks" icon_color="text-primary" %}
-                    {% include "components/stat_card.html" %}
-                {% endwith %}
+    {% with title="Lists" value=lists_count|default:0 icon="stacks" icon_color="text-primary" %}
+      {% include "components/stat_card.html" %}
+    {% endwith %}
 
-            </section>
+    </section>
 
-            <section class="flex flex-col gap-5">
+    <!-- CONTINUE WATCHING -->
+    <section class="flex flex-col gap-5">
 
-                <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between">
 
-                    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3">
 
-                        <div
-                                class="size-11 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center"
-                        >
+          <div
+            class="size-11 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center"
+          >
             <span class="material-symbols-outlined fill-current">
               play_circle
             </span>
-                        </div>
+          </div>
 
-                        <div>
-                            <h2 class="text-2xl font-bold text-white tracking-tight">
-                                Continue Watching
-                            </h2>
+          <div>
+            <h2 class="text-2xl font-bold text-white tracking-tight">
+              Continue Watching
+            </h2>
 
-                            <p class="text-sm text-text-secondary mt-1">
-                                Pick up where you left off.
-                            </p>
-                        </div>
+            <p class="text-sm text-text-secondary mt-1">
+              Pick up where you left off.
+            </p>
+          </div>
 
-                    </div>
+        </div>
 
-                </div>
+      </div>
 
-                <div
-                        class="rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-transparent p-6"
-                >
+      <div
+        class="rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-transparent p-6"
+      >
 
-                    {% if continue_watching_movies %}
-                        {% include "components/card_movies.html" with movies=continue_watching_movies %}
-                    {% endif %}
+        {% if continue_watching_movies %}
+          {% include "components/card_movies.html" with movies=continue_watching_movies %}
+        {% endif %}
 
-                    {% if continue_watching_series %}
-                        {% include "components/card_series.html" with series=continue_watching_series %}
-                    {% endif %}
+        {% if continue_watching_series %}
+          {% include "components/card_series.html" with series=continue_watching_series %}
+        {% endif %}
 
-                    {% if not continue_watching_movies and not continue_watching_series %}
-                        <p class="text-text-secondary text-center py-8">Nothing to continue. Start watching
-                            something!</p>
-                    {% endif %}
+        {% if not continue_watching_movies and not continue_watching_series %}
+          <p class="text-text-secondary text-center py-8">Nothing to continue. Start watching something!</p>
+        {% endif %}
 
-                </div>
+      </div>
 
-            </section>
+    </section>
 
-            <section class="flex flex-col gap-5">
+    <!-- FAVORITES -->
+    <section class="flex flex-col gap-5">
 
-                <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between">
 
-                    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3">
 
-                        <div
-                                class="size-11 rounded-2xl bg-red-500/10 text-red-400 flex items-center justify-center"
-                        >
+          <div
+            class="size-11 rounded-2xl bg-red-500/10 text-red-400 flex items-center justify-center"
+          >
             <span class="material-symbols-outlined fill-current">
               favorite
             </span>
-                        </div>
+          </div>
 
-                        <div>
-                            <h2 class="text-2xl font-bold text-white tracking-tight">
-                                Favorites
-                            </h2>
+          <div>
+            <h2 class="text-2xl font-bold text-white tracking-tight">
+              Favorites
+            </h2>
 
-                            <p class="text-sm text-text-secondary mt-1">
-                                Your all-time favorite titles.
-                            </p>
-                        </div>
+            <p class="text-sm text-text-secondary mt-1">
+              Your all-time favorite titles.
+            </p>
+          </div>
 
-                    </div>
+        </div>
 
-                </div>
+      </div>
 
-                <div
-                        class="rounded-3xl border border-red-500/20 bg-gradient-to-br from-red-500/10 to-transparent p-6"
-                >
+      <div
+        class="rounded-3xl border border-red-500/20 bg-gradient-to-br from-red-500/10 to-transparent p-6"
+      >
 
-                    {% if favorite_movies %}
-                        {% include "components/card_movies.html" with movies=favorite_movies %}
-                    {% endif %}
+        {% if favorite_movies %}
+          {% include "components/card_movies.html" with movies=favorite_movies %}
+        {% endif %}
 
-                    {% if favorite_series %}
-                        {% include "components/card_series.html" with series=favorite_series %}
-                    {% endif %}
+        {% if favorite_series %}
+          {% include "components/card_series.html" with series=favorite_series %}
+        {% endif %}
 
-                    {% if not favorite_movies and not favorite_series %}
-                        <p class="text-text-secondary text-center py-8">No favorites yet. Start adding your favorite
-                            titles!</p>
-                    {% endif %}
+        {% if not favorite_movies and not favorite_series %}
+          <p class="text-text-secondary text-center py-8">No favorites yet. Start adding your favorite titles!</p>
+        {% endif %}
 
-                </div>
+      </div>
 
-            </section>
+    </section>
 
-            <section class="flex flex-col gap-5">
+    <!-- COMPLETED -->
+    <section class="flex flex-col gap-5">
 
-                <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between">
 
-                    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3">
 
-                        <div
-                                class="size-11 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center"
-                        >
+          <div
+            class="size-11 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center"
+          >
             <span class="material-symbols-outlined fill-current">
               check_circle
             </span>
-                        </div>
+          </div>
 
-                        <div>
-                            <h2 class="text-2xl font-bold text-white tracking-tight">
-                                Completed
-                            </h2>
+          <div>
+            <h2 class="text-2xl font-bold text-white tracking-tight">
+              Completed
+            </h2>
 
-                            <p class="text-sm text-text-secondary mt-1">
-                                Titles you've finished watching.
-                            </p>
-                        </div>
+            <p class="text-sm text-text-secondary mt-1">
+              Titles you've finished watching.
+            </p>
+          </div>
 
-                    </div>
+        </div>
 
+      </div>
+
+      <div
+        class="rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-transparent p-6"
+      >
+
+        {% if completed_movies %}
+          {% include "components/card_movies.html" with movies=completed_movies %}
+        {% endif %}
+
+        {% if completed_series %}
+          {% include "components/card_series.html" with series=completed_series %}
+        {% endif %}
+
+        {% if not completed_movies and not completed_series %}
+          <p class="text-text-secondary text-center py-8">No completed titles yet.</p>
+        {% endif %}
+
+      </div>
+
+    </section>
+
+    <!-- CUSTOM LISTS -->
+    <section class="flex flex-col gap-5">
+
+      <div class="flex items-center justify-between">
+
+        <div>
+          <h2 class="text-2xl font-bold text-white tracking-tight">
+            Your Lists
+          </h2>
+
+          <p class="text-sm text-text-secondary mt-1">
+            Personal collections created by you.
+          </p>
+        </div>
+
+        <button onclick="openCreateListModal()"
+          class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-surface-highlight text-white text-sm font-semibold transition-all flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined text-sm">add</span>
+          New List
+        </button>
+
+      </div>
+
+      <div id="lists-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {% if user_lists %}
+          {% for list in user_lists %}
+          <div class="group rounded-3xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all duration-300 p-5 flex flex-col gap-4 hover:-translate-y-1"
+               style="cursor:pointer" onclick="openListDetail({{ list.id }})">
+
+            <!-- Header: nombre completo + botones acción -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                  <span class="material-symbols-outlined">stacks</span>
                 </div>
-
-                <div
-                        class="rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-transparent p-6"
-                >
-
-                    {% if completed_movies %}
-                        {% include "components/card_movies.html" with movies=completed_movies %}
-                    {% endif %}
-
-                    {% if completed_series %}
-                        {% include "components/card_series.html" with series=completed_series %}
-                    {% endif %}
-
-                    {% if not completed_movies and not completed_series %}
-                        <p class="text-text-secondary text-center py-8">No completed titles yet.</p>
-                    {% endif %}
-
+                <div class="min-w-0">
+                  <h3 class="text-white font-bold text-sm leading-snug break-words">{{ list.name }}</h3>
+                  <p class="text-xs text-text-secondary mt-0.5">
+                    {{ list.item_count }} title{{ list.item_count|pluralize }}
+                  </p>
                 </div>
+              </div>
+              <div class="flex items-center gap-1 flex-shrink-0 ml-2">
+                <button onclick="event.stopPropagation(); openRenameListModal({{ list.id }}, '{{ list.name|escapejs }}')"
+                        class="p-2 rounded-lg hover:bg-white/5 text-text-secondary hover:text-white transition-all"
+                        title="Rename list">
+                  <span class="material-symbols-outlined text-sm">edit</span>
+                </button>
+                <button onclick="event.stopPropagation(); confirmDeleteList({{ list.id }})"
+                        class="p-2 rounded-lg hover:bg-red-500/10 text-text-secondary hover:text-red-400 transition-all"
+                        title="Delete list">
+                  <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
+              </div>
+            </div>
 
-            </section>
-
-            <section class="flex flex-col gap-5">
-
-                <div class="flex items-center justify-between">
-
-                    <div>
-                        <h2 class="text-2xl font-bold text-white tracking-tight">
-                            Your Lists
-                        </h2>
-
-                        <p class="text-sm text-text-secondary mt-1">
-                            Personal collections created by you.
-                        </p>
-                    </div>
-
-                    <button onclick="openCreateListModal()"
-                            class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-surface-highlight text-white text-sm font-semibold transition-all flex items-center gap-2"
-                    >
-                        <span class="material-symbols-outlined text-sm">add</span>
-                        New List
-                    </button>
-
-                </div>
-
-                <div id="lists-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {% if user_lists %}
-                        {% for list in user_lists %}
-                            <div class="group rounded-3xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all duration-300 p-5 flex flex-col gap-4 hover:-translate-y-1"
-                                 style="cursor:pointer" onclick="openListDetail({{ list.id }})">
-
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-3 min-w-0">
-                                        <div class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
-                                            <span class="material-symbols-outlined">stacks</span>
-                                        </div>
-                                        <div class="min-w-0">
-                                            <h3 class="text-white font-bold text-sm leading-snug break-words">{{ list.name }}</h3>
-                                            <p class="text-xs text-text-secondary mt-0.5">
-                                                {{ list.item_count }} title{{ list.item_count|pluralize }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-1 flex-shrink-0 ml-2">
-                                        <button onclick="event.stopPropagation(); openRenameListModal({{ list.id }}, '{{ list.name|escapejs }}')"
-                                                class="p-2 rounded-lg hover:bg-white/5 text-text-secondary hover:text-white transition-all"
-                                                title="Rename list">
-                                            <span class="material-symbols-outlined text-sm">edit</span>
-                                        </button>
-                                        <button onclick="event.stopPropagation(); confirmDeleteList({{ list.id }})"
-                                                class="p-2 rounded-lg hover:bg-red-500/10 text-text-secondary hover:text-red-400 transition-all"
-                                                title="Delete list">
-                                            <span class="material-symbols-outlined text-sm">delete</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="border-t border-white/5 pt-3">
-                                    {% for item in list.preview_items|slice:":3" %}
-                                        <div class="flex items-center gap-2 py-1.5 {% if not forloop.last %}border-b border-white/5{% endif %}">
+            <!-- Preview: lista vertical con icono + título completo -->
+            <div class="border-t border-white/5 pt-3">
+              {% for item in list.preview_items|slice:":3" %}
+              <div class="flex items-center gap-2 py-1.5 {% if not forloop.last %}border-b border-white/5{% endif %}">
                 <span class="material-symbols-outlined text-text-secondary text-sm flex-shrink-0">
                   {% if item.content_type == "series" %}live_tv{% else %}movie{% endif %}
                 </span>
-                                            <span class="text-xs text-slate-300 font-medium truncate">{{ item.title }}</span>
-                                        </div>
-                                    {% empty %}
-                                        <p class="text-xs text-text-secondary italic">No items yet — start adding
-                                            content!</p>
-                                    {% endfor %}
-                                    {% if list.item_count > 3 %}
-                                        <div class="mt-1.5 text-xs text-primary font-semibold">
-                                            +{{ list.item_count|add:"-3" }} more
-                                            title{{ list.item_count|add:"-3"|pluralize }}
-                                        </div>
-                                    {% endif %}
-                                </div>
+                <span class="text-xs text-slate-300 font-medium truncate">{{ item.title }}</span>
+              </div>
+              {% empty %}
+              <p class="text-xs text-text-secondary italic">No items yet — start adding content!</p>
+              {% endfor %}
+              {% if list.item_count > 3 %}
+              <div class="mt-1.5 text-xs text-primary font-semibold">
+                +{{ list.item_count|add:"-3" }} more title{{ list.item_count|add:"-3"|pluralize }}
+              </div>
+              {% endif %}
+            </div>
 
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div id="empty-lists-placeholder" class="col-span-full text-center py-16">
-                            <div class="size-20 rounded-full bg-surface-highlight mx-auto flex items-center justify-center mb-6">
-                                <span class="material-symbols-outlined text-4xl text-text-secondary">playlist_add</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-white mb-2">No lists yet</h3>
-                            <p class="text-text-secondary mb-6">Create your first list to organize your favorite
-                                content</p>
-                            <button onclick="openCreateListModal()"
-                                    class="px-6 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/80 transition-all">
-                                Create your first list
-                            </button>
-                        </div>
-                    {% endif %}
-                </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div id="empty-lists-placeholder" class="col-span-full text-center py-16">
+            <div class="size-20 rounded-full bg-surface-highlight mx-auto flex items-center justify-center mb-6">
+              <span class="material-symbols-outlined text-4xl text-text-secondary">playlist_add</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">No lists yet</h3>
+            <p class="text-text-secondary mb-6">Create your first list to organize your favorite content</p>
+            <button onclick="openCreateListModal()" class="px-6 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/80 transition-all">
+              Create your first list
+            </button>
+          </div>
+        {% endif %}
+      </div>
 
-            </section>
+    </section>
 
-            {% include "components/watchlist_modal.html" %}
-            {% include "pages/rename_list_modal.html" %}
+    {% include "components/watchlist_modal.html" %}
+    {% include "pages/rename_list_modal.html" %}
 
-        </div>
-    </main>
+  </div>
+</main>
 
 {% endblock %}
