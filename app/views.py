@@ -1243,3 +1243,13 @@ def manager_dashboard(request):
         'top_content_values': json.dumps(top_content_values),
         'filters': filters_data
     })
+
+
+def redirect_simulation(request):
+    platform_name = request.GET.get('platform', 'External Platform')
+    content_title = request.GET.get('title', 'Selected Content')
+
+    return render(request, 'pages/redirect_simulation.html', {
+        'platform_name': platform_name,
+        'content_title': content_title,
+    })

@@ -1,0 +1,64 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block title %}StreamSync - {% trans "Leaving StreamSync" %}{% endblock %}
+
+{% block content %}
+    <div class="flex flex-col items-center justify-center min-h-[65vh] px-4 text-center">
+        <div class="max-w-md w-full bg-[#0f172a]/90 border border-white/10 p-8 rounded-[2.5rem] shadow-[0_0_50px_rgba(0,0,0,0.7)] backdrop-blur-xl">
+
+            <div class="relative size-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-4xl text-primary animate-pulse">open_in_new</span>
+                <div class="absolute inset-0 rounded-full border-2 border-primary/20 border-t-primary animate-spin"></div>
+            </div>
+
+            <h2 class="text-2xl font-bold text-white mb-2">
+                {% trans "Leaving StreamSync" %}
+            </h2>
+
+            <p class="text-slate-400 text-sm mb-6">
+                {% trans "You are being redirected to an external site." %}
+            </p>
+
+            <div class="bg-slate-900/60 border border-white/5 rounded-2xl p-5 mb-6 flex flex-col gap-3 text-left">
+                <div>
+                    <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider block mb-1">{% trans "Content to visit" %}</span>
+                    <span class="text-white font-semibold text-base block truncate">"{{ content_title }}"</span>
+                </div>
+                <div class="border-t border-white/5 pt-2 flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">{% trans "External website from" %}</span>
+                        <span class="text-primary font-black text-lg block">{{ platform_name }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <button id="auto-return-btn" onclick="window.history.back();"
+                    class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-primary/20 active:scale-95 w-full">
+                <span class="material-symbols-outlined text-lg">arrow_back</span>
+                <span>{% trans "Returning to Previous Page" %} (<span id="countdown">10</span>s)</span>
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let timeLeft = 10;
+        const countdownElement = document.getElementById("countdown");
+
+        const timer = setInterval(function() {
+            timeLeft--;
+            if (countdownElement) {
+                countdownElement.textContent = timeLeft;
+            }
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                window.history.back();
+            }
+        }, 1000);
+    });
+</script>
+{% endblock %}
