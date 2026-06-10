@@ -54,7 +54,8 @@
                     <input type="checkbox" name="genres" value="{{ genre.id }}" class="genre-checkbox sr-only"/>
 
                     <div class="card-inner absolute inset-0 rounded-xl border-2 border-border-dark transition-all duration-300 overflow-hidden group-hover:border-slate-500 flex items-center justify-center bg-gradient-to-br {% cycle 'from-indigo-600 to-blue-500' 'from-emerald-600 to-teal-500' 'from-orange-600 to-red-500' 'from-purple-600 to-pink-500' 'from-cyan-600 to-blue-500' as genre_bg silent %}">
-                        <span class="text-2xl md:text-3xl font-extrabold text-white drop-shadow-lg text-center px-4 leading-tight">{{ genre.name }}</span>
+                        <span class="absolute inset-0 flex items-center justify-center text-[7rem] md:text-[9rem] font-black text-white/[0.06] select-none pointer-events-none leading-none genre-initial transition-all duration-500">{{ genre.name|first }}</span>
+                        <span class="text-xl md:text-2xl font-extrabold text-white drop-shadow-lg text-center px-3 break-words leading-snug max-w-full z-10">{{ genre.name }}</span>
 
                         <div class="card-check absolute top-4 right-4 z-20 opacity-0 scale-50 transition-all duration-300">
                             <span class="material-symbols-outlined text-primary bg-black/60 backdrop-blur-sm rounded-full p-1.5 shadow-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
