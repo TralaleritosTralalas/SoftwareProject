@@ -4,8 +4,10 @@ import sys
 import ast
 import json
 
+# ── JavaScript / TypeScript support ──────────────────────────────────────────
 JS_EXTENSIONS = {'.js', '.ts', '.mjs', '.tsx', '.jsx', '.cjs'}
 
+# Regex patterns that each add 1 to cyclomatic complexity in JS/TS
 _JS_DECISION_PATTERNS = [
     re.compile(r'\bif\s*\('),
     re.compile(r'\belse\s+if\s*\('),
@@ -16,7 +18,7 @@ _JS_DECISION_PATTERNS = [
     re.compile(r'\bcatch\s*\('),
     re.compile(r'&&'),
     re.compile(r'\|\|'),
-    re.compile(r'\?(?![?.:])'),
+    re.compile(r'\?(?![?.:])'),   # ternary — excludes ?. and ??
 ]
 
 
@@ -30,11 +32,12 @@ def _strip_js_noise(source: str) -> str:
     return source
 
 
+# Matches function-like declarations in JS/TS (named functions, arrow fns, method shorthands)
 _JS_FN_PATTERN = re.compile(
-    r'\bfunction\s*\w*\s*\('
-    r'|(?<!=)=>\s*[{(]'
-    r'|\basync\s+\w+\s*\('
-    r'|(?:^|[{,;\n])\s*\w+\s*\([^)]*\)\s*\{',
+    r'\bfunction\s*\w*\s*\('     # function foo( or function(
+    r'|(?<!=)=>\s*[{(]'            # => { or => ( (arrow function body)
+    r'|\basync\s+\w+\s*\('        # async method shorthand
+    r'|(?:^|[{,;\n])\s*\w+\s*\([^)]*\)\s*\{',  # method shorthand: foo(args) {
     re.MULTILINE
 )
 
@@ -50,9 +53,9 @@ def calcular_js(codigo_fuente: str) -> int:
     for pattern in _JS_DECISION_PATTERNS:
         total += len(pattern.findall(source))
     fn_count = max(len(_JS_FN_PATTERN.findall(source)), 1)
-
+    # Ceiling integer division
     return (total + fn_count - 1) // fn_count
-
+# ─────────────────────────────────────────────────────────────────────────────
 
 class AnalizadorComplejidad(ast.NodeVisitor):
     def __init__(self):
@@ -94,7 +97,7 @@ class AnalizadorComplejidad(ast.NodeVisitor):
     def visit_ListComp(self, node):
         self.complejidad += 1
         self.generic_visit(node)
-
+        
     def visit_DictComp(self, node):
         self.complejidad += 1
         self.generic_visit(node)
@@ -107,12 +110,11 @@ class AnalizadorComplejidad(ast.NodeVisitor):
         self.complejidad += 1
         self.generic_visit(node)
 
-
 def calcular(codigo_fuente: str, extension: str = '.py') -> int:
     """Dispatch to the correct complexity calculator based on file extension."""
     if extension in JS_EXTENSIONS:
         return calcular_js(codigo_fuente)
-
+    # Python AST path
     try:
         arbol = ast.parse(codigo_fuente)
     except SyntaxError:
@@ -121,9 +123,8 @@ def calcular(codigo_fuente: str, extension: str = '.py') -> int:
     visitante = AnalizadorComplejidad()
     visitante.visit(arbol)
     fn_count = max(visitante.fn_count, 1)
-
+    # Ceiling integer division — average CC per function
     return (visitante.complejidad + fn_count - 1) // fn_count
-
 
 DIRECTORIOS_IGNORADOS = {'venv', 'env', '.venv', 'migrations', '__pycache__', '.git', 'tests',
                          'node_modules', 'dist', 'build', '.next', 'coverage'}
@@ -147,26 +148,26 @@ def es_archivo_valido(ruta):
 
     return True
 
-
 def analizar_archivos(rutas_archivos: list, limite_complejidad: int = 20):
     resultados_array = []
     archivos_procesados = 0
     archivos_fallidos = 0
-
+    
     for ruta in rutas_archivos:
         if not os.path.exists(ruta):
-            continue
-
+            continue 
+            
         if not es_archivo_valido(ruta):
             continue
-
+            
         with open(ruta, 'r', encoding='utf-8') as f:
             contenido = f.read()
 
         ext = os.path.splitext(ruta)[1]
         complejidad = calcular(contenido, ext)
         archivos_procesados += 1
-
+        
+        # Asignar el status_code que solicitaste
         if complejidad > limite_complejidad:
             status_code = "DANGER"
             archivos_fallidos += 1
@@ -174,13 +175,14 @@ def analizar_archivos(rutas_archivos: list, limite_complejidad: int = 20):
             status_code = "WARN"
         else:
             status_code = "OK"
-
+            
         resultados_array.append({
             "file": ruta,
             "complexity": complejidad,
             "status_code": status_code
         })
-
+    
+    # Construcción del diccionario final con la estructura requerida
     salida_json = {
         "analysis_type": "Cyclomatic Complexity",
         "threshold": limite_complejidad,
@@ -190,16 +192,17 @@ def analizar_archivos(rutas_archivos: list, limite_complejidad: int = 20):
         },
         "results": resultados_array
     }
-
+    
+    # Imprimir el JSON formateado con indentación
     print(json.dumps(salida_json, indent=4))
     sys.exit(0)
-
 
 if __name__ == "__main__":
     archivos_a_analizar = sys.argv[1:]
     limite = 20
-
+    
     if not archivos_a_analizar:
+        # Estructura vacía consistente si no hay archivos
         salida_vacia = {
             "analysis_type": "Cyclomatic Complexity",
             "threshold": limite,
@@ -211,5 +214,5 @@ if __name__ == "__main__":
         }
         print(json.dumps(salida_vacia, indent=4))
         sys.exit(0)
-
+        
     analizar_archivos(archivos_a_analizar, limite)

@@ -55,6 +55,7 @@ function createList(name) {
     });
 }
 
+// ── Renonmbrar el modal
 
 function initRenameModal() {
     const modal = document.getElementById('rename-list-modal');

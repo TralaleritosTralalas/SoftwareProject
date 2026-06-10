@@ -1,3 +1,6 @@
+// Watchlist Utilities - Funciones compartidas
+// Usado por watchlist.js, watchlist-modal.js, content.js
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
