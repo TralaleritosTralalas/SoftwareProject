@@ -1,5 +1,7 @@
 {% extends "base/base.html" %}
 
+{% block title %}StreamSync – {{ content.title }}{% endblock %}
+
 {% block content %}
     <main class="relative min-h-screen mb-20 md:mb-0">
 
@@ -29,15 +31,32 @@
               <span class="material-symbols-outlined text-primary text-lg">calendar_today</span>
               {{ content.year }}
             </span>
-                            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+              <span class="flex items-center gap-2 border-l border-white/10 pl-6">
               <span class="material-symbols-outlined text-primary text-lg">event</span>
-              {{ content.release_date }}{{ content.start_year }} - {{ content.end_year }}
+              {% if content.start_year %}
+                {{ content.start_year }} - {{ content.end_year }}
+              {% else %}
+                {{ content.release_date }}
+              {% endif %}
             </span>
-                            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
-              <span class="material-symbols-outlined text-primary text-lg">schedule</span>
-              {{ content.duration_minutes }} min
-            </span>
-                            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+            
+            {% if content.start_year %}
+              {% if content.total_seasons %}
+              <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+                <span class="material-symbols-outlined text-primary text-lg">tv</span>
+                {{ content.total_seasons }} Season{% if content.total_seasons != 1 %}s{% endif %}
+              </span>
+              {% endif %}
+            {% else %}
+              {% if content.duration_minutes %}
+              <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+                <span class="material-symbols-outlined text-primary text-lg">schedule</span>
+                {{ content.duration_minutes }} min
+              </span>
+              {% endif %}
+            {% endif %}
+            
+            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
               <span
                       class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
                 <span class="material-symbols-outlined text-amber-400 text-sm"

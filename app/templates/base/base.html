@@ -1,5 +1,6 @@
 {% load static %}
 {% load i18n %}
+
 <!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
@@ -7,7 +8,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 
     <title>{% block title %}StreamSync{% endblock %}</title>
-
+    <link rel="icon" type="image/png" href="{% static 'images/StreamSync.png' %}">
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -23,6 +24,18 @@
 
     {% block navbar %}
         {% include "components/navbar.html" %}
+    {% endblock %}
+
+    {% block banner %}
+        {% if show_banner %}
+            {% include "components/tabs_banner.html" %}
+        {% endif %}
+    {% endblock %}
+
+    {% block tabs %}
+        {% if show_tabs %}
+            {% include "components/tabs_navigation.html" %}
+        {% endif %}
     {% endblock %}
 
     <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-8">
