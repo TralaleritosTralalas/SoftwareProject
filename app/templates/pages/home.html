@@ -45,7 +45,7 @@
                                     {% trans "Get Started for Free" %}
                                 </a>
                             {% else %}
-                                <a href="{% url 'app:main' %}"
+                                <a href="{% if user.role.name == 'manager' %}{% url 'app:manager_dashboard' %}{% elif user.role.name == 'director' %}{% url 'app:direction_dashboard' %}{% elif user.role.name == 'technical' %}{% url 'tech_admin:index' %}{% else %}{% url 'app:main' %}{% endif %}"
                                    class="h-14 px-8 rounded-2xl bg-primary text-white font-bold text-lg hover:bg-blue-600 shadow-xl shadow-primary/30 transition-all flex items-center justify-center">
                                     {% trans "Go to Dashboard" %}
                                 </a>

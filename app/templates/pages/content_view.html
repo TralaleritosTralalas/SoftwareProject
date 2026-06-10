@@ -201,7 +201,7 @@
         type: '{{ content.content_type|default:"movie" }}',
         userStatus: '{{ user_status|default:"not_seen" }}'
       };
-      window.contentInLists = "{% firstof content_in_lists [] %}";
+      window.contentInLists = JSON.parse('{{ content_in_lists|default:"[]" }}');
     </script>
     <script src="{% static 'js/content.js' %}"></script>
 {% endblock %}
