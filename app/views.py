@@ -487,6 +487,12 @@ def _resolve_content(ctype, cid):
 
 @customer_only
 def update_status(request, ctype, cid):
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'error', 'message': 'Authentication required'}, status=401)
+
+    if request.user.is_superuser:
+        return JsonResponse({'status': 'error', 'message': 'Superusers cannot track watch status'}, status=403)
+
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -520,6 +526,12 @@ def update_status(request, ctype, cid):
 
 @customer_only
 def toggle_favorite(request, ctype, cid):
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'error', 'message': 'Authentication required'}, status=401)
+
+    if request.user.is_superuser:
+        return JsonResponse({'status': 'error', 'message': 'Superusers cannot have favorites'}, status=403)
+
     if request.method == 'POST':
         try:
             _, local_content = _resolve_content(ctype, cid)
