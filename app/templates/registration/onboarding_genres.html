@@ -53,16 +53,8 @@
                 <label class="genre-card relative group block cursor-pointer overflow-hidden rounded-xl aspect-square transition-all duration-300 hover:scale-[1.02] genre-animate">
                     <input type="checkbox" name="genres" value="{{ genre.id }}" class="genre-checkbox sr-only"/>
 
-                    <div class="card-inner absolute inset-0 bg-surface-dark rounded-xl border-2 border-border-dark transition-all duration-300 overflow-hidden group-hover:border-slate-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10"></div>
-                        <img src="https://source.unsplash.com/400x400/?{{ genre.name }},movie&w=800"
-                            alt="{{ genre.name }}"
-                            class="card-img w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500"
-                            onerror="this.src='https://placehold.co/400x400/1e293b/f1f5f9?text={{ genre.name|slugify }}'"/>
-
-                        <div class="absolute bottom-4 left-4 z-20">
-                            <span class="text-lg font-bold text-white drop-shadow-md">{{ genre.name }}</span>
-                        </div>
+                    <div class="card-inner absolute inset-0 rounded-xl border-2 border-border-dark transition-all duration-300 overflow-hidden group-hover:border-slate-500 flex items-center justify-center bg-gradient-to-br {% cycle 'from-indigo-600 to-blue-500' 'from-emerald-600 to-teal-500' 'from-orange-600 to-red-500' 'from-purple-600 to-pink-500' 'from-cyan-600 to-blue-500' as genre_bg silent %}">
+                        <span class="text-2xl md:text-3xl font-extrabold text-white drop-shadow-lg text-center px-4 leading-tight">{{ genre.name }}</span>
 
                         <div class="card-check absolute top-4 right-4 z-20 opacity-0 scale-50 transition-all duration-300">
                             <span class="material-symbols-outlined text-primary bg-black/60 backdrop-blur-sm rounded-full p-1.5 shadow-lg" style="font-variation-settings: 'FILL' 1;">check_circle</span>
