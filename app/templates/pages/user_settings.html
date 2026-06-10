@@ -31,8 +31,8 @@
                         class="w-32 h-32 md:w-40 md:h-40 rounded-3xl border-4 border-background-dark object-cover shadow-2xl"
                         src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}https://randomuser.me/api/portraits/men/32.jpg{% endif %}"
                         id="profile-preview"/>
-
                     <label
+                    
                         for="avatar-upload"
                         class="absolute inset-0 flex items-center justify-center bg-black/60 rounded-3xl opacity-0 group-hover/avatar:opacity-100 transition-all cursor-pointer">
 
@@ -40,12 +40,6 @@
                             add_a_photo
                         </span>
 
-                        <input
-                            type="file"
-                            id="avatar-upload"
-                            class="hidden"
-                            accept="image/*"
-                            onchange="previewImage(event)">
                     </label>
 
                 </div>
@@ -253,6 +247,9 @@
                             >{{ user.bio|default:'' }}</textarea>
 
                         </div>
+
+                        <!-- HIDDEN FILE INPUT FOR AVATAR -->
+                        <input type="file" id="avatar-upload" name="profile_picture" class="hidden" accept="image/*" onchange="openAvatarModal(event)">
 
                         <!-- ACTIONS -->
                         <div
@@ -556,19 +553,117 @@
 
 </main>
 
+<!-- AVATAR MODAL -->
+<div id="avatarModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" onclick="closeAvatarModal()"></div>
+
+    <div class="relative bg-surface-container-low p-8 rounded-3xl border border-outline-variant shadow-2xl max-w-lg w-full mx-4 opacity-0 scale-95 transition-all duration-200">
+
+        <div class="text-center mb-6">
+            <span class="material-symbols-outlined text-5xl text-primary">photo_camera</span>
+        </div>
+
+        <h3 class="text-2xl font-bold text-center mb-6">Adjust profile picture</h3>
+
+        <div class="flex items-center justify-center mb-8">
+            <img id="modal-preview" class="max-h-80 max-w-full rounded-2xl object-contain bg-black/20" />
+        </div>
+
+        <div class="flex gap-4">
+
+            <button type="button" onclick="closeAvatarModal()"
+                    class="flex-1 px-6 py-3 rounded-2xl border border-outline-variant text-on-surface-variant hover:text-white transition-all font-medium">
+                Cancel
+            </button>
+
+            <button type="button" onclick="uploadAvatar()" id="save-avatar-btn"
+                    class="flex-1 px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                <span id="save-avatar-text">Save</span>
+                <span id="save-avatar-spinner" class="hidden">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </span>
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 <script>
 
-function previewImage(event) {
+let selectedFile = null;
 
+function openAvatarModal(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    selectedFile = file;
     const reader = new FileReader();
-
     reader.onload = function() {
-
-        const output = document.getElementById('profile-preview');
-        output.src = reader.result;
+        document.getElementById('modal-preview').src = reader.result;
+        const modal = document.getElementById('avatarModal');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.querySelector('div.relative').classList.remove('opacity-0', 'scale-95');
+            modal.querySelector('div.relative').classList.add('opacity-100', 'scale-100');
+        }, 10);
     };
+    reader.readAsDataURL(file);
+}
 
-    reader.readAsDataURL(event.target.files[0]);
+function closeAvatarModal() {
+    const card = document.querySelector('#avatarModal div.relative');
+    card.classList.remove('opacity-100', 'scale-100');
+    card.classList.add('opacity-0', 'scale-95');
+    setTimeout(() => {
+        document.getElementById('avatarModal').classList.add('hidden');
+        document.getElementById('avatar-upload').value = '';
+        selectedFile = null;
+    }, 200);
+}
+
+function uploadAvatar() {
+    if (!selectedFile) return;
+    const btn = document.getElementById('save-avatar-btn');
+    const text = document.getElementById('save-avatar-text');
+    const spinner = document.getElementById('save-avatar-spinner');
+    btn.disabled = true;
+    text.textContent = 'Saving...';
+    spinner.classList.remove('hidden');
+
+    const formData = new FormData();
+    formData.append('profile_picture', selectedFile);
+    formData.append('action', 'upload_avatar');
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('profile-preview').src = data.url;
+            closeAvatarModal();
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(err => {
+        alert('Error uploading image: ' + err.message);
+    })
+    .finally(() => {
+        btn.disabled = false;
+        text.textContent = 'Save';
+        spinner.classList.add('hidden');
+    });
 }
 
 let isEditing = false;

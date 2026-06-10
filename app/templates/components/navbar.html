@@ -91,7 +91,7 @@
     <div class="relative" id="user-menu-wrapper">
       <button id="user-menu-button" class="flex items-center gap-2 rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
         <div class="size-9 rounded-full bg-cover bg-center border border-slate-200 dark:border-slate-700"
-          style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDDIAQ90IxsinjXM6PKvOAaLRDc7SY_R-7MVZ7vKDplBK7950nw55ZsHlVjzpNJ8O2lOn4dzlyKwejQm-g1R1zTQ-yZAJh8gKj7DDUaFAjgMlw4f_G4wKHpDUU5KvzD1qk71kCOaHNW-DXrAhGOeBQGxvzYQeMW70BVbPqVRfxLbQuAyoV2zIfQjweJuxtG5gg4Nr-3nsr2ETbHgYaZBmzIGdzCM9pS9q1rVq1DLjeAigarT-PPxUa7ZeXqXbs6yqL6JUmGOnKS_X36");'>
+          style='background-image: url("{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}https://randomuser.me/api/portraits/men/32.jpg{% endif %}");'>
         </div>
         <span class="material-symbols-outlined text-slate-400 text-sm">expand_more</span>
       </button>

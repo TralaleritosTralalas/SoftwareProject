@@ -72,6 +72,13 @@ def user_settings(request):
                 'password_success': 'Password changed successfully!'
             })
 
+        if request.POST.get('action') == 'upload_avatar':
+            if request.FILES.get('profile_picture'):
+                user.profile_picture = request.FILES['profile_picture']
+                user.save()
+                return JsonResponse({'success': True, 'url': user.profile_picture.url})
+            return JsonResponse({'success': False, 'error': 'No file provided'}, status=400)
+
         username = request.POST.get('username', '').strip()
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
