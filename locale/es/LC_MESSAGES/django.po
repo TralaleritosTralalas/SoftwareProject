@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: StreamSync 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 18:20+0000\n"
-"PO-Revision-Date: 2026-05-20 18:22+0000\n"
+"POT-Creation-Date: 2026-06-09 16:13+0200\n"
+"PO-Revision-Date: 2026-06-09 16:20+0200\n"
 "Last-Translator: Toni <toni@github.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -17,363 +17,382 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: app/templates/components/navbar.html:18
-#: app/templates/pages/catalog.html:6
-msgid "Full Catalog"
-msgstr "Catálogo Completo"
-
-#: app/templates/pages/catalog.html:3
-msgid "Catalog"
-msgstr "Catálogo"
-
-#: app/templates/components/navbar.html:21
-#: app/templates/components/card_movies.html:6
-msgid "Movies"
-msgstr "Películas"
-
-#: app/templates/components/card_series.html:6
-#: app/templates/components/navbar.html:24
-msgid "Series"
-msgstr "Series"
-
-#: app/templates/components/navbar.html:27
-msgid "My List"
-msgstr "Mi Lista"
-
-#: app/templates/components/navbar.html:39
-msgid "Search movies, shows, or platforms..."
-msgstr "Busca películas, series o plataformas..."
-
-#: app/templates/components/card_movies.html:3
-#: app/templates/components/card_series.html:3
-msgid "Unknown"
-msgstr "Desconocido"
-
-#: app/templates/components/card_movies.html:2
-#: app/templates/components/card_series.html:2
-msgid "No Image"
-msgstr "Sin Imagen"
-
-#: app/templates/components/card_movies.html:44
-#: app/templates/components/card_series.html:41
-msgid "Watch now"
-msgstr "Ver ahora"
-
-#: app/templates/components/footer.html:5
-msgid "All rights reserved."
-msgstr "Todos los derechos reservados."
-
-#: app/templates/components/footer.html:7
-msgid "Privacy Policy"
-msgstr "Política de Privacidad"
-
-#: app/templates/components/footer.html:8
-msgid "Terms of Service"
-msgstr "Términos de Servicio"
-
-#: app/templates/components/footer.html:9
-msgid "Help Center"
-msgstr "Centro de Ayuda"
-
-#: app/templates/components/platforms_filter.html:3
-msgid "Filter by:"
-msgstr "Filtrar por:"
-
-#: app/templates/components/platforms_filter.html:7
-#: app/templates/pages/direction_dashboard.html:81
-msgid "All Platforms"
-msgstr "Todas las plataformas"
-
-#: app/templates/components/platforms_filter.html:15
-#: app/templates/pages/direction_dashboard.html:99
-msgid "All Genres"
-msgstr "Todos los géneros"
-
-#: app/templates/components/platforms_filter.html:22
-msgid "Sort by Rating"
-msgstr "Ordenar por puntuación"
-
-#: app/templates/components/platforms_filter.html:23
-msgid "Rating: Highest to Lowest"
-msgstr "Puntuación: de mayor a menor"
-
-#: app/templates/components/platforms_filter.html:24
-msgid "Rating: Lowest to Highest"
-msgstr "Puntuación: de menor a mayor"
-
-#: app/templates/components/platforms_filter.html:28
-msgid "Sort by Year"
-msgstr "Ordenar por año"
-
-#: app/templates/components/platforms_filter.html:29
-msgid "Year: Most recent"
-msgstr "Año: más reciente"
-
-#: app/templates/components/platforms_filter.html:30
-msgid "Year: Oldest"
-msgstr "Año: más antiguo"
-
-#: app/templates/pages/content_view.html:14
-msgid "backdrop"
-msgstr "fondo"
-
-#: app/templates/pages/content_view.html:3
+#: .\app\templates\components\card_movies.html:3
+#: .\app\templates\components\card_series.html:2
+#: .\app\templates\pages\content_view.html:4
 msgid "Unknown Genre"
 msgstr "Género Desconocido"
 
-#: app/templates/pages/content_view.html:62
-msgid "TV Series"
-msgstr "Serie de TV"
+#: .\app\templates\components\card_movies.html:4
+#: .\app\templates\components\card_series.html:3
+msgid "No Image"
+msgstr "Sin Imagen"
 
-#: app/templates/pages/content_view.html:66
-msgid "Movie"
-msgstr "Película"
+#: .\app\templates\components\card_movies.html:7
+#: .\app\templates\components\navbar.html:24
+msgid "Movies"
+msgstr "Películas"
 
-#: app/templates/pages/content_view.html:88
-msgid "Synopsis"
-msgstr "Sinopsis"
+#: .\app\templates\components\card_movies.html:64
+#: .\app\templates\components\card_series.html:63
+msgid "Watch now"
+msgstr "Ver ahora"
 
-#: app/templates/pages/content_view.html:97
-msgid "Directed By"
-msgstr "Dirigido por"
+#: .\app\templates\components\card_series.html:6
+#: .\app\templates\components\navbar.html:28
+msgid "Series"
+msgstr "Series"
 
-#: app/templates/pages/content_view.html:100
-msgid "Director Profile"
-msgstr "Perfil del director"
+#: .\app\templates\components\footer.html:5
+msgid "All rights reserved."
+msgstr "Todos los derechos reservados."
 
-#: app/templates/pages/content_view.html:4
-msgid "Unknown Director"
-msgstr "Director Desconocido"
+#: .\app\templates\components\footer.html:7
+msgid "Privacy Policy"
+msgstr "Política de Privacidad"
 
-#: app/templates/pages/content_view.html:5
-msgid "Unknown Nationality"
-msgstr "Nacionalidad Desconocida"
+#: .\app\templates\components\footer.html:8
+msgid "Terms of Service"
+msgstr "Términos de Servicio"
 
-#: app/templates/pages/content_view.html:118
-msgid "Add to Watchlist"
-msgstr "Añadir a la lista de seguimiento"
+#: .\app\templates\components\footer.html:9
+msgid "Help Center"
+msgstr "Centro de Ayuda"
 
-#: app/templates/pages/content_view.html:123
-msgid "Remove from Favorites"
-msgstr "Quitar de Favoritos"
+#: .\app\templates\components\navbar.html:20
+#: .\app\templates\pages\catalog.html:6
+msgid "Full Catalog"
+msgstr "Catálogo Completo"
 
-#: app/templates/pages/content_view.html:123
-msgid "Add to Favorites"
-msgstr "Añadir a Favoritos"
+#: .\app\templates\components\navbar.html:34
+msgid "My List"
+msgstr "Mi Lista"
 
-#: app/templates/pages/content_view.html:6
-msgid "Not Seen"
-msgstr "No visto"
+#: .\app\templates\components\navbar.html:45
+msgid "Search movies, shows, or platforms..."
+msgstr "Busca películas, series o plataformas..."
 
-#: app/templates/pages/content_view.html:7
-msgid "Watching"
-msgstr "Viendo"
-
-#: app/templates/pages/content_view.html:8
-msgid "Completed"
-msgstr "Completado"
-
-#: app/templates/pages/direction_dashboard.html:17
-msgid "Filters"
-msgstr "Filtros"
-
-#: app/templates/pages/direction_dashboard.html:19
-msgid "Control Panel"
-msgstr "Panel de Control"
-
-#: app/templates/pages/direction_dashboard.html:24
-msgid "Time Analytics"
-msgstr "Análisis Temporal"
-
-#: app/templates/pages/direction_dashboard.html:25
-msgid "Predefined reporting periods"
-msgstr "Periodos de informe predefinidos"
-
-#: app/templates/pages/direction_dashboard.html:45
-msgid "QUARTER"
-msgstr "Trimestre"
-
-#: app/templates/pages/direction_dashboard.html:55
-msgid "Custom Range"
-msgstr "Rango Personalizado"
-
-#: app/templates/pages/direction_dashboard.html:56
-msgid "Specific calendar selection"
-msgstr "Selección de calendario específica"
-
-#: app/templates/pages/direction_dashboard.html:62
-msgid "From"
-msgstr "Desde"
-
-#: app/templates/pages/direction_dashboard.html:66
-msgid "To"
-msgstr "Hasta"
-
-#: app/templates/pages/direction_dashboard.html:69
-msgid "UPDATE SEARCH"
-msgstr "ACTUALIZAR BÚSQUEDA"
-
-#: app/templates/pages/direction_dashboard.html:75
-msgid "Segmentation"
-msgstr "Segmentación"
-
-#: app/templates/pages/direction_dashboard.html:76
-msgid "Categorical filters"
-msgstr "Filtros categóricos"
-
-#: app/templates/pages/direction_dashboard.html:89
-msgid "All Countries"
-msgstr "Todos los países"
-
-#: app/templates/pages/direction_dashboard.html:113
-msgid "Direction Dashboard"
-msgstr "Panel de Dirección"
-
-#: app/templates/pages/direction_dashboard.html:114
-msgid "Strategic performance analysis and interaction growth trends."
-msgstr "Análisis de rendimiento estratégico y tendencias de crecimiento de interacción."
-
-#: app/templates/pages/direction_dashboard.html:118
-msgid "EXPORT CSV"
-msgstr "EXPORTAR CSV"
-
-#: app/templates/pages/direction_dashboard.html:124
-msgid "Total Engagement"
-msgstr "Interacción Total"
-
-#: app/templates/pages/direction_dashboard.html:127
-msgid "Clicks"
-msgstr "Clics"
-
-#: app/templates/pages/direction_dashboard.html:134
-msgid "Interest Score"
-msgstr "Puntuación de Interés"
-
-#: app/templates/pages/direction_dashboard.html:137
-msgid "Favs"
-msgstr "Favs"
-
-#: app/templates/pages/direction_dashboard.html:144
-msgid "Dominant Entity"
-msgstr "Entidad Dominante"
-
-#: app/templates/pages/direction_dashboard.html:150
-msgid "Platform"
-msgstr "Plataforma"
-
-#: app/templates/pages/direction_dashboard.html:161
-msgid "Periodic Engagement Trend"
-msgstr "Tendencia de Interacción Periódica"
-
-#: app/templates/pages/direction_dashboard.html:167
-msgid "No analytics data found for this period"
-msgstr "No se encontraron datos analíticos para este periodo"
-
-#: app/templates/pages/direction_dashboard.html:175
-msgid "Top Content Performance"
-msgstr "Rendimiento del Contenido Principal"
-
-#: app/templates/pages/direction_dashboard.html:180
-msgid "Title & Director"
-msgstr "Título y Director"
-
-#: app/templates/pages/direction_dashboard.html:181
-msgid "Genre"
-msgstr "Género"
-
-#: app/templates/pages/direction_dashboard.html:182
-msgid "Country"
-msgstr "País"
-
-#: app/templates/pages/direction_dashboard.html:183
-msgid "Interactions (Favs)"
-msgstr "Interacciones (Favs)"
-
-#: app/templates/pages/direction_dashboard.html:205
-msgid "No content matches the selected filters."
-msgstr "Ningún contenido coincide con los filtros seleccionados."
-
-#: app/templates/pages/home.html:81
+#: .\app\templates\components\navbar.html:180
 msgid "Log In"
 msgstr "Iniciar Sesión"
 
-#: app/templates/pages/home.html:86
+#: .\app\templates\components\navbar.html:185
 msgid "Sign Up"
 msgstr "Registrarse"
 
-#: app/templates/pages/home.html:99
+#: .\app\templates\components\platforms_filter.html:3
+msgid "Filter by:"
+msgstr "Filtrar por:"
+
+#: .\app\templates\components\platforms_filter.html:7
+#: .\app\templates\pages\direction_dashboard.html:5
+msgid "All Platforms"
+msgstr "Todas las plataformas"
+
+#: .\app\templates\components\platforms_filter.html:15
+#: .\app\templates\pages\direction_dashboard.html:7
+msgid "All Genres"
+msgstr "Todos los géneros"
+
+#: .\app\templates\components\platforms_filter.html:23
+msgid "Sort by Rating"
+msgstr "Ordenar por puntuación"
+
+#: .\app\templates\components\platforms_filter.html:24
+msgid "Rating: Highest to Lowest"
+msgstr "Puntuación: de mayor a menor"
+
+#: .\app\templates\components\platforms_filter.html:25
+msgid "Rating: Lowest to Highest"
+msgstr "Puntuación: de menor a mayor"
+
+#: .\app\templates\components\platforms_filter.html:30
+msgid "Sort by Year"
+msgstr "Ordenar por año"
+
+#: .\app\templates\components\platforms_filter.html:31
+msgid "Year: Most recent"
+msgstr "Año: más reciente"
+
+#: .\app\templates\components\platforms_filter.html:32
+msgid "Year: Oldest"
+msgstr "Año: más antiguo"
+
+#: .\app\templates\pages\catalog.html:3
+msgid "Catalog"
+msgstr "Catálogo"
+
+#: .\app\templates\pages\content_view.html:5
+msgid "Unknown Director"
+msgstr "Director Desconocido"
+
+#: .\app\templates\pages\content_view.html:6
+msgid "Unknown Nationality"
+msgstr "Nacionalidad Desconocida"
+
+#: .\app\templates\pages\content_view.html:7
+msgid "Not Seen"
+msgstr "No visto"
+
+#: .\app\templates\pages\content_view.html:8
+msgid "Watching"
+msgstr "Viendo"
+
+#: .\app\templates\pages\content_view.html:9
+msgid "Completed"
+msgstr "Completado"
+
+#: .\app\templates\pages\content_view.html:17
+msgid "backdrop"
+msgstr "fondo"
+
+#: .\app\templates\pages\content_view.html:72
+msgid "TV Series"
+msgstr "Serie de TV"
+
+#: .\app\templates\pages\content_view.html:76
+msgid "Movie"
+msgstr "Película"
+
+#: .\app\templates\pages\content_view.html:101
+msgid "Synopsis"
+msgstr "Sinopsis"
+
+#: .\app\templates\pages\content_view.html:111
+msgid "Directed By"
+msgstr "Dirigido por"
+
+#: .\app\templates\pages\content_view.html:114
+msgid "Director Profile"
+msgstr "Perfil del director"
+
+#: .\app\templates\pages\content_view.html:134
+msgid "Add to Watchlist"
+msgstr "Añadir a la lista de seguimiento"
+
+#: .\app\templates\pages\content_view.html:140
+msgid "Remove from Favorites"
+msgstr "Quitar de Favoritos"
+
+#: .\app\templates\pages\content_view.html:140
+msgid "Add to Favorites"
+msgstr "Añadir a Favoritos"
+
+#: .\app\templates\pages\direction_dashboard.html:6
+msgid "All Countries"
+msgstr "Todos los países"
+
+#: .\app\templates\pages\direction_dashboard.html:18
+msgid "Filters"
+msgstr "Filtros"
+
+#: .\app\templates\pages\direction_dashboard.html:20
+msgid "Control Panel"
+msgstr "Panel de Control"
+
+#: .\app\templates\pages\direction_dashboard.html:25
+msgid "Time Analytics"
+msgstr "Análisis Temporal"
+
+#: .\app\templates\pages\direction_dashboard.html:26
+msgid "Predefined reporting periods"
+msgstr "Periodos de informe predefinidos"
+
+#: .\app\templates\pages\direction_dashboard.html:41
+msgid "QUARTER"
+msgstr "Trimestre"
+
+#: .\app\templates\pages\direction_dashboard.html:51
+msgid "Custom Range"
+msgstr "Rango Personalizado"
+
+#: .\app\templates\pages\direction_dashboard.html:52
+msgid "Specific calendar selection"
+msgstr "Selección de calendario específica"
+
+#: .\app\templates\pages\direction_dashboard.html:58
+msgid "From"
+msgstr "Desde"
+
+#: .\app\templates\pages\direction_dashboard.html:64
+msgid "To"
+msgstr "Hasta"
+
+#: .\app\templates\pages\direction_dashboard.html:68
+msgid "UPDATE SEARCH"
+msgstr "ACTUALIZAR BÚSQUEDA"
+
+#: .\app\templates\pages\direction_dashboard.html:74
+msgid "Segmentation"
+msgstr "Segmentación"
+
+#: .\app\templates\pages\direction_dashboard.html:75
+msgid "Categorical filters"
+msgstr "Filtros categóricos"
+
+#: .\app\templates\pages\direction_dashboard.html:115
+msgid "Direction Dashboard"
+msgstr "Panel de Dirección"
+
+#: .\app\templates\pages\direction_dashboard.html:116
+msgid "Strategic performance analysis and interaction growth trends."
+msgstr "Análisis de rendimiento estratégico y tendencias de crecimiento de interacción."
+
+#: .\app\templates\pages\direction_dashboard.html:120
+msgid "EXPORT CSV"
+msgstr "EXPORTAR CSV"
+
+#: .\app\templates\pages\direction_dashboard.html:127
+msgid "Total Engagement"
+msgstr "Interacción Total"
+
+#: .\app\templates\pages\direction_dashboard.html:130
+msgid "Clicks"
+msgstr "Clics"
+
+#: .\app\templates\pages\direction_dashboard.html:137
+msgid "Interest Score"
+msgstr "Puntuación de Interés"
+
+#: .\app\templates\pages\direction_dashboard.html:140
+msgid "Favs"
+msgstr "Favs"
+
+#: .\app\templates\pages\direction_dashboard.html:147
+msgid "Dominant Entity"
+msgstr "Entidad Dominante"
+
+#: .\app\templates\pages\direction_dashboard.html:153
+msgid "Platform"
+msgstr "Plataforma"
+
+#: .\app\templates\pages\direction_dashboard.html:161
+msgid "Periodic Engagement Trend"
+msgstr "Tendencia de Interacción Periódica"
+
+#: .\app\templates\pages\direction_dashboard.html:168
+msgid "No analytics data found for this period"
+msgstr "No se encontraron datos analíticos para este periodo"
+
+#: .\app\templates\pages\direction_dashboard.html:178
+msgid "Top Content Performance"
+msgstr "Rendimiento del Contenido Principal"
+
+#: .\app\templates\pages\direction_dashboard.html:184
+msgid "Title & Director"
+msgstr "Título y Director"
+
+#: .\app\templates\pages\direction_dashboard.html:185
+msgid "Genre"
+msgstr "Género"
+
+#: .\app\templates\pages\direction_dashboard.html:186
+msgid "Country"
+msgstr "País"
+
+#: .\app\templates\pages\direction_dashboard.html:187
+msgid "Interactions (Favs)"
+msgstr "Interacciones (Favs)"
+
+#: .\app\templates\pages\direction_dashboard.html:207
+msgid "No content matches the selected filters."
+msgstr "Ningún contenido coincide con los filtros seleccionados."
+
+#: .\app\templates\pages\home.html:29
 msgid "The Future of Streaming"
 msgstr "El Futuro del Streaming"
 
-#: app/templates/pages/home.html:102
+#: .\app\templates\pages\home.html:33
 msgid "All your streaming platforms in"
 msgstr "Todas tus plataformas de streaming en"
 
-#: app/templates/pages/home.html:102
+#: .\app\templates\pages\home.html:33
 msgid "one place"
 msgstr "un solo lugar"
 
-#: app/templates/pages/home.html:105
-msgid "Experience entertainment management reimagined. StreamSync unifies Netflix, Hulu, HBO, and more into a single, seamless cinematic interface."
-msgstr "Experimenta la gestión del entretenimiento reorganizada. StreamSync unifica Netflix, Hulu, HBO y más en una interfaz cinematográfica única y fluida."
+#: .\app\templates\pages\home.html:37
+msgid ""
+"Experience entertainment management reimagined. StreamSync unifies multiple "
+"platforms into a single, seamless cinematic interface."
+msgstr ""
+"Experimenta la gestión del entretenimiento reorganizada. StreamSync unifica múltiples "
+"plataformas en una interfaz cinematográfica única y fluida."
 
-#: app/templates/pages/home.html:122
+#: .\app\templates\pages\home.html:43
+msgid "Get Started for Free"
+msgstr "Comienza gratis"
+
+#: .\app\templates\pages\home.html:47
+msgid "Go to Dashboard"
+msgstr "Ir al Panel de Control"
+
+#: .\app\templates\pages\home.html:61
 msgid "Services Integrated"
 msgstr "Servicios Integrados"
 
-#: app/templates/pages/home.html:126
+#: .\app\templates\pages\home.html:65
 msgid "Movies Indexed"
 msgstr "Películas Indexadas"
 
-#: app/templates/pages/home.html:130
+#: .\app\templates\pages\home.html:69
 msgid "Active Users"
 msgstr "Usuarios Activos"
 
-#: app/templates/pages/home.html:138
+#: .\app\templates\pages\home.html:77
 msgid "Premium Tools"
 msgstr "Herramientas Premium"
 
-#: app/templates/pages/home.html:140
+#: .\app\templates\pages\home.html:79
 msgid "Unlock your full viewing potential"
 msgstr "Desbloquea todo tu potencial de visualización"
 
-#: app/templates/pages/home.html:142
-msgid "Powerful features designed to save you time and help you discover your next obsession."
-msgstr "Potentes funciones diseñadas para ahorrarte tiempo y ayudarte a descubrir tu próxima obsesión."
+#: .\app\templates\pages\home.html:81
+msgid ""
+"Powerful features designed to save you time and help you discover your next "
+"obsession."
+msgstr ""
+"Potentes funciones diseñadas para ahorrarte tiempo y ayudarte a descubrir tu próxima obsesión."
 
-#: app/templates/pages/home.html:145
-#: app/templates/pages/home.html:201
-msgid "Explore all features"
-msgstr "Explorar todas las funciones"
-
-#: app/templates/pages/home.html:159
+#: .\app\templates\pages\home.html:91
 msgid "Unified Search"
 msgstr "Búsqueda Unificada"
 
-#: app/templates/pages/home.html:162
-msgid "Stop jumping between tabs. Search across Netflix, Hulu, HBO, and Disney+ instantly from one bar."
-msgstr "Deja de saltar entre pestañas. Busca en Netflix, Hulu, HBO y Disney+ al instante desde una sola barra."
+#: .\app\templates\pages\home.html:93
+msgid ""
+"Stop jumping between tabs. Search across multiples platforms "
+"instantly from one bar."
+msgstr ""
+"Deja de saltar entre pestañas. Busca en múltiples plataformas al instante desde una sola barra."
 
-#: app/templates/pages/home.html:170
+#: .\app\templates\pages\home.html:102
 msgid "Series Tracking"
 msgstr "Seguimiento de Series"
 
-#: app/templates/pages/home.html:173
-msgid "Never forget which episode you're on. Keep track of every season and episode automatically."
-msgstr "No olvides nunca en qué episodio te quedaste. Haz un seguimiento automático de cada temporada y episodio."
+#: .\app\templates\pages\home.html:104
+msgid ""
+"Never forget which episode you're on. Keep track of every season and episode "
+"automatically."
+msgstr ""
+"No olvides nunca en qué episodio te quedaste. Haz un seguimiento automático de cada temporada y episodio."
 
-#: app/templates/pages/home.html:181
+#: .\app\templates\pages\home.html:113
 msgid "Smart Recs"
 msgstr "Recomendaciones Inteligentes"
 
-#: app/templates/pages/home.html:183
-msgid "AI-driven suggestions that understand your unique taste better than any single platform algorithm."
-msgstr "Sugerencias basadas en IA que entienden tus gustos únicos mejor que el algoritmo de cualquier plataforma individual."
+#: .\app\templates\pages\home.html:115
+msgid ""
+"AI-driven suggestions that understand your unique taste better than any "
+"single platform algorithm."
+msgstr ""
+"Sugerencias basadas en IA que entienden tus gustos únicos mejor que el algoritmo de cualquier plataforma individual."
 
-#: app/templates/pages/home.html:191
+#: .\app\templates\pages\home.html:124
 msgid "Availability Alerts"
 msgstr "Alertas de Disponibilidad"
 
-#: app/templates/pages/home.html:193
-msgid "Get notified the second a movie on your watchlist becomes available on your subscribed services."
-msgstr "Recibe notificaciones en el segundo en que una película de tu lista de seguimiento esté disponible en tus servicios suscritos."
+#: .\app\templates\pages\home.html:126
+msgid ""
+"Get notified the second a movie on your watchlist becomes available on your "
+"subscribed services."
+msgstr ""
+"Recibe notificaciones en el segundo en que una película de tu lista de seguimiento esté disponible en tus servicios suscritos."

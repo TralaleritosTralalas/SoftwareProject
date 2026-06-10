@@ -1,150 +1,194 @@
 {% load i18n %}
-<header class="sticky top-0 z-50 w-full border-b border-solid border-border-light dark:border-border-dark bg-surface-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-4">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
-
-    <div class="flex items-center gap-8">
-
-      <a href="{% url 'app:main' %}" class="flex items-center gap-3 text-primary">
-        <div class="size-8 rounded-lg bg-primary/20 flex items-center justify-center">
-          <span class="material-symbols-outlined text-primary text-2xl">play_circle</span>
-        </div>
-        <h2 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
-          StreamSync
-        </h2>
-      </a>
-
-      <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
-        <a href="{% url 'app:catalog' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          {% trans "Full Catalog" %}
-        </a>
-        <a href="{% url 'app:movies' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          {% trans "Movies" %}
-        </a>
-        <a href="{% url 'app:series' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          {% trans "Series" %}
-        </a>
-        <a href="#" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          {% trans "My List" %}
-        </a>
-      </nav>
-
-    </div>
-
-    <div class="hidden md:flex flex-1 max-w-xl mx-8">
-      <form action="{% url 'app:search' %}" method="GET" class="relative w-full group">
-
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-          <span class="material-symbols-outlined text-[20px]">search</span>
-        </div>
-        {% trans "Search movies, shows, or platforms..." as search_placeholder %}
-        <input
-          type="text"
-          name="q"
-          value="{{ request.GET.q }}"
-          placeholder="{{ search_placeholder }}"
-          class="block w-full rounded-xl border-none bg-slate-100 dark:bg-[#1e293b] py-2.5 pl-10 pr-3 text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
-        />
-
-       
-
-      </form>
-    </div>
-
-    {% get_current_language as LANGUAGE_CODE %}
-    <form action="{% url 'set_language' %}" method="post" class="flex items-center">
-        {% csrf_token %}
-        <input name="next" type="hidden" value="{{ request.path }}">
-        <div class="relative">
-            <select name="language" onchange="this.form.submit()" class="appearance-none bg-slate-100 dark:bg-[#1e293b] border-none rounded-xl py-1.5 pl-3 pr-8 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer shadow-sm">
-                <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>EN</option>
-                <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>ES</option>
-            </select>
-            <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none text-sm">expand_more</span>
-        </div>
-    </form>
-
-
-    <div class="flex items-center gap-4">
-  {% if user.is_authenticated %}
-    <div class="relative" id="notif-wrapper">
-      <button id="notif-button" class="relative p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400">
-        <span class="material-symbols-outlined">notifications</span>
-        {% if unread_count > 0 %}
-          <span id="notif-badge" class="absolute -top-0.5 -right-0.5 size-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">{{ unread_count }}</span>
-        {% endif %}
-      </button>
-      <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 origin-top-right rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl z-[60] overflow-hidden">
-        <div class="flex items-center justify-between p-3 border-b border-slate-100 dark:border-slate-800">
-          <p class="text-sm font-semibold text-slate-900 dark:text-white">Notifications</p>
-          {% if unread_count > 0 %}
-            <button id="mark-all-seen" class="text-xs text-primary font-medium hover:text-primary/80 transition-colors">
-              ✓ Mark all as read
-            </button>
-          {% endif %}
-        </div>
-        <div class="max-h-64 overflow-y-auto" id="notif-list">
-          {% for n in unread_notifications %}
-            <div class="notif-item cursor-pointer p-3 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-start gap-3" data-id="{{ n.id }}">
-              <span class="material-symbols-outlined text-primary text-xl mt-0.5">notifications_active</span>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{{ n.message }}</p>
-              </div>
-            </div>
-          {% empty %}
-            <div class="p-8 text-center flex flex-col items-center gap-2" id="notif-empty">
-              <span class="material-symbols-outlined text-3xl text-green-500">check_circle</span>
-              <p class="text-sm text-slate-400">There are no notifications</p>
-              <p class="text-xs text-slate-500">You'll be up to date when there are new updates.</p>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-
-    <div class="h-8 w-[1px] bg-border-light dark:bg-border-dark mx-1"></div>
-
-    <div class="relative" id="user-menu-wrapper">
-      <button id="user-menu-button" class="flex items-center gap-2 rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
-        <div class="size-9 rounded-full bg-cover bg-center border border-slate-200 dark:border-slate-700"
-          style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDDIAQ90IxsinjXM6PKvOAaLRDc7SY_R-7MVZ7vKDplBK7950nw55ZsHlVjzpNJ8O2lOn4dzlyKwejQm-g1R1zTQ-yZAJh8gKj7DDUaFAjgMlw4f_G4wKHpDUU5KvzD1qk71kCOaHNW-DXrAhGOeBQGxvzYQeMW70BVbPqVRfxLbQuAyoV2zIfQjweJuxtG5gg4Nr-3nsr2ETbHgYaZBmzIGdzCM9pS9q1rVq1DLjeAigarT-PPxUa7ZeXqXbs6yqL6JUmGOnKS_X36");'>
-        </div>
-        <span class="material-symbols-outlined text-slate-400 text-sm">expand_more</span>
-      </button>
-
-      <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-52 origin-top-right rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl z-[60] overflow-hidden">
-        <div class="p-2 flex flex-col gap-1">
-          
-          <a href="{% url 'app:personal_library' %}" class="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
-            <span class="material-symbols-outlined text-primary">video_library</span>
-            Personal Library
-          </a>
-
-          <a href="{% url 'app:user_settings' %}" class="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
-            <span class="material-symbols-outlined text-slate-400">settings</span>
-            Settings
-          </a>
-
-          <div class="h-[1px] bg-slate-100 dark:bg-slate-800 my-1"></div>
-
-          <form action="{% url 'logout' %}" method="post" class="w-full">
-            {% csrf_token %}
-            <button type="submit" class="flex w-full items-center gap-3 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors">
-              <span class="material-symbols-outlined">logout</span>
-              Sign Out
-            </button>
-          </form>
-
-        </div>
-      </div>
-    </div>
-  {% else %}
-    <a href="{% url 'login' %}" class="text-sm font-bold text-primary px-4 py-2 rounded-xl hover:bg-primary/10 transition-colors">
-      Sign In
-    </a>
-  {% endif %}
-</div>
-
-
-</header>
 {% load static %}
+<header class="sticky top-0 z-50 w-full border-b border-solid border-border-light dark:border-border-dark bg-surface-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+        <div class="flex items-center gap-8">
+            <a href="{% if user.is_authenticated %}{% url 'app:main' %}{% else %}/{% endif %}"
+               class="flex items-center gap-3 text-primary">
+                <div class="size-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-2xl">play_circle</span>
+                </div>
+                <h2 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
+                    StreamSync
+                </h2>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+                <a href="{% url 'app:catalog' %}"
+                   class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                    {% trans "Full Catalog" %}
+                </a>
+                <a href="{% url 'app:movies' %}"
+                   class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                    {% trans "Movies" %}
+                </a>
+                <a href="{% url 'app:series' %}"
+                   class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                    {% trans "Series" %}
+                </a>
+
+                {% if user.is_authenticated %}
+                    <a href="#"
+                       class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                        {% trans "My List" %}
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+
+        <div class="hidden md:flex flex-1 max-w-xl mx-8">
+            <form action="{% url 'app:search' %}" method="GET" class="relative w-full group">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+                    <span class="material-symbols-outlined text-[20px]">search</span>
+                </div>
+                {% trans "Search movies, shows, or platforms..." as search_placeholder %}
+                <input
+                        type="text"
+                        name="q"
+                        value="{{ request.GET.q }}"
+                        placeholder="{{ search_placeholder }}"
+                        class="block w-full rounded-xl border-none bg-slate-100 dark:bg-[#1e293b] py-2.5 pl-10 pr-3 text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
+                />
+            </form>
+        </div>
+
+        <div class="flex items-center gap-4">
+
+            {% get_current_language as LANGUAGE_CODE %}
+
+            {% if user.is_authenticated %}
+                <form action="{% url 'set_language' %}" method="post" class="flex items-center mr-2">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.path }}">
+                    <div class="relative">
+                        <select name="language" onchange="this.form.submit()"
+                                class="appearance-none bg-slate-100 dark:bg-[#1e293b] border-none rounded-xl py-2 px-4 pr-8 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer shadow-sm h-10 flex items-center">
+                            <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>EN</option>
+                            <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>ES</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="relative" id="notif-wrapper">
+                    <button id="notif-button"
+                            class="relative p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400">
+                        <span class="material-symbols-outlined">notifications</span>
+                        {% if unread_count > 0 %}
+                            <span id="notif-badge"
+                                  class="absolute -top-0.5 -right-0.5 size-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">{{ unread_count }}</span>
+                        {% endif %}
+                    </button>
+
+                    <div id="notif-dropdown"
+                         class="hidden absolute right-0 mt-3 w-80 rounded-2xl border border-solid border-border-light dark:border-border-dark bg-white dark:bg-slate-900 shadow-xl py-2 z-50">
+                        <div class="px-4 py-2 border-b border-solid border-border-light dark:border-border-dark flex justify-between items-center">
+                            <span class="font-bold text-sm text-slate-900 dark:text-white">Notifications</span>
+                            {% if unread_count > 0 %}
+                                <button id="mark-all-seen" class="text-xs text-primary hover:underline">Mark all as
+                                    read
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div class="max-h-96 overflow-y-auto" id="notif-list">
+                            {% if notifications %}
+                                {% for n in notifications %}
+                                    <div data-id="{{ n.id }}"
+                                         class="notif-item px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer flex gap-3 items-start border-b border-solid border-slate-100 dark:border-slate-800/50 last:border-none">
+                                        <div class="size-2 rounded-full bg-primary mt-1.5 shrink-0"></div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-slate-800 dark:text-slate-200 font-medium leading-normal">{{ n.message }}</p>
+                                            <span class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 block">{{ n.created_at|timesince }} ago</span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="p-8 text-center flex flex-col items-center justify-center gap-2 text-slate-400 dark:text-slate-500">
+                                    <span class="material-symbols-outlined text-3xl">notifications_off</span>
+                                    <p class="text-xs font-medium">All caught up!</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-8 w-[1px] bg-border-light dark:bg-border-dark mx-1"></div>
+
+                <div class="relative" id="user-menu-wrapper">
+                    <button id="user-menu-button"
+                            class="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <div class="size-8 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden border border-solid border-border-light dark:border-border-dark flex items-center justify-center">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="Profile picture from {{ user.username }}"
+                                     class="w-full h-full object-cover"/>
+                            {% else %}
+                                <span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-xl">person</span>
+                            {% endif %}
+                        </div>
+                        <span class="hidden sm:block text-sm font-medium text-slate-700 dark:text-slate-300 max-w-[100px] truncate">{{ user.username }}</span>
+                        <span class="material-symbols-outlined text-slate-400 text-sm hidden sm:block">expand_more</span>
+                    </button>
+
+                    <div id="user-dropdown"
+                         class="hidden absolute right-0 mt-3 w-56 rounded-2xl border border-solid border-border-light dark:border-border-dark bg-white dark:bg-slate-900 shadow-xl p-2 z-50">
+                        <div class="px-3 py-2.5 border-b border-solid border-slate-100 dark:border-slate-800 mb-1">
+                            <p class="text-xs text-slate-400 dark:text-slate-500 font-medium">Signed in as</p>
+                            <p class="text-sm font-bold text-slate-900 dark:text-white truncate mt-0.5">{{ user.email }}</p>
+                        </div>
+
+                        <a href="{% url 'app:personal_library' %}"
+                           class="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
+                            <span class="material-symbols-outlined text-primary">video_library</span>
+                            Personal Library
+                        </a>
+
+                        <a href="{% url 'app:user_settings' %}"
+                           class="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
+                            <span class="material-symbols-outlined text-slate-400">settings</span>
+                            Settings
+                        </a>
+
+                        <div class="h-[1px] bg-slate-100 dark:bg-slate-800 my-1"></div>
+
+                        <form action="{% url 'logout' %}" method="post" class="w-full">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="flex w-full items-center gap-3 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors">
+                                <span class="material-symbols-outlined">logout</span>
+                                Sign Out
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            {% else %}
+                <form action="{% url 'set_language' %}" method="post" class="flex items-center mr-2">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.path }}">
+                    <div class="relative">
+                        <select name="language" onchange="this.form.submit()"
+                                class="appearance-none bg-slate-100 dark:bg-[#1e293b] border-none rounded-xl py-2 px-4 pr-8 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer shadow-sm h-10 flex items-center">
+                            <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>EN</option>
+                            <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>ES</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="flex gap-3">
+                    <a href="/accounts/login">
+                        <button class="h-10 px-5 rounded-lg text-slate-900 dark:text-white text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                            {% trans "Log In" %}
+                        </button>
+                    </a>
+                    <a href="/accounts/signup">
+                        <button class="h-10 px-5 rounded-lg bg-primary text-white text-sm font-bold hover:bg-blue-600 shadow-lg shadow-primary/25 transition-all">
+                            {% trans "Sign Up" %}
+                        </button>
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</header>
 <script src="{% static 'js/navbar.js' %}"></script>
