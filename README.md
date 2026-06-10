@@ -58,9 +58,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-**StreamSync** is a modern, production-ready streaming catalog platform designed to centralize, track, and synchronize multimedia content content in one place. It solves the fragmentation of digital media by offering users a unified interface to explore catalogs, manage streams, and monitor content availability in real time.
+**StreamSync** is a modern, production-ready streaming catalog platform designed to centralize, track, and synchronize multimedia content in one place. It solves the fragmentation of digital media by offering users a unified interface to explore catalogs, manage streams, and monitor content availability in real time.
 
-Built on a architecture using **Python 3.14** and **Django 6.0.5**, the platform is engineered from the ground up for containerized cloud deployment, ultra-fast dependency tracking, and automated delivery pipelines.
+Built on an architecture using **Python 3.14** and **Django 6.0.5**, the platform is engineered from the ground up for containerized cloud deployment, ultra-fast dependency tracking, and automated delivery pipelines.
 
 ### Key Highlights
 
