@@ -33,10 +33,12 @@ def anonymous_or_customer(view_func):
         if request.user.is_superuser:
             return view_func(request, *args, **kwargs)
 
-        if request.user.is_staff or (request.user.role and request.user.role.name in ['director', 'technical', 'manager']):
+        if request.user.is_staff or (
+                request.user.role and request.user.role.name in ['director', 'technical', 'manager']):
             raise PermissionDenied
 
         return view_func(request, *args, **kwargs)
+
     return _wrapped_view
 
 
@@ -54,6 +56,7 @@ def customer_only(view_func):
             raise PermissionDenied
 
         return view_func(request, *args, **kwargs)
+
     return _wrapped_view
 
 
@@ -74,7 +77,9 @@ def staff_only(allowed_roles=None):
                 return view_func(request, *args, **kwargs)
 
             raise PermissionDenied
+
         return _wrapped_view
+
     return decorator
 
 
@@ -180,6 +185,7 @@ def user_settings(request):
         'countries': countries
     })
 
+
 @login_required
 def delete_account(request):
     if request.method == 'POST':
@@ -188,6 +194,7 @@ def delete_account(request):
         user.delete()
 
     return redirect('app:home')
+
 
 @anonymous_or_customer
 def catalog(request):
@@ -255,6 +262,7 @@ def movies(request):
 
     return render(request, 'pages/movies.html', context)
 
+
 @anonymous_or_customer
 def series(request):
     selected_platform = request.GET.get('platform')
@@ -282,6 +290,7 @@ def series(request):
         'sort_year': sort_year,
     }
     return render(request, 'pages/series.html', context)
+
 
 @anonymous_or_customer
 def search(request):
@@ -321,17 +330,18 @@ def register(request):
 def login(request):
     return render(request, 'login.html')
 
+
 @anonymous_or_customer
 def content_detail(request, ctype, cid):
     model = Series if ctype == 'series' else Movie
-    
+
     if ctype == 'series':
         all_content = get_all_series()
     else:
         all_content = get_all_movies()
-    
+
     content = None
-    
+
     if content:
         content['content_type'] = ctype
 
@@ -426,6 +436,7 @@ def content_detail(request, ctype, cid):
         'is_in_watchlist': is_in_watchlist
     })
 
+
 def _safe_int(value, default=0):
     try:
         return int(value)
@@ -448,7 +459,7 @@ def _resolve_content(ctype, cid):
     api_content = next(
         (item for item in data
          if slugify(f"{item.get('title', '').replace(' ', '-')}_{item.get('year', item.get('start_year', ''))}")
-            == slugify(str(cid))),
+         == slugify(str(cid))),
         None
     )
     if not api_content:
@@ -460,7 +471,7 @@ def _resolve_content(ctype, cid):
         return api_content, local_content
 
     defaults = {
-        'synopsis': api_content.get('synopsis')  or 'No synopsis available.',
+        'synopsis': api_content.get('synopsis') or 'No synopsis available.',
         'rating': _safe_float(api_content.get('rating')),
     }
     if ctype == 'series':
@@ -489,7 +500,6 @@ def _resolve_content(ctype, cid):
 def update_status(request, ctype, cid):
     if not request.user.is_authenticated:
         return JsonResponse({'status': 'error', 'message': 'Authentication required'}, status=401)
-
     if request.user.is_superuser:
         return JsonResponse({'status': 'error', 'message': 'Superusers cannot track watch status'}, status=403)
 
@@ -497,7 +507,6 @@ def update_status(request, ctype, cid):
         try:
             data = json.loads(request.body)
             status = data.get('status', 'not_seen')
-
             _, local_content = _resolve_content(ctype, cid)
             if not local_content:
                 return JsonResponse({'success': False, 'error': 'Content not found'})
@@ -515,8 +524,23 @@ def update_status(request, ctype, cid):
             else:
                 vp.completed = False
                 vp.last_minute = 0
-
             vp.save()
+
+            if status == 'watching':
+                today = timezone.now().date()
+                catalog_item = local_content.catalog.first() if hasattr(local_content, 'catalog') else None
+                platform = catalog_item.platform if catalog_item else None
+
+                if platform:
+                    stats, _ = Statistics.objects.get_or_create(
+                        platform=platform,
+                        week=today,
+                        content=local_content,
+                        defaults={'total_clicks': 0, 'total_favorites': 0, 'interaction_date': today}
+                    )
+                    stats.total_clicks += 1
+                    stats.save()
+
             return JsonResponse({'success': True, 'status': status})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
@@ -528,7 +552,6 @@ def update_status(request, ctype, cid):
 def toggle_favorite(request, ctype, cid):
     if not request.user.is_authenticated:
         return JsonResponse({'status': 'error', 'message': 'Authentication required'}, status=401)
-
     if request.user.is_superuser:
         return JsonResponse({'status': 'error', 'message': 'Superusers cannot have favorites'}, status=403)
 
@@ -538,12 +561,30 @@ def toggle_favorite(request, ctype, cid):
             if not local_content:
                 return JsonResponse({'success': False, 'error': 'Content not found'})
 
+            today = timezone.now().date()
+            catalog_item = local_content.catalog.first() if hasattr(local_content, 'catalog') else None
+            platform = catalog_item.platform if catalog_item else None
+
             favorite = Favorite.objects.filter(user=request.user, content=local_content).first()
             if favorite:
                 favorite.delete()
+                if platform:
+                    stats = Statistics.objects.filter(platform=platform, week=today, content=local_content).first()
+                    if stats and stats.total_favorites > 0:
+                        stats.total_favorites -= 1
+                        stats.save()
                 return JsonResponse({'success': True, 'is_favorite': False})
             else:
                 Favorite.objects.create(user=request.user, content=local_content)
+                if platform:
+                    stats, _ = Statistics.objects.get_or_create(
+                        platform=platform,
+                        week=today,
+                        content=local_content,
+                        defaults={'total_clicks': 0, 'total_favorites': 0, 'interaction_date': today}
+                    )
+                    stats.total_favorites += 1
+                    stats.save()
                 return JsonResponse({'success': True, 'is_favorite': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
@@ -716,7 +757,6 @@ def list_detail(request, list_id):
 
 @customer_only
 def personal_library(request):
-
     # HELPERS
     def build_movie_item(movie, extra=None):
         data = {
@@ -812,7 +852,6 @@ def personal_library(request):
 
         if hasattr(content, 'movie'):
             movie = content.movie
-
 
             continue_watching_movies.append(
                 build_movie_item(movie, {
@@ -1047,6 +1086,7 @@ def onboarding_complete(request):
         return redirect('app:onboarding')
     return render(request, 'registration/onboarding_complete.html')
 
+
 @staff_only(['technical'])
 def tech_add_user_view(request):
     if request.method == 'POST':
@@ -1091,6 +1131,7 @@ def tech_add_user_view(request):
     groups = Group.objects.all()
     return render(request, 'admin/tech_add_user.html', {'groups': groups})
 
+
 @staff_only(['technical'])
 def tech_edit_user_view(request, user_id):
     user_to_edit = get_object_or_404(User, id=user_id)
@@ -1132,6 +1173,7 @@ def tech_edit_user_view(request, user_id):
         'groups': groups
     })
 
+
 @staff_only(['technical'])
 def tech_delete_user(request, user_id):
     if request.user.id == user_id:
@@ -1156,6 +1198,7 @@ def direction_dashboard(request):
     totals = {'clicks': metrics['sc'] or 0, 'favs': metrics['sf'] or 0}
 
     top_p = stats_qs.values('platform__platform_name').annotate(c=Sum('total_clicks')).order_by('-c').first()
+    top_platform_name = top_p['platform__platform_name'] if top_p else None
 
     trending = content_qs.annotate(
         fav_count=Count('favorite')
@@ -1204,7 +1247,7 @@ def direction_dashboard(request):
     return render(request, 'pages/direction_dashboard.html', {
         'total_clicks': f"{totals['clicks']:,}".replace(",", "."),
         'total_favorites': f"{totals['favs']:,}".replace(",", "."),
-        'top_platform': top_p,
+        'top_platform': top_platform_name,
         'trending_content': trending,
         'platforms': Platform.objects.all(),
         'countries': Country.objects.all(),

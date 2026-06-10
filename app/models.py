@@ -55,6 +55,10 @@ class User(AbstractUser):
             (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
         )
 
+    class Meta:
+        verbose_name = "User"
+        verbose_name_plural = "Users"
+
 
 class Country(models.Model):
     name = models.CharField(max_length=100)
@@ -62,6 +66,10 @@ class Country(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Country"
+        verbose_name_plural = "Countries"
 
 
 class Genre(models.Model):
@@ -71,6 +79,10 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Genre"
+        verbose_name_plural = "Genres"
 
 
 class Director(models.Model):
@@ -82,6 +94,10 @@ class Director(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Director"
+        verbose_name_plural = "Directors"
+
 
 class AgeRating(models.Model):
     description = models.CharField(max_length=100)
@@ -90,6 +106,10 @@ class AgeRating(models.Model):
     def __str__(self):
         return f"+{self.minimum_age} - {self.description}"
 
+    class Meta:
+        verbose_name = "Age Rating"
+        verbose_name_plural = "Age Ratings"
+
 
 class Language(models.Model):
     name = models.CharField(max_length=100)
@@ -97,6 +117,10 @@ class Language(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Language"
+        verbose_name_plural = "Languages"
 
 
 class AudiovisualContent(models.Model):
@@ -115,17 +139,29 @@ class AudiovisualContent(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = "Audiovisual Content"
+        verbose_name_plural = "Audiovisual Contents"
+
 
 class Movie(AudiovisualContent):
     year = models.IntegerField()
     release_date = models.DateField()
     duration_minutes = models.IntegerField()
 
+    class Meta:
+        verbose_name = "Movie"
+        verbose_name_plural = "Movies"
+
 
 class Series(AudiovisualContent):
     start_year = models.IntegerField()
     end_year = models.IntegerField(null=True, blank=True)
     total_seasons = models.IntegerField()
+
+    class Meta:
+        verbose_name = "Series"
+        verbose_name_plural = "Series"
 
 
 class Platform(models.Model):
@@ -135,6 +171,10 @@ class Platform(models.Model):
 
     def __str__(self):
         return self.platform_name
+
+    class Meta:
+        verbose_name = "Platform"
+        verbose_name_plural = "Platforms"
 
 
 class Catalog(models.Model):
@@ -150,15 +190,26 @@ class Catalog(models.Model):
     def __str__(self):
         return f"{self.platform.platform_name} - {self.content.title}"
 
+    class Meta:
+        verbose_name = "Catalog"
+        verbose_name_plural = "Catalogs"
+        unique_together = ('platform', 'content')
+
 
 class Statistics(models.Model):
     platform = models.ForeignKey(Platform, on_delete=models.CASCADE)
+    week = models.DateField(default=timezone.now)
     total_favorites = models.IntegerField(default=0)
     total_clicks = models.IntegerField(default=0)
-    week = models.DateField()
+    content = models.ForeignKey(AudiovisualContent, on_delete=models.SET_NULL, null=True, blank=True)
+    interaction_date = models.DateField(default=timezone.now)
+
+    class Meta:
+        verbose_name = "Statistic"
+        verbose_name_plural = "Statistics"
 
     def __str__(self):
-        return f"Stats for {self.platform} - Week: {self.week}"
+        return f"Stats for {self.platform} - Date: {self.interaction_date}"
 
 
 class Notification(models.Model):
@@ -168,6 +219,10 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"To: {self.user.username} - Seen: {self.seen}"
+
+    class Meta:
+        verbose_name = "Notification"
+        verbose_name_plural = "Notifications"
 
 
 class VisualizationProgress(models.Model):
@@ -179,10 +234,18 @@ class VisualizationProgress(models.Model):
     def __str__(self):
         return f"{self.user.username} watching {self.content.title} (Min: {self.last_minute})"
 
+    class Meta:
+        verbose_name = "Visualization Progress"
+        verbose_name_plural = "Visualization Progresses"
+
 
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.ForeignKey(AudiovisualContent, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Favorite"
+        verbose_name_plural = "Favorites"
 
 
 class Watchlist(models.Model):
@@ -194,6 +257,8 @@ class Watchlist(models.Model):
     class Meta:
         unique_together = ('user', 'name')
         ordering = ['-created_at']
+        verbose_name = "Watchlist"
+        verbose_name_plural = "Watchlists"
 
     def __str__(self):
         return f"{self.user.username} - {self.name}"
