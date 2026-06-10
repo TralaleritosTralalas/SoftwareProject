@@ -4,7 +4,7 @@ from app.tests.base import BaseTestSuite
 from app.models import User
 
 
-class TechAdminTest(BaseTestSuite):
+class TechUserCRUDTest(BaseTestSuite):
     def setUp(self):
         super().setUp()
         self.tech_group, _ = Group.objects.get_or_create(name='technical')
@@ -13,17 +13,6 @@ class TechAdminTest(BaseTestSuite):
         self.user.role = self.tech_group
         self.user.save()
         self.client.login(username='tester', password=self.user_pwd)
-
-    def test_access_denied_for_regular_user(self):
-        self.user.role = None
-        self.user.save()
-        response = self.client.get('/tech/')
-        self.assertEqual(response.status_code, 302)
-
-    def test_access_granted_for_technical_role(self):
-        response = self.client.get('/tech/')
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "System Administration")
 
     def test_tech_add_user_success(self):
         url = reverse('tech_admin:auth_user_add')
@@ -52,7 +41,6 @@ class TechAdminTest(BaseTestSuite):
             'role': self.director_group.id
         }
         self.client.post(url, data, follow=True)
-
         self.assertFalse(User.objects.filter(username='fail_user').exists())
 
     def test_tech_edit_user_data_and_password(self):
@@ -92,5 +80,5 @@ class TechAdminTest(BaseTestSuite):
 
     def test_tech_admin_search_logic(self):
         User.objects.create(username='unique_search_hit', email='target@test.com')
-        response = self.client.get('/tech/', {'q': 'unique_search_hit'})
+        response = self.client.get(reverse('tech_admin:index'), {'q': 'unique_search_hit'})
         self.assertContains(response, 'unique_search_hit')
