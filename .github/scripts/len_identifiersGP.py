@@ -2,7 +2,6 @@ import re
 import sys
 import json
 
-# Python reserved words
 PY_KEYWORDS = {
     'if', 'else', 'for', 'while', 'return', 'class',
     'def', 'import', 'from', 'as', 'with', 'try', 'except',
@@ -10,14 +9,12 @@ PY_KEYWORDS = {
     'and', 'or', 'not', 'is', 'lambda', 'yield'
 }
 
-# JavaScript / TypeScript reserved words
 JS_KEYWORDS = {
     'if', 'else', 'for', 'while', 'do', 'return', 'class', 'function',
     'import', 'export', 'from', 'as', 'with', 'try', 'catch', 'finally',
     'throw', 'break', 'continue', 'new', 'delete', 'typeof', 'instanceof',
     'in', 'of', 'let', 'const', 'var', 'this', 'super', 'null', 'undefined',
     'true', 'false', 'void', 'switch', 'case', 'default', 'debugger',
-    # TypeScript extras
     'interface', 'type', 'enum', 'namespace', 'declare', 'abstract',
     'implements', 'extends', 'readonly', 'public', 'private', 'protected',
     'static', 'async', 'await', 'yield', 'get', 'set', 'keyof', 'typeof',
@@ -25,7 +22,6 @@ JS_KEYWORDS = {
     'symbol', 'bigint',
 }
 
-# Combined set used for all languages
 KEYWORDS = PY_KEYWORDS | JS_KEYWORDS
 
 JS_EXTENSIONS = {'.js', '.ts', '.mjs', '.tsx', '.jsx', '.cjs'}
@@ -69,7 +65,6 @@ def main(paths):
         print(f"Analyzing {path}")
         results.append(analyze_file(path))
 
-    # Create JSON
     report = {
         "analysis_type": "Identifier Length",
         "threshold": THRESHOLD,

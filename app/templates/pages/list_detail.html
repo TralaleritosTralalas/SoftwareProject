@@ -3,134 +3,133 @@
 {% block title %}StreamSync – {{ list_name }}{% endblock %}
 
 {% block extra_scripts %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/watchlist.css' %}">
-<script src="{% static 'js/watchlist-utils.js' %}"></script>
-<script src="{% static 'js/watchlist-modal.js' %}"></script>
-<script src="{% static 'js/watchlist.js' %}"></script>
-<script>
-window.CONTENT_DATA = { type: null, id: null };
-window.contentInLists = [{{ list_id }}];
-</script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/watchlist.css' %}">
+    <script src="{% static 'js/watchlist-utils.js' %}"></script>
+    <script src="{% static 'js/watchlist-modal.js' %}"></script>
+    <script src="{% static 'js/watchlist.js' %}"></script>
+    <script>
+        window.CONTENT_DATA = {type: null, id: null};
+        window.contentInLists = [{{ list_id }}];
+    </script>
 {% endblock %}
 
 {% block content %}
 
-<main class="flex-1 px-4 lg:px-8 py-8">
-  <div class="max-w-7xl mx-auto flex flex-col gap-10">
+    <main class="flex-1 px-4 lg:px-8 py-8">
+        <div class="max-w-7xl mx-auto flex flex-col gap-10">
 
-    <!-- HEADER -->
-    <section class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-      <div class="space-y-3">
-        <div class="flex items-center gap-3">
-          <a href="/personal_library/" class="size-10 rounded-xl bg-surface-dark border border-white/10 flex items-center justify-center text-text-secondary hover:text-white hover:border-white/20 transition-all">
+            <section class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <a href="/personal_library/"
+                           class="size-10 rounded-xl bg-surface-dark border border-white/10 flex items-center justify-center text-text-secondary hover:text-white hover:border-white/20 transition-all">
             <span class="material-symbols-outlined">
               arrow_back
             </span>
-          </a>
+                        </a>
 
-          <div class="size-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                        <div class="size-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
             <span class="material-symbols-outlined text-[28px]">
               stacks
             </span>
-          </div>
+                        </div>
 
-          <div>
-            <h1 class="text-4xl font-black tracking-tight text-white">
-              {{ list_name }}
-            </h1>
+                        <div>
+                            <h1 class="text-4xl font-black tracking-tight text-white">
+                                {{ list_name }}
+                            </h1>
 
-            <p class="text-text-secondary text-sm mt-1">
-              {{ item_count }} title{{ item_count|pluralize }}
-            </p>
-          </div>
-        </div>
-      </div>
+                            <p class="text-text-secondary text-sm mt-1">
+                                {{ item_count }} title{{ item_count|pluralize }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
-      <div class="flex items-center gap-2">
-        <button onclick="openRenameListModal({{ list_id }}, '{{ list_name|escapejs }}')"
-          class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-surface-highlight text-white text-sm font-semibold transition-all flex items-center gap-2"
-        >
-          <span class="material-symbols-outlined text-sm">edit</span>
-          Rename
-        </button>
-        <button onclick="confirmDeleteList({{ list_id }})"
-          class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-red-500/20 hover:text-red-400 text-white text-sm font-semibold transition-all flex items-center gap-2"
-        >
-          <span class="material-symbols-outlined text-sm">delete</span>
-          Delete
-        </button>
-      </div>
-    </section>
+                <div class="flex items-center gap-2">
+                    <button onclick="openRenameListModal({{ list_id }}, '{{ list_name|escapejs }}')"
+                            class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-surface-highlight text-white text-sm font-semibold transition-all flex items-center gap-2"
+                    >
+                        <span class="material-symbols-outlined text-sm">edit</span>
+                        Rename
+                    </button>
+                    <button onclick="confirmDeleteList({{ list_id }})"
+                            class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-red-500/20 hover:text-red-400 text-white text-sm font-semibold transition-all flex items-center gap-2"
+                    >
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                        Delete
+                    </button>
+                </div>
+            </section>
 
-    <!-- MOVIES -->
-    {% if movies %}
-    <section class="flex flex-col gap-5">
-      <div class="flex items-center gap-3">
-        <div class="size-11 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+            {% if movies %}
+                <section class="flex flex-col gap-5">
+                    <div class="flex items-center gap-3">
+                        <div class="size-11 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
           <span class="material-symbols-outlined fill-current">
             movie
           </span>
-        </div>
-        <div>
-          <h2 class="text-2xl font-bold text-white tracking-tight">
-            Movies
-          </h2>
-          <p class="text-sm text-text-secondary mt-1">
-            {{ movies|length }} title{{ movies|length|pluralize }}
-          </p>
-        </div>
-      </div>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-white tracking-tight">
+                                Movies
+                            </h2>
+                            <p class="text-sm text-text-secondary mt-1">
+                                {{ movies|length }} title{{ movies|length|pluralize }}
+                            </p>
+                        </div>
+                    </div>
 
-      <div class="rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-transparent p-6">
-        {% include "components/card_movies.html" with movies=movies %}
-      </div>
-    </section>
-    {% endif %}
+                    <div class="rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-transparent p-6">
+                        {% include "components/card_movies.html" with movies=movies %}
+                    </div>
+                </section>
+            {% endif %}
 
-    <!-- SERIES -->
-    {% if series %}
-    <section class="flex flex-col gap-5">
-      <div class="flex items-center gap-3">
-        <div class="size-11 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+            {% if series %}
+                <section class="flex flex-col gap-5">
+                    <div class="flex items-center gap-3">
+                        <div class="size-11 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
           <span class="material-symbols-outlined fill-current">
             live_tv
           </span>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-white tracking-tight">
+                                Series
+                            </h2>
+                            <p class="text-sm text-text-secondary mt-1">
+                                {{ series|length }} title{{ series|length|pluralize }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-3xl border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-transparent p-6">
+                        {% include "components/card_series.html" with series=series %}
+                    </div>
+                </section>
+            {% endif %}
+
+            {% if not movies and not series %}
+                <section class="flex flex-col items-center justify-center py-16">
+                    <div class="size-20 rounded-full bg-surface-highlight mx-auto flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-4xl text-text-secondary">playlist_remove</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">This list is empty</h3>
+                    <p class="text-text-secondary mb-6">Start adding movies and series to this list from their detail
+                        pages.</p>
+                    <a href="{% url 'app:main' %}"
+                       class="px-6 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/80 transition-all">
+                        Browse content
+                    </a>
+                </section>
+            {% endif %}
+
+            {% include "components/watchlist_modal.html" %}
+            {% include "pages/rename_list_modal.html" %}
+
         </div>
-        <div>
-          <h2 class="text-2xl font-bold text-white tracking-tight">
-            Series
-          </h2>
-          <p class="text-sm text-text-secondary mt-1">
-            {{ series|length }} title{{ series|length|pluralize }}
-          </p>
-        </div>
-      </div>
-
-      <div class="rounded-3xl border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-transparent p-6">
-        {% include "components/card_series.html" with series=series %}
-      </div>
-    </section>
-    {% endif %}
-
-    <!-- EMPTY STATE -->
-    {% if not movies and not series %}
-    <section class="flex flex-col items-center justify-center py-16">
-      <div class="size-20 rounded-full bg-surface-highlight mx-auto flex items-center justify-center mb-6">
-        <span class="material-symbols-outlined text-4xl text-text-secondary">playlist_remove</span>
-      </div>
-      <h3 class="text-xl font-bold text-white mb-2">This list is empty</h3>
-      <p class="text-text-secondary mb-6">Start adding movies and series to this list from their detail pages.</p>
-      <a href="{% url 'app:main' %}" class="px-6 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/80 transition-all">
-        Browse content
-      </a>
-    </section>
-    {% endif %}
-
-    {% include "components/watchlist_modal.html" %}
-    {% include "pages/rename_list_modal.html" %}
-
-  </div>
-</main>
+    </main>
 
 {% endblock %}

@@ -6,7 +6,6 @@
 
 <main class="flex-1 flex flex-col">
 
-    <!-- HERO -->
     <section class="relative w-full h-[320px] overflow-hidden rounded-3xl group">
 
         <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
@@ -15,11 +14,14 @@
 
         <div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/40"></div>
 
+        <button class="absolute top-5 right-5 p-3 bg-black/40 backdrop-blur-md rounded-2xl text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-105">
+            <span class="material-symbols-outlined">edit_square</span>
+        </button>
+
         <div class="relative max-w-7xl mx-auto px-6 h-full flex items-end pb-12">
 
             <div class="flex flex-col md:flex-row items-end gap-6">
 
-                <!-- PROFILE -->
                 <div class="relative group/avatar">
 
                     <img
@@ -45,7 +47,6 @@
 
                 </div>
 
-                <!-- INFO -->
                 <div class="mb-2">
 
                     <h2 class="text-4xl font-bold text-white">
@@ -65,15 +66,12 @@
 
     </section>
 
-    <!-- CONTENT -->
     <section class="max-w-7xl mx-auto px-6 py-12 w-full">
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-            <!-- LEFT -->
             <div class="lg:col-span-8 space-y-6">
 
-                <!-- ACCOUNT SETTINGS -->
                 <form method="POST" enctype="multipart/form-data" class="block">
                     {% csrf_token %}
 
@@ -93,7 +91,6 @@
 
                     <div class="bg-surface-container-low rounded-3xl border border-outline-variant overflow-hidden shadow-xl">
 
-                        <!-- HEADER -->
                         <div class="flex items-center justify-between px-8 py-6 border-b border-outline-variant">
 
                             <div>
@@ -106,7 +103,6 @@
                                 </p>
                             </div>
 
-                            <!-- EDIT BTN -->
                             <button
                                 type="button"
                                 id="edit-profile-btn"
@@ -125,12 +121,10 @@
 
                         </div>
 
-                        <!-- BODY -->
                         <div class="p-8">
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
-                                <!-- FIRST NAME -->
                                 <div class="space-y-2">
 
                                     <label class="text-sm text-on-surface-variant">
@@ -146,7 +140,6 @@
 
                                 </div>
 
-                                <!-- LAST NAME -->
                                 <div class="space-y-2">
 
                                     <label class="text-sm text-on-surface-variant">
@@ -162,7 +155,6 @@
 
                                 </div>
 
-                                <!-- USERNAME -->
                                 <div class="space-y-2">
 
                                     <label class="text-sm text-on-surface-variant">
@@ -178,7 +170,6 @@
 
                                 </div>
 
-                                <!-- COUNTRY -->
                                 <div class="space-y-2">
 
                                     <label class="text-sm text-on-surface-variant">
@@ -200,7 +191,6 @@
 
                             </div>
 
-                            <!-- GENDER -->
                             <div class="space-y-2 md:col-span-2">
 
                                 <label class="text-sm text-on-surface-variant">
@@ -233,7 +223,6 @@
 
                         </div>
 
-                        <!-- BIO -->
                         <div class="space-y-2 mb-8">
 
                             <label class="text-sm text-on-surface-variant">
@@ -249,7 +238,6 @@
 
                         </div>
 
-                        <!-- ACTIONS -->
                         <div
                             id="profile-actions"
                             class="hidden opacity-0 translate-y-3 flex justify-end gap-4 transition-all duration-300">
@@ -279,7 +267,6 @@
 
                 </form>
 
-                <!-- SECURITY -->
                 <form method="POST" class="block">
                     {% csrf_token %}
 
@@ -299,7 +286,6 @@
 
                     <div class="bg-surface-container-low rounded-3xl border border-outline-variant overflow-hidden shadow-xl">
 
-                        <!-- HEADER -->
                         <div class="flex items-center justify-between px-8 py-6 border-b border-outline-variant">
 
                             <div>
@@ -314,7 +300,6 @@
 
                             </div>
 
-                            <!-- SECURITY BTN -->
                             <button
                                 type="button"
                                 onclick="toggleSecurityEdit()"
@@ -332,10 +317,8 @@
 
                         </div>
 
-                        <!-- BODY -->
                         <div class="p-8 space-y-5">
 
-                            <!-- CURRENT -->
                             <div class="space-y-2">
 
                                 <label class="text-sm text-on-surface-variant">
@@ -351,7 +334,6 @@
 
                             </div>
 
-                            <!-- NEW -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                                 <div class="space-y-2">
@@ -390,7 +372,6 @@
 
                             </div>
 
-                            <!-- PASSWORD FEEDBACK -->
                             <div id="password-feedback" class="space-y-1 mt-2">
                                 <p class="text-[11px] text-on-surface-variant">
                                     <span id="length-check">○</span> At least 8 characters
@@ -403,7 +384,6 @@
                                 </p>
                             </div>
 
-                            <!-- ACTIONS -->
                             <div
                                 id="security-actions"
                                 class="hidden opacity-0 translate-y-3 flex items-center justify-between pt-2 transition-all duration-300">
@@ -436,10 +416,8 @@
 
             </div>
 
-            <!-- RIGHT -->
             <div class="lg:col-span-4 space-y-6">
 
-                <!-- ACTIVITY -->
                 <div class="bg-surface-container-low p-6 rounded-3xl border border-outline-variant shadow-xl">
 
                     <h4 class="font-bold mb-5 flex items-center gap-2">
@@ -482,7 +460,6 @@
 
                 </div>
 
-                <!-- DELETE ACCOUNT -->
                 <div class="bg-surface-container-low p-6 rounded-3xl border border-outline-variant shadow-xl">
 
                     <h4 class="font-bold mb-5 flex items-center gap-2 text-red-500">
@@ -507,7 +484,6 @@
 
                 </div>
 
-                <!-- DELETE MODAL -->
                 <div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
 
                     <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDeleteModal()"></div>

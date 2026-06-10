@@ -126,6 +126,7 @@ def user_settings(request):
         'countries': countries
     })
 
+
 @login_required
 def delete_account(request):
     if request.method == 'POST':
@@ -135,8 +136,8 @@ def delete_account(request):
 
     return redirect('app:home')
 
+
 def catalog(request):
-    # Parámetros
     plat_name = request.GET.get('platform')
     genre_name = request.GET.get('genre')
     sort_rating = request.GET.get('sort_rating')
@@ -145,17 +146,15 @@ def catalog(request):
     movies = get_all_movies(platform_filter=plat_name)
     series = get_all_series(platform_filter=plat_name)
 
-    # Filtrado por Género (now filtering lists of dicts)
     if genre_name:
         movies = [m for m in movies if m.get('genre_name') == genre_name]
         series = [s for s in series if s.get('genre_name') == genre_name]
 
-    # Ordenamiento
     if sort_rating:
         reverse = (sort_rating == 'desc')
         movies = sorted(movies, key=lambda x: x.get('rating', 0), reverse=reverse)
         series = sorted(series, key=lambda x: x.get('rating', 0), reverse=reverse)
-    
+
     if sort_year:
         reverse = (sort_year == 'desc')
         movies = sorted(movies, key=lambda x: x.get('year', 0), reverse=reverse)
@@ -233,14 +232,13 @@ def search(request):
     query = request.GET.get('q', '').strip()
     p = request.GET.get('platform')
     g = request.GET.get('genre')
-    
+
     movies = []
     series = []
-    
+
     if query:
         results = search_content(query=query, platform=p, genre=g)
-        
-        # Separate movies and series
+
         movies = [r for r in results if r.get('content_type') == 'movie']
         series = [r for r in results if r.get('content_type') == 'series']
 
@@ -269,28 +267,28 @@ def login(request):
 
 def content_detail(request, ctype, cid):
     model = Series if ctype == 'series' else Movie
-    
+
     if ctype == 'series':
         all_content = get_all_series()
     else:
         all_content = get_all_movies()
-    
+
     content = None
-    
+
     if content:
         content['content_type'] = ctype
 
         user_status = 'not_seen'
         is_favorite = False
         is_in_watchlist = False
-        
+
         if request.user.is_authenticated:
             try:
                 if ctype == 'series':
                     local_content = Series.objects.filter(title=content.get('title')).first()
                 else:
                     local_content = Movie.objects.filter(title=content.get('title')).first()
-                
+
                 if local_content:
                     vp = VisualizationProgress.objects.filter(user=request.user, content=local_content).first()
                     if vp:
@@ -301,14 +299,14 @@ def content_detail(request, ctype, cid):
 
                     is_favorite = Favorite.objects.filter(user=request.user, content=local_content).exists()
                     is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
-                    
+
                     content_in_lists = list(Watchlist.objects.filter(
                         user=request.user,
                         content=local_content
                     ).values_list('id', flat=True))
             except Exception:
                 pass
-        
+
         return render(request, 'pages/content_view.html', {
             'content': content,
             'user_status': user_status,
@@ -320,20 +318,20 @@ def content_detail(request, ctype, cid):
         content = next((item for item in all_content if item.get('id') == int(cid)), None)
     else:
         content = next((item for item in all_content if slugify(item.get('unique_id', '')) == slugify(cid)), None)
-        
+
         if not content:
             title_guess = cid.replace('-', ' ').replace('_', ' ').lower()
             content = next((item for item in all_content if title_guess in item.get('title', '').lower()), None)
-    
+
     if not content:
         return render(request, 'pages/main.html', status=404)
-    
+
     content['content_type'] = ctype
-    
+
     user_status = 'not_seen'
     is_favorite = False
     is_in_watchlist = False
-    
+
     if request.user.is_authenticated:
         try:
             if ctype == 'series':
@@ -346,30 +344,29 @@ def content_detail(request, ctype, cid):
                     title=content.get('title'),
                     year=content.get('year')
                 ).first()
-            
+
             if local_content:
-                # Verificar VisualizationProgress
+
                 vp = VisualizationProgress.objects.filter(user=request.user, content=local_content).first()
                 if vp:
                     if vp.completed:
                         user_status = 'completed'
                     elif vp.last_minute > 0:
                         user_status = 'watching'
-                
-                # Verificar Favorite
+
                 is_favorite = Favorite.objects.filter(user=request.user, content=local_content).exists()
-                
-                # Verificar Watchlist
+
                 is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
         except Exception as e:
             print(f"Error checking user status: {e}")
-    
+
     return render(request, 'pages/content_view.html', {
         'content': content,
         'user_status': user_status,
         'is_favorite': is_favorite,
         'is_in_watchlist': is_in_watchlist
     })
+
 
 def _safe_int(value, default=0):
     try:
@@ -391,9 +388,9 @@ def _resolve_content(ctype, cid):
 
     data = get_all_series() if ctype == 'series' else get_all_movies()
     api_content = next(
-        (item for item in data 
-         if slugify(f"{item.get('title', '').replace(' ', '-')}_{item.get('year', item.get('start_year', ''))}") 
-            == slugify(str(cid))),
+        (item for item in data
+         if slugify(f"{item.get('title', '').replace(' ', '-')}_{item.get('year', item.get('start_year', ''))}")
+         == slugify(str(cid))),
         None
     )
     if not api_content:
@@ -405,7 +402,7 @@ def _resolve_content(ctype, cid):
         return api_content, local_content
 
     defaults = {
-        'synopsis': api_content.get('synopsis')  or 'No synopsis available.',
+        'synopsis': api_content.get('synopsis') or 'No synopsis available.',
         'rating': _safe_float(api_content.get('rating')),
     }
     if ctype == 'series':
@@ -509,10 +506,10 @@ def create_list(request):
         try:
             data = json.loads(request.body)
             name = data.get('name', '').strip()
-            
+
             if not name:
                 return JsonResponse({'success': False, 'error': 'List name is required'})
-            
+
             wl, created = Watchlist.objects.get_or_create(
                 user=request.user,
                 name=name
@@ -539,13 +536,13 @@ def rename_list(request, list_id):
             wl = Watchlist.objects.get(id=list_id, user=request.user)
             data = json.loads(request.body)
             new_name = data.get('name', '').strip()
-            
+
             if not new_name:
                 return JsonResponse({'success': False, 'error': 'Name is required'})
-            
+
             if Watchlist.objects.filter(user=request.user, name=new_name).exclude(id=list_id).exists():
                 return JsonResponse({'success': False, 'error': 'A list with this name already exists'})
-            
+
             wl.name = new_name
             wl.save()
             return JsonResponse({'success': True})
@@ -610,10 +607,10 @@ def list_detail(request, list_id):
         wl = Watchlist.objects.get(id=list_id, user=request.user)
     except Watchlist.DoesNotExist:
         return render(request, 'pages/main.html', status=404)
-    
+
     movies = []
     series = []
-    
+
     for content in wl.content.select_related('movie', 'series', 'genre').all():
         if hasattr(content, 'movie') and content.movie:
             movie = content.movie
@@ -637,7 +634,7 @@ def list_detail(request, list_id):
                 'unique_id': f"{s.title.lower().replace(' ', '-')}_{s.start_year}",
                 'poster_url': s.poster_url or '',
             })
-    
+
     return render(request, 'pages/list_detail.html', {
         'list_name': wl.name,
         'list_id': wl.id,
@@ -646,11 +643,9 @@ def list_detail(request, list_id):
         'item_count': len(movies) + len(series),
     })
 
-    
+
 @login_required
 def personal_library(request):
-
-    # HELPERS
     def build_movie_item(movie, extra=None):
         data = {
             'title': movie.title,
@@ -682,8 +677,7 @@ def personal_library(request):
             data.update(extra)
 
         return data
-    
-    # FAVORITES
+
     favorites_qs = (
         Favorite.objects
         .filter(user=request.user)
@@ -716,7 +710,6 @@ def personal_library(request):
                 build_series_item(content.series)
             )
 
-    # CONTINUE WATCHING
     continue_qs = (
         VisualizationProgress.objects
         .filter(
@@ -746,7 +739,6 @@ def personal_library(request):
         if hasattr(content, 'movie'):
             movie = content.movie
 
-
             continue_watching_movies.append(
                 build_movie_item(movie, {
                     'last_minute': vp.last_minute,
@@ -763,7 +755,6 @@ def personal_library(request):
                 })
             )
 
-    # COMPLETED
     completed_qs = (
         VisualizationProgress.objects
         .filter(
@@ -799,10 +790,9 @@ def personal_library(request):
                 build_series_item(content.series)
             )
 
-    # WATCHLIST LISTS
     user_lists = []
     watchlists = Watchlist.objects.filter(user=request.user).prefetch_related('content').select_related()
-    
+
     for wl in watchlists:
         items = []
         for content in wl.content.all()[:3]:
@@ -810,14 +800,14 @@ def personal_library(request):
                 items.append({'title': content.movie.title})
             elif hasattr(content, 'series') and content.series:
                 items.append({'title': content.series.title})
-        
+
         user_lists.append({
             'id': wl.id,
             'name': wl.name,
             'item_count': wl.item_count,
             'preview_items': items
         })
-    
+
     lists_count = len(user_lists)
 
     return render(request, 'pages/personal_library.html', {
@@ -834,7 +824,7 @@ def personal_library(request):
 
         'completed_movies': completed_movies,
         'completed_series': completed_series,
-        
+
         'user_lists': user_lists,
     })
 
@@ -842,35 +832,35 @@ def personal_library(request):
 @login_required
 def main(request):
     user = request.user
-    
+
     favorite_genres = list(user.favorite_genres.values_list('name', flat=True))
-    
+
     recommended_by_genre = {}
     recommended_series_by_genre = {}
     if favorite_genres:
         recommended_by_genre = get_movies_by_genres(favorite_genres, min_total=5)
         recommended_series_by_genre = get_series_by_genres(favorite_genres, min_total=5)
-    
+
     trending = get_trending(limit=4)
-    
+
     watch_progress = VisualizationProgress.objects.filter(
-        user=user,  
+        user=user,
         completed=False
     ).select_related('content').order_by('-id')
 
     for progress in watch_progress:
         movie = Movie.objects.filter(id=progress.content.id).first()
-        progress.total_duration = movie.duration_minutes if movie else 90 
-        
+        progress.total_duration = movie.duration_minutes if movie else 90
+
         progress.minutes_left = max(0, progress.total_duration - progress.last_minute)
-        
+
         catalog_entry = Catalog.objects.filter(content=progress.content).first()
         progress.platform_name = catalog_entry.platform.platform_name if catalog_entry else "StreamSync"
-        
+
         progress.ctype = 'movie' if movie else 'series'
         progress.slug = slugify(f"{progress.content.title}_{movie.year if movie else progress.content.id}")
     has_watch_history = watch_progress.exists()
-    
+
     return render(request, 'pages/main.html', {
         'recommended_by_genre': recommended_by_genre,
         'recommended_series_by_genre': recommended_series_by_genre,
@@ -903,37 +893,37 @@ def login_redirect(request):
 @login_required
 def onboarding(request):
     from app.models import Country
-    
+
     if request.user.onboarding_completed:
         return redirect('app:main')
-    
+
     if request.method == 'POST':
         birth_date = request.POST.get('birth_date')
         country_id = request.POST.get('country')
         gender = request.POST.get('gender')
         errors = []
-        
+
         if not birth_date:
             errors.append('Date of birth is required')
         if not country_id:
             errors.append('Country is required')
-        
+
         if errors:
             countries = Country.objects.all()
             return render(request, 'registration/onboarding.html', {
                 'countries': countries,
                 'errors': errors
             })
-        
+
         user = request.user
         user.birth_date = birth_date
         user.country_id = country_id
         user.gender = gender if gender else None
         user.onboarding_completed = True
         user.save()
-        
+
         return redirect('app:onboarding_genres')
-    
+
     countries = Country.objects.all()
     return render(request, 'registration/onboarding.html', {
         'countries': countries
@@ -943,20 +933,20 @@ def onboarding(request):
 @login_required
 def onboarding_genres(request):
     from app.models import Genre
-    
+
     if not request.user.onboarding_completed:
         return redirect('app:onboarding')
-    
+
     if request.method == 'POST':
         selected_genres = request.POST.getlist('genres')
-        
+
         if len(selected_genres) < 3:
             genres = Genre.objects.all()
             return render(request, 'registration/onboarding_genres.html', {
                 'genres': genres,
                 'error': f'Select at least 3 genres (you selected {len(selected_genres)})'
             })
-        
+
         user = request.user
         user.favorite_genres.clear()
         for genre_id in selected_genres:
@@ -965,9 +955,9 @@ def onboarding_genres(request):
                 user.favorite_genres.add(genre)
             except Genre.DoesNotExist:
                 pass
-        
+
         return redirect('app:onboarding_complete')
-    
+
     genres = Genre.objects.all()
     return render(request, 'registration/onboarding_genres.html', {
         'genres': genres

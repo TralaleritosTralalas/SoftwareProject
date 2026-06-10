@@ -1,11 +1,7 @@
-// Watchlist Modal - Funciones para el modal de agregar a listas
-
-// ── Abrir/Cerrar Modal ──────────────────────────────────────────────────────
-
 function openWatchlistModal() {
     const modal = document.getElementById('watchlist-modal');
     if (!modal) return;
-    
+
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
     loadWatchlistLists();
@@ -14,21 +10,20 @@ function openWatchlistModal() {
 function closeWatchlistModal() {
     const modal = document.getElementById('watchlist-modal');
     if (!modal) return;
-    
+
     modal.classList.add('hidden');
     document.body.style.overflow = '';
     hideCreateListInput();
 }
 
-// ── Crear Lista (inline) ───────────────────────────────────────────────────
 
 function showCreateListInput() {
     const btn = document.getElementById('create-list-btn');
     const form = document.getElementById('create-list-form');
     const input = document.getElementById('new-list-name');
-    
+
     if (!btn || !form || !input) return;
-    
+
     btn.classList.add('hidden');
     form.classList.remove('hidden');
     input.focus();
@@ -38,27 +33,26 @@ function hideCreateListInput() {
     const btn = document.getElementById('create-list-btn');
     const form = document.getElementById('create-list-form');
     const input = document.getElementById('new-list-name');
-    
+
     if (!btn || !form || !input) return;
-    
+
     btn.classList.remove('hidden');
     form.classList.add('hidden');
     input.value = '';
 }
 
-// ── Cargar Listas ──────────────────────────────────────────────────────────
 
 function loadWatchlistLists() {
     const container = document.getElementById('watchlist-lists');
     if (!container) return;
-    
+
     container.innerHTML = `
         <div class="text-center py-8 text-text-secondary">
             <span class="material-symbols-outlined text-4xl mb-2 animate-spin">progress_activity</span>
             <p>Loading...</p>
         </div>
     `;
-    
+
     fetch('/api/watchlist/lists/')
         .then(r => r.json())
         .then(data => {
@@ -96,23 +90,21 @@ function loadWatchlistLists() {
         });
 }
 
-// ── Utilidades ──────────────────────────────────────────────────────────────
 
 function isContentInList(listId) {
     return window.contentInLists && window.contentInLists.includes(listId);
 }
 
-// ── Toast Notifications ────────────────────────────────────────────────────
 
 function showToast(message, type = 'success') {
     const toast = document.getElementById('watchlist-toast');
     const msgEl = document.getElementById('toast-message');
     const iconEl = document.getElementById('toast-icon');
     if (!toast || !msgEl || !iconEl) return;
-    
+
     msgEl.textContent = message;
     toast.classList.remove('hidden');
-    
+
     if (type === 'remove') {
         toast.classList.remove('bg-emerald-500');
         toast.classList.add('bg-red-500');
@@ -122,15 +114,14 @@ function showToast(message, type = 'success') {
         toast.classList.add('bg-emerald-500');
         iconEl.textContent = 'check_circle';
     }
-    
+
     toast.style.animation = 'slideDown 0.3s ease';
-    
+
     setTimeout(() => {
         toast.classList.add('hidden');
     }, 2500);
 }
 
-// ── Toggle Contenido en Lista ───────────────────────────────────────────────
 
 function toggleListContent(listId, btnElement) {
     const contentType = window.CONTENT_DATA ? window.CONTENT_DATA.type : null;
@@ -139,16 +130,16 @@ function toggleListContent(listId, btnElement) {
     const icon = btnElement.querySelector('.material-symbols-outlined');
     const nameEl = btnElement.querySelector('.text-white.font-semibold');
     const listName = nameEl ? nameEl.textContent : 'list';
-    
+
     if (!contentType || !contentId) {
         showToast('Cannot add - no content selected');
         return;
     }
-    
-    const url = isInList 
+
+    const url = isInList
         ? `/content/${contentType}/${contentId}/remove-from-list/${listId}/`
         : `/content/${contentType}/${contentId}/add-to-list/${listId}/`;
-    
+
     fetch(url, {
         method: 'POST',
         headers: {
@@ -183,19 +174,18 @@ function toggleListContent(listId, btnElement) {
     });
 }
 
-// ── Crear Nueva Lista ───────────────────────────────────────────────────────
 
 function createNewList() {
     const input = document.getElementById('new-list-name');
     if (!input) return;
-    
+
     const name = input.value.trim();
-    
+
     if (!name) {
         input.focus();
         return;
     }
-    
+
     fetch('/api/watchlist/lists/create/', {
         method: 'POST',
         headers: {
@@ -209,11 +199,11 @@ function createNewList() {
         if (data.success) {
             hideCreateListInput();
             showToast(`List "${name}" created!`);
-            
+
             if (window.CONTENT_DATA && window.CONTENT_DATA.type && window.CONTENT_DATA.id) {
                 const contentType = window.CONTENT_DATA.type;
                 const contentId = window.CONTENT_DATA.id;
-                
+
                 fetch(`/content/${contentType}/${contentId}/add-to-list/${data.list.id}/`, {
                     method: 'POST',
                     headers: {

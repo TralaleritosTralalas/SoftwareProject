@@ -3,41 +3,35 @@
 {% block title %}StreamSync – {{ content.title }}{% endblock %}
 
 {% block content %}
-<!-- Content Canvas -->
-<main class="relative min-h-screen mb-20 md:mb-0">
+    <main class="relative min-h-screen mb-20 md:mb-0">
 
-<!-- Backdrop Image with Gradient Overlay: Fixed positioning to fill viewport -->
-  <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden" style="height: 100vh; top: 0; left: 0; right: 0;">
-    {% if content.backdrop_url %}
-      <img src="{{ content.backdrop_url }}" 
-           alt="{{ content.title }} backdrop" 
-           class="w-full h-full object-cover object-top" />
-      <!-- Gradient overlays for readability -->
-      <div class="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-[#0f1419]/90 to-transparent"></div>
-      <div class="absolute inset-0 bg-gradient-to-r from-[#0f1419] via-transparent to-[#0f1419]/50"></div>
-    {% else %}
-      <!-- Fallback gradient if no backdrop -->
-      <div class="w-full h-full bg-gradient-to-br from-[#0f1419] via-[#1a2333] to-[#0f1419]"></div>
-    {% endif %}
-  </div>
+        <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden"
+             style="height: 100vh; top: 0; left: 0; right: 0;">
+            {% if content.backdrop_url %}
+                <img src="{{ content.backdrop_url }}"
+                     alt="{{ content.title }} backdrop"
+                     class="w-full h-full object-cover object-top"/>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-[#0f1419]/90 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-[#0f1419] via-transparent to-[#0f1419]/50"></div>
+            {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-[#0f1419] via-[#1a2333] to-[#0f1419]"></div>
+            {% endif %}
+        </div>
 
-  <!-- Detail Content -->
-  <div class="relative z-10 pt-64 px-8 md:px-24 pb-48 md:pb-32 max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-      <!-- Main Info Col -->
-      <div class="lg:col-span-8 space-y-12">
-        <section>
-          <h1 class="text-6xl md:text-8xl font-black tracking-tighter text-on-surface mb-6 leading-none">
-            {{ content.title }}
-          </h1>
-          <!-- Metadata Row -->
-          <div class="flex flex-wrap items-center gap-6 text-[#90a4cb] font-medium tracking-wide">
+        <div class="relative z-10 pt-64 px-8 md:px-24 pb-48 md:pb-32 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-8 space-y-12">
+                    <section>
+                        <h1 class="text-6xl md:text-8xl font-black tracking-tighter text-on-surface mb-6 leading-none">
+                            {{ content.title }}
+                        </h1>
+                        <div class="flex flex-wrap items-center gap-6 text-[#90a4cb] font-medium tracking-wide">
 
             <span class="flex items-center gap-2">
               <span class="material-symbols-outlined text-primary text-lg">calendar_today</span>
-              {{ content.year}}
+              {{ content.year }}
             </span>
-            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+              <span class="flex items-center gap-2 border-l border-white/10 pl-6">
               <span class="material-symbols-outlined text-primary text-lg">event</span>
               {% if content.start_year %}
                 {{ content.start_year }} - {{ content.end_year }}
@@ -46,9 +40,7 @@
               {% endif %}
             </span>
             
-            <!-- Duration for Movies / Seasons for TV Series -->
             {% if content.start_year %}
-              <!-- TV Series: Show total seasons -->
               {% if content.total_seasons %}
               <span class="flex items-center gap-2 border-l border-white/10 pl-6">
                 <span class="material-symbols-outlined text-primary text-lg">tv</span>
@@ -56,7 +48,6 @@
               </span>
               {% endif %}
             {% else %}
-              <!-- Movie: Show duration -->
               {% if content.duration_minutes %}
               <span class="flex items-center gap-2 border-l border-white/10 pl-6">
                 <span class="material-symbols-outlined text-primary text-lg">schedule</span>
@@ -67,34 +58,34 @@
             
             <span class="flex items-center gap-2 border-l border-white/10 pl-6">
               <span
-                class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
+                      class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
                 <span class="material-symbols-outlined text-amber-400 text-sm"
-                  style="font-variation-settings: 'FILL' 1;">star </span>
+                      style="font-variation-settings: 'FILL' 1;">star </span>
                 {{ content.rating }}
               </span>
             </span>
-            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
+                            <span class="flex items-center gap-2 border-l border-white/10 pl-6">
               <span
-                class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
+                      class="px-2 py-0.5 rounded-lg border border-primary text-primary text-xs font-bold uppercase tracking-widest">
                 {{ content.age_rating|default:"NR" }}
               </span>
             </span>
-            <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface">
+                            <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface">
               <span class="material-symbols-outlined text-primary text-lg">movie</span>
               {{ content.genre_name|default:"Unknown Genre" }}
             </span>
-            {% if content.start_year %}
-            <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface">
+                            {% if content.start_year %}
+                                <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface">
               TV Series
             </span>
-            {% else %}
-            <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface">
+                            {% else %}
+                                <span class="flex items-center gap-2 border-l border-white/10 pl-6 text-on-surface">
               Movie
             </span>
             {% endif %}
           </div>
         </section>
-        <!-- CTA Buttons -->
+
         <div class="flex flex-wrap gap-4 pt-4">
           {% for p in content.platforms_data %}
             {% if p.state == 'available' %}
@@ -112,7 +103,7 @@
             {% endif %}
           {% endfor %}
         </div>
-        <!-- Synopsis Section -->
+
         <section class="space-y-4 pt-8">
           <h2 class="text-xl font-bold tracking-tight text-white uppercase tracking-[0.2em] text-primary">Synopsis</h2>
           <p class="text-lg text-[#90a4cb] leading-relaxed max-w-3xl">
@@ -120,9 +111,9 @@
           </p>
         </section>
       </div>
-      <!-- Secondary Info Col -->
+
       <div class="lg:col-span-4 flex flex-col gap-8">
-        <!-- Director Card -->
+
         <div class="glass-panel border border-white/5 p-8 rounded-2xl">
           <h3 class="text-xs font-bold text-[#90a4cb] uppercase tracking-widest mb-6">Directed By</h3>
           <div class="flex items-center gap-5">
@@ -140,85 +131,43 @@
                 {{ content.director_nationality|default:"Unknown Nationality" }}
               </p>
             </div>
-          </div>
         </div>
-        
-        <!-- Action Buttons -->
-        <button id="watchlist-btn"
-          onclick="openWatchlistModal()"
-          class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 active:scale-95">
-          <span class="material-symbols-outlined text-blue-400" id="watchlist-icon">bookmark_border</span>
-          <span id="watchlist-text">Add to Watchlist</span>
+    </main>
+    <nav
+            class="md:hidden fixed bottom-0 w-full z-50 bg-[#1a2333]/60 backdrop-blur-md flex justify-around items-center py-4 px-6 border-t border-white/5">
+        <button class="flex flex-col items-center gap-1 text-[#256af4] font-bold">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+            <span class="text-[10px]">Home</span>
         </button>
-
-        <button id="favorite-btn"
-          class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-pink-500/30 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 hover:text-pink-300 active:scale-95">
-          <span class="material-symbols-outlined text-pink-400" id="favorite-icon">{% if is_favorite %}favorite{% else %}favorite_border{% endif %}</span>
-          <span id="favorite-text">{% if is_favorite %}Remove from Favorites{% else %}Add to Favorites{% endif %}</span>
+        <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
+            <span class="material-symbols-outlined">explore</span>
+            <span class="text-[10px]">Discovery</span>
         </button>
+        <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
+            <span class="material-symbols-outlined">bookmark</span>
+            <span class="text-[10px]">Watchlist</span>
+        </button>
+        <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
+            <span class="material-symbols-outlined">settings</span>
+            <span class="text-[10px]">Settings</span>
+        </button>
+    </nav>
 
-        <div class="relative">
-          <button id="status-btn" type="button"
-            class="w-full flex items-center justify-between gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-purple-500/30 bg-purple-500/10 text-purple-400 active:scale-95">
-            <span class="material-symbols-outlined text-purple-400" id="status-icon">visibility_off</span>
-            <span id="status-text">Not Seen</span>
-            <span class="material-symbols-outlined text-purple-400">expand_more</span>
-          </button>
-          <div id="status-dropdown" class="hidden absolute top-full left-0 w-full mt-2 bg-surface-dark border border-white/10 rounded-xl overflow-hidden z-50 shadow-xl">
-            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="not_seen">
-              <span class="material-symbols-outlined text-sm">visibility_off</span>
-              Not Seen
-            </button>
-            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="watching">
-              <span class="material-symbols-outlined text-sm">play_circle</span>
-              Watching
-            </button>
-            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="completed">
-              <span class="material-symbols-outlined text-sm">check_circle</span>
-              Completed
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</main>
-<!-- BottomNavBar (Shared Component - Mobile Only) -->
-<nav
-  class="md:hidden fixed bottom-0 w-full z-50 bg-[#1a2333]/60 backdrop-blur-md flex justify-around items-center py-4 px-6 border-t border-white/5">
-  <button class="flex flex-col items-center gap-1 text-[#256af4] font-bold">
-    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
-    <span class="text-[10px]">Home</span>
-  </button>
-  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
-    <span class="material-symbols-outlined">explore</span>
-    <span class="text-[10px]">Discovery</span>
-  </button>
-  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
-    <span class="material-symbols-outlined">bookmark</span>
-    <span class="text-[10px]">Watchlist</span>
-  </button>
-  <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
-    <span class="material-symbols-outlined">settings</span>
-    <span class="text-[10px]">Settings</span>
-  </button>
-</nav>
-
-{% include "components/watchlist_modal.html" %}
+    {% include "components/watchlist_modal.html" %}
 {% endblock %}
 
-{% block extra_scripts %} 
+{% block extra_scripts %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/watchlist.css' %}">
     <script src="{% static 'js/watchlist-utils.js' %}"></script>
     <script src="{% static 'js/watchlist-modal.js' %}"></script>
     <script>
-      window.CONTENT_DATA = {
-        id: '{{ content.unique_id|default:content.id }}',
-        type: '{{ content.content_type|default:"movie" }}',
-        userStatus: '{{ user_status|default:"not_seen" }}'
-      };
-      window.contentInLists = {% firstof content_in_lists "[]" %};
+        window.CONTENT_DATA = {
+            id: '{{ content.unique_id|default:content.id }}',
+            type: '{{ content.content_type|default:"movie" }}',
+            userStatus: '{{ user_status|default:"not_seen" }}'
+        };
+        window.contentInLists = {% firstof content_in_lists "[]" %};
     </script>
     <script src="{% static 'js/content.js' %}"></script>
 {% endblock %}
