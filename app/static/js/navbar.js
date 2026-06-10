@@ -76,7 +76,6 @@ function markAllNotificationsSeen() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile menu toggle
     const mobileMenuBtn = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
 
@@ -86,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // User dropdown toggle
     const userMenuBtn = document.getElementById('user-menu-button');
     const userDropdown = document.getElementById('user-dropdown');
 

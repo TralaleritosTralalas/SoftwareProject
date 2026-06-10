@@ -6,7 +6,7 @@
         class="bg-background-dark border-slate-700 rounded-lg text-sm text-white focus:ring-primary">
         <option value="">{% trans "All Platforms" %}</option>
         {% for p in platforms %}
-        <option value="{{ p }}" {% if selected_platform == p %}selected{% endif %}>{{ p }}</option>
+            <option value="{{ p }}" {% if selected_platform == p %}selected{% endif %}>{{ p }}</option>
         {% endfor %}
     </select>
 
@@ -14,7 +14,7 @@
         class="bg-background-dark border-slate-700 rounded-lg text-sm text-white focus:ring-primary">
         <option value="">{% trans "All Genres" %}</option>
         {% for g in genres %}
-        <option value="{{ g }}" {% if selected_genre == g %}selected{% endif %}>{{ g }}</option>
+            <option value="{{ g }}" {% if selected_genre == g %}selected{% endif %}>{{ g }}</option>
         {% endfor %}
     </select>
 

@@ -35,7 +35,6 @@ def extract_comments(file_path):
         c = re.sub(r'#|//|/\*|\*/|"""|\'\'\'|<!--|-->', '', c)
         c = re.sub(r'\s+', ' ', c).strip()
 
-        # ignorar comentarios muy cortos
         if len(c.split()) >= 8:
             clean_comments.append(c)
 

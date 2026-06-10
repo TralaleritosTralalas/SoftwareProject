@@ -8,7 +8,6 @@ from typing import Dict, Optional, List, Any
 CRITICAL_THRESHOLD = 7
 WARNING_THRESHOLD = 3
 
-# ── JavaScript / TypeScript support ──────────────────────────────────────────
 JS_EXTENSIONS = {'.js', '.ts', '.mjs', '.tsx', '.jsx', '.cjs'}
 JS_CONTROL_RE = re.compile(r'\b(if|else\s+if|for|while|switch|do)\b')
 
@@ -44,10 +43,10 @@ def get_metrics_js(filepath: Path) -> Optional[Dict[str, Any]]:
                 brace_depth += 1
                 if has_control:
                     depths.append(brace_depth)
-                    has_control = False  # record once per statement
+                    has_control = False
             elif ch == '}':
                 brace_depth = max(0, brace_depth - 1)
-        # braceless single-line if/for (no `{` on this line)
+
         if has_control and '{' not in line:
             depths.append(brace_depth + 1)
 
@@ -57,7 +56,6 @@ def get_metrics_js(filepath: Path) -> Optional[Dict[str, Any]]:
     max_d = max(depths)
     avg_d = round(sum(depths) / len(depths), 1)
     return {"avg": avg_d, "max": max_d, "status_code": get_status_code(max_d)}
-# ─────────────────────────────────────────────────────────────────────────────
 
 
 class NestingVisitor(ast.NodeVisitor):

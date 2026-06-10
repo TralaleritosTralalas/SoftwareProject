@@ -68,11 +68,9 @@ class Command(BaseCommand):
                     if results:
                         tmdb_movie = results[0]
                         
-                        # Save poster URL
                         if tmdb_movie.get('poster_path'):
                             movie.poster_url = f"{self.TMDB_IMAGE_BASE_URL}{tmdb_movie['poster_path']}"
                         
-                        # Save backdrop URL
                         if tmdb_movie.get('backdrop_path'):
                             movie.backdrop_url = f"{self.TMDB_BACKDROP_BASE_URL}{tmdb_movie['backdrop_path']}"
                         
@@ -84,7 +82,6 @@ class Command(BaseCommand):
                 else:
                     self.stdout.write(self.style.ERROR(f'  ✗ TMDB API error {response.status_code}'))
                 
-                # Rate limiting: TMDB allows 40 requests per 10 seconds
                 sleep(0.25)
                 
             except Exception as e:
@@ -124,11 +121,9 @@ class Command(BaseCommand):
                     if results:
                         tmdb_serie = results[0]
                         
-                        # Save poster URL
                         if tmdb_serie.get('poster_path'):
                             serie.poster_url = f"{self.TMDB_IMAGE_BASE_URL}{tmdb_serie['poster_path']}"
                         
-                        # Save backdrop URL
                         if tmdb_serie.get('backdrop_path'):
                             serie.backdrop_url = f"{self.TMDB_BACKDROP_BASE_URL}{tmdb_serie['backdrop_path']}"
                         

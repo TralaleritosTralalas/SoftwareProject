@@ -11,9 +11,8 @@
 
 const { execSync } = require('child_process')
 const fs = require('fs')
-const path = require('path') // Añadido aquí para uso global
+const path = require('path')
 
-// Routes defined here are intentionally public — skip them
 const PUBLIC_PATHS = new Set([
   '/signin',
   '/signup',
@@ -27,13 +26,11 @@ const PUBLIC_PATHS = new Set([
   '/:pathMatch(.*)*',
 ])
 
-// Route files that are expected to define protected routes
 const PROTECTED_MODULES = [
   'src/router/modules/admin.js',
   'src/router/modules/superAdmin.js',
 ]
 
-// Discover UX-module routers dynamically
 let uxRouters = []
 try {
   uxRouters = execSync('find src/ux -name "router.js" 2>/dev/null')
@@ -59,17 +56,14 @@ for (const file of allFiles) {
   const content = fs.readFileSync(file, 'utf8')
   const isProtectedModule = PROTECTED_MODULES.includes(file)
 
-  // Extract each route block heuristically by finding `path:` declarations
   const pathMatches = [...content.matchAll(/path:\s*['"`]([^'"`]+)['"`]/g)]
 
   for (const match of pathMatches) {
     const routePath = match[1]
 
     if (PUBLIC_PATHS.has(routePath)) continue
-    // Skip dynamic token segments (e.g. testview/:id/:token?)
     if (routePath.includes(':token')) continue
 
-    // Inspect surrounding context (~400 chars) for authorization metadata
     const contextStart = Math.max(0, match.index - 50)
     const contextEnd = Math.min(content.length, match.index + 400)
     const context = content.slice(contextStart, contextEnd)
@@ -79,7 +73,6 @@ for (const file of allFiles) {
 
     if (!hasAuthorizeMeta && !hasMetaBlock) {
       if (isProtectedModule) {
-        // Protected modules should always declare authorize
         console.log(
           `::error file=${file}::Route '${routePath}' in a protected module has no 'authorize' meta — unauthorized access may be possible`,
         )
