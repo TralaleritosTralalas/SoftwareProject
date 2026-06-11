@@ -85,6 +85,9 @@ def home(request):
 @login_required
 def user_settings(request):
     countries = Country.objects.all()
+    completed_count = VisualizationProgress.objects.filter(
+        user=request.user, completed=True
+    ).count()
 
     if request.method == 'POST':
         user = request.user
@@ -113,6 +116,7 @@ def user_settings(request):
                 return render(request, 'pages/user_settings.html', {
                     'user': user,
                     'countries': countries,
+                    'completed_count': completed_count,
                     'password_errors': password_errors
                 })
 
@@ -123,8 +127,16 @@ def user_settings(request):
             return render(request, 'pages/user_settings.html', {
                 'user': user,
                 'countries': countries,
+                'completed_count': completed_count,
                 'password_success': 'Password changed successfully!'
             })
+
+        if request.POST.get('action') == 'upload_avatar':
+            if request.FILES.get('profile_picture'):
+                user.profile_picture = request.FILES['profile_picture']
+                user.save()
+                return JsonResponse({'success': True, 'url': user.profile_picture.url})
+            return JsonResponse({'success': False, 'error': 'No file provided'}, status=400)
 
         username = request.POST.get('username', '').strip()
         first_name = request.POST.get('first_name', '').strip()
@@ -150,6 +162,7 @@ def user_settings(request):
             return render(request, 'pages/user_settings.html', {
                 'user': user,
                 'countries': countries,
+                'completed_count': completed_count,
                 'errors': errors
             })
 
@@ -172,12 +185,14 @@ def user_settings(request):
         return render(request, 'pages/user_settings.html', {
             'user': user,
             'countries': countries,
+            'completed_count': completed_count,
             'success': 'Profile updated successfully!'
         })
 
     return render(request, 'pages/user_settings.html', {
         'user': request.user,
-        'countries': countries
+        'countries': countries,
+        'completed_count': completed_count
     })
 
 @login_required
@@ -331,9 +346,6 @@ def content_detail(request, ctype, cid):
         all_content = get_all_movies()
     
     content = None
-    
-    if content:
-        content['content_type'] = ctype
 
         user_status = 'not_seen'
         is_favorite = False
@@ -416,6 +428,11 @@ def content_detail(request, ctype, cid):
 
                 # Verificar Watchlist
                 is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
+                
+                content_in_lists = list(Watchlist.objects.filter(
+                    user=request.user,
+                    content=local_content
+                ).values_list('id', flat=True))
         except Exception as e:
             print(f"Error checking user status: {e}")
 
@@ -423,7 +440,8 @@ def content_detail(request, ctype, cid):
         'content': content,
         'user_status': user_status,
         'is_favorite': is_favorite,
-        'is_in_watchlist': is_in_watchlist
+        'is_in_watchlist': is_in_watchlist,
+        'content_in_lists': content_in_lists if 'content_in_lists' in locals() else []
     })
 
 def _safe_int(value, default=0):
@@ -1278,4 +1296,14 @@ def manager_dashboard(request):
         'top_content_labels': json.dumps(top_content_labels),
         'top_content_values': json.dumps(top_content_values),
         'filters': filters_data
+    })
+
+
+def redirect_simulation(request):
+    platform_name = request.GET.get('platform', 'External Platform')
+    content_title = request.GET.get('title', 'Selected Content')
+
+    return render(request, 'pages/redirect_simulation.html', {
+        'platform_name': platform_name,
+        'content_title': content_title,
     })

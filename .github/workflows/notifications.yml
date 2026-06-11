@@ -1,0 +1,42 @@
+name: Send Notifications
+
+on:
+  schedule:
+    - cron: "0 6 */2 * *"
+  workflow_dispatch:
+
+jobs:
+  send-notifications:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dependencies
+        run: uv sync 
+
+      - name: Run migrations
+        run: uv run python manage.py migrate
+
+      - name: Notify new favorite-genre content
+        run: uv run python manage.py notify_favorite_genre_content
+
+      - name: Notify catalog deletions
+        run: uv run python manage.py check_catalog_deletions
+
+      - name: Commit DB changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add db.sqlite3
+          git diff --staged --quiet || git commit -m "chore: update notifications from scheduled workflow"
+          git push

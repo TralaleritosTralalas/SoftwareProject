@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from app.tech_admin import tech_admin_site
+from app import views_i18n
 from django.conf.urls.i18n import i18n_patterns 
 
 
@@ -29,6 +30,7 @@ urlpatterns = [
 ]
 
 urlpatterns = [
+    path('i18n/setlang/', views_i18n.set_language, name='set_language'),
     path('i18n/', include('django.conf.urls.i18n')),
 ]
 
