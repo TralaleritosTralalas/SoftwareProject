@@ -90,6 +90,9 @@ def home(request):
 @login_required
 def user_settings(request):
     countries = Country.objects.all()
+    completed_count = VisualizationProgress.objects.filter(
+        user=request.user, completed=True
+    ).count()
 
     if request.method == 'POST':
         user = request.user
@@ -118,6 +121,7 @@ def user_settings(request):
                 return render(request, 'pages/user_settings.html', {
                     'user': user,
                     'countries': countries,
+                    'completed_count': completed_count,
                     'password_errors': password_errors
                 })
 
@@ -128,8 +132,16 @@ def user_settings(request):
             return render(request, 'pages/user_settings.html', {
                 'user': user,
                 'countries': countries,
+                'completed_count': completed_count,
                 'password_success': 'Password changed successfully!'
             })
+
+        if request.POST.get('action') == 'upload_avatar':
+            if request.FILES.get('profile_picture'):
+                user.profile_picture = request.FILES['profile_picture']
+                user.save()
+                return JsonResponse({'success': True, 'url': user.profile_picture.url})
+            return JsonResponse({'success': False, 'error': 'No file provided'}, status=400)
 
         username = request.POST.get('username', '').strip()
         first_name = request.POST.get('first_name', '').strip()
@@ -155,6 +167,7 @@ def user_settings(request):
             return render(request, 'pages/user_settings.html', {
                 'user': user,
                 'countries': countries,
+                'completed_count': completed_count,
                 'errors': errors
             })
 
@@ -177,12 +190,14 @@ def user_settings(request):
         return render(request, 'pages/user_settings.html', {
             'user': user,
             'countries': countries,
+            'completed_count': completed_count,
             'success': 'Profile updated successfully!'
         })
 
     return render(request, 'pages/user_settings.html', {
         'user': request.user,
-        'countries': countries
+        'countries': countries,
+        'completed_count': completed_count
     })
 
 
@@ -342,45 +357,6 @@ def content_detail(request, ctype, cid):
 
     content = None
 
-    if content:
-        content['content_type'] = ctype
-
-        user_status = 'not_seen'
-        is_favorite = False
-        is_in_watchlist = False
-
-        if request.user.is_authenticated:
-            try:
-                if ctype == 'series':
-                    local_content = Series.objects.filter(title=content.get('title')).first()
-                else:
-                    local_content = Movie.objects.filter(title=content.get('title')).first()
-
-                if local_content:
-                    vp = VisualizationProgress.objects.filter(user=request.user, content=local_content).first()
-                    if vp:
-                        if vp.completed:
-                            user_status = 'completed'
-                        elif vp.last_minute > 0:
-                            user_status = 'watching'
-
-                    is_favorite = Favorite.objects.filter(user=request.user, content=local_content).exists()
-                    is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
-
-                    content_in_lists = list(Watchlist.objects.filter(
-                        user=request.user,
-                        content=local_content
-                    ).values_list('id', flat=True))
-            except Exception:
-                pass
-
-        return render(request, 'pages/content_view.html', {
-            'content': content,
-            'user_status': user_status,
-            'is_favorite': is_favorite,
-            'is_in_watchlist': is_in_watchlist,
-            'content_in_lists': content_in_lists if 'content_in_lists' in locals() else []
-        })
     if cid.isdigit():
         content = next((item for item in all_content if item.get('id') == int(cid)), None)
     else:
@@ -426,6 +402,11 @@ def content_detail(request, ctype, cid):
 
                 # Verificar Watchlist
                 is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
+
+                content_in_lists = list(Watchlist.objects.filter(
+                    user=request.user,
+                    content=local_content
+                ).values_list('id', flat=True))
         except Exception as e:
             print(f"Error checking user status: {e}")
 
@@ -433,7 +414,8 @@ def content_detail(request, ctype, cid):
         'content': content,
         'user_status': user_status,
         'is_favorite': is_favorite,
-        'is_in_watchlist': is_in_watchlist
+        'is_in_watchlist': is_in_watchlist,
+        'content_in_lists': content_in_lists if 'content_in_lists' in locals() else []
     })
 
 
