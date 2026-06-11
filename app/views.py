@@ -510,15 +510,14 @@ def update_status(request, ctype, cid):
 
             if status == 'watching':
                 today = timezone.now().date()
-                catalog_item = local_content.catalog.first() if hasattr(local_content, 'catalog') else None
+                catalog_item = local_content.catalog_set.first() if hasattr(local_content, 'catalog_set') else None
                 platform = catalog_item.platform if catalog_item else None
 
                 if platform:
                     stats, _ = Statistics.objects.get_or_create(
                         platform=platform,
                         week=today,
-                        content=local_content,
-                        defaults={'total_clicks': 0, 'total_favorites': 0, 'interaction_date': today}
+                        defaults={'total_clicks': 0, 'total_favorites': 0, 'content': local_content, 'interaction_date': today}
                     )
                     stats.total_clicks += 1
                     stats.save()
@@ -544,14 +543,14 @@ def toggle_favorite(request, ctype, cid):
                 return JsonResponse({'success': False, 'error': 'Content not found'})
 
             today = timezone.now().date()
-            catalog_item = local_content.catalog.first() if hasattr(local_content, 'catalog') else None
+            catalog_item = local_content.catalog_set.first() if hasattr(local_content, 'catalog_set') else None
             platform = catalog_item.platform if catalog_item else None
 
             favorite = Favorite.objects.filter(user=request.user, content=local_content).first()
             if favorite:
                 favorite.delete()
                 if platform:
-                    stats = Statistics.objects.filter(platform=platform, week=today, content=local_content).first()
+                    stats = Statistics.objects.filter(platform=platform, week=today).first()
                     if stats and stats.total_favorites > 0:
                         stats.total_favorites -= 1
                         stats.save()
@@ -562,8 +561,7 @@ def toggle_favorite(request, ctype, cid):
                     stats, _ = Statistics.objects.get_or_create(
                         platform=platform,
                         week=today,
-                        content=local_content,
-                        defaults={'total_clicks': 0, 'total_favorites': 0, 'interaction_date': today}
+                        defaults={'total_clicks': 0, 'total_favorites': 0, 'content': local_content, 'interaction_date': today}
                     )
                     stats.total_favorites += 1
                     stats.save()

@@ -134,7 +134,7 @@
                 <div class="group bg-slate-900/40 border border-slate-800/50 p-8 rounded-3xl hover:bg-slate-800/40 hover:border-primary/30 transition-all hover:-translate-y-1 min-w-0">
                     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-primary transition-colors">{% trans "Top Platform" %}</p>
                     <h3 class="text-2xl font-black text-primary uppercase leading-tight truncate">
-                        {% if top_platform %}{{ top_platform.platform__platform_name }}{% elif platform %}{{ platform.platform_name }}{% else %}—{% endif %}
+                        {% if top_platform %}{{ top_platform }}{% elif platform %}{{ platform.platform_name }}{% else %}—{% endif %}
                         <span class="text-[10px] font-black text-slate-600 uppercase tracking-widest block mt-1">{% trans "Highest Clicks" %}</span>
                     </h3>
                 </div>
