@@ -1,4 +1,5 @@
 {% extends "base/initial.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="min-h-[calc(100vh-80px)] bg-slate-50 dark:bg-background-dark px-4 py-8">
@@ -8,33 +9,33 @@
             <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-2xl mb-4">
                 <span class="material-symbols-outlined text-primary text-4xl">support_agent</span>
             </div>
-            <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Help Center</h1>
-            <p class="text-slate-500 dark:text-slate-400">Find answers to your questions or contact our support team.</p>
+            <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">{% trans "Help Center" %}</h1>
+            <p class="text-slate-500 dark:text-slate-400">{% trans "Find answers to your questions or contact our support team." %}</p>
         </div>
 
         <div class="space-y-8">
             <div class="border-l-4 border-primary/30 pl-6 py-1">
                 <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-sm">lock_reset</span>
-                    How do I reset my password?
+                    {% trans "How do I reset my password?" %}
                 </h3>
-                <p class="text-slate-600 dark:text-slate-400">Go to the login page and click on "Forgot Password?". We will send you a reset link to your registered email address. Follow the instructions in the email to set a new secure password.</p>
+                <p class="text-slate-600 dark:text-slate-400">{% trans "Go to the login page and click on 'Forgot Password?'. We will send you a reset link to your registered email address. Follow the instructions in the email to set a new secure password." %}</p>
             </div>
 
             <div class="border-l-4 border-primary/30 pl-6 py-1">
                 <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-sm">favorite</span>
-                    How does the Favorites list work?
+                    {% trans "How does the Favorites list work?" %}
                 </h3>
-                <p class="text-slate-600 dark:text-slate-400">When browsing the content catalog, click the heart icon on any movie or series to add it to your Personal Library. You can view all your saved content in the "My Library" tab at any time.</p>
+                <p class="text-slate-600 dark:text-slate-400">{% trans "When browsing the content catalog, click the heart icon on any movie or series to add it to your Personal Library. You can view all your saved content in the 'My Library' tab at any time." %}</p>
             </div>
 
             <div class="mt-10 bg-blue-50 dark:bg-primary/5 p-8 rounded-2xl text-center border border-blue-100 dark:border-primary/20 shadow-inner">
-                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Still need help?</h3>
-                <p class="text-slate-600 dark:text-slate-400 mb-6">Our support team is available 24/7 to assist you with any platform issues.</p>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">{% trans "Still need help?" %}</h3>
+                <p class="text-slate-600 dark:text-slate-400 mb-6">{% trans "Our support team is available 24/7 to assist you with any platform issues." %}</p>
                 <a href="mailto:natpublispam@gmail.com" class="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-primary/20">
                     <span class="material-symbols-outlined">mail</span>
-                    Contact Support
+                    {% trans "Contact Support" %}
                 </a>
             </div>
         </div>
@@ -42,7 +43,7 @@
         <div class="mt-3 pt-8 border-t border-slate-100 dark:border-slate-800 text-center">
             <button onclick="window.history.back()" class="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold py-3 px-10 rounded-xl hover:scale-105 transition-all shadow-lg shadow-primary/20 cursor-pointer">
                 <span class="material-symbols-outlined">arrow_back</span>
-                Go Back
+                {% trans "Go Back" %}
             </button>
         </div>
     </div>

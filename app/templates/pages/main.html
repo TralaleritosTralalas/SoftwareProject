@@ -1,12 +1,13 @@
 {% extends "base/base.html" %}
+{% load i18n %}
 
-{% block title %}StreamSync Dashboard{% endblock %}
+{% block title %}StreamSync {% trans "Dashboard" %}{% endblock %}
 
 {% block content %}
 
 <section class="mb-12">
     {% if has_watch_history %}
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Continue Watching</h2>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">{% trans "Continue Watching" %}</h2>
         
         <div class="flex gap-6 overflow-x-auto no-scrollbar pb-6 snap-x snap-mandatory">
             {% for progress in watch_progress %}
@@ -23,7 +24,7 @@
                             <span class="bg-primary/20 text-primary text-[10px] font-black px-2 py-1 rounded-md tracking-widest uppercase border border-primary/30">
                                 {{ progress.platform_name }}
                             </span>
-                            <span class="text-white/60 text-xs font-bold">{{ progress.minutes_left }}m left</span>
+                            <span class="text-white/60 text-xs font-bold">{% blocktrans with minutes=progress.minutes_left %}{{ minutes }}m left{% endblocktrans %}</span>
                         </div>
                         {% widthratio progress.last_minute progress.total_duration 100 as percentage %}
                         <span class="text-primary text-xs font-black">{{ percentage }}%</span>
@@ -37,7 +38,7 @@
                         <a href="{% url 'app:content_detail' progress.ctype progress.slug %}?t={{ progress.last_minute }}" 
                            class="flex items-center gap-2 bg-white text-black hover:bg-primary hover:text-white px-6 py-3 rounded-xl font-black text-sm transition-all transform active:scale-95 shadow-xl">
                             <span class="material-symbols-outlined fill text-[20px]">play_arrow</span>
-                            <span>RESUME</span>
+                            <span>{% trans "RESUME" %}</span>
                         </a>
                     </div>
 
@@ -52,10 +53,10 @@
     {% else %}
         <div class="flex flex-col items-center justify-center py-16 bg-slate-100 dark:bg-surface-dark rounded-2xl">
             <span class="material-symbols-outlined text-6xl text-slate-400 mb-4">movie_filter</span>
-            <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">Oops, you're not watching anything yet</h3>
-            <p class="text-slate-500 dark:text-slate-400 mb-6">Take a look at our catalog!</p>
+            <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">{% trans "Oops, you're not watching anything yet" %}</h3>
+            <p class="text-slate-500 dark:text-slate-400 mb-6">{% trans "Take a look at our catalog!" %}</p>
             <a href="{% url 'app:catalog' %}" class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg font-semibold transition-all">
-                Browse Catalog
+                {% trans "Browse Catalog" %}
             </a>
         </div>
     {% endif %}
@@ -64,7 +65,7 @@
 <!-- Series Recommended for You -->
 {% if recommended_series_by_genre %}
 <section class="mb-12">
-    <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Series Recommended for You</h2>
+    <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">{% trans "Series Recommended for You" %}</h2>
         <div class="relative w-full">
         <div class="flex gap-6 overflow-x-auto overflow-y-visible pb-4" 
                 style="scrollbar-width: thin; 
@@ -88,7 +89,7 @@
                     </div>
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                         <a href="{% url 'app:content_detail' 'series' serie.unique_id %}" class="bg-primary text-white text-center text-xs font-bold py-2 rounded-lg hover:bg-primary/80 block">
-                            Watch now
+                            {% trans "Watch now" %}
                         </a>
                     </div>
                 </div>
@@ -118,7 +119,7 @@
 <!-- Movies Recommended for You -->
 {% if recommended_by_genre %}
 <section class="mb-12 w-full">
-    <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Movies Recommended for You</h2>
+    <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">{% trans "Movies Recommended for You" %}</h2>
     
     <!-- Contenedor del scroll horizontal -->
     <div class="relative w-full">
@@ -152,7 +153,7 @@
                         <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                             <a href="{% url 'app:content_detail' 'movie' movie.unique_id %}" 
                                class="bg-primary text-white text-center text-xs font-bold py-2 rounded-lg hover:bg-primary/80 block">
-                                Watch now
+                                {% trans "Watch now" %}
                             </a>
                         </div>
                     </div>
@@ -184,12 +185,12 @@
 
 {% if not recommended_by_genre and not recommended_series_by_genre %}
 <section class="mb-12">
-    <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Recommended for You</h2>
+    <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">{% trans "Recommended for You" %}</h2>
     <div class="flex flex-col items-center justify-center py-12 bg-slate-100 dark:bg-surface-dark rounded-2xl">
         <span class="material-symbols-outlined text-5xl text-slate-400 mb-4">genre</span>
-        <p class="text-slate-500 dark:text-slate-400">Complete your profile to get personalized recommendations</p>
+        <p class="text-slate-500 dark:text-slate-400">{% trans "Complete your profile to get personalized recommendations" %}</p>
         <a href="{% url 'app:onboarding_genres' %}" class="mt-4 bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg font-semibold transition-all">
-            Select Genres
+            {% trans "Select Genres" %}
         </a>
     </div>
 </section>
@@ -198,7 +199,7 @@
 {% if trending %}
 <section class="mb-12">
     <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Trending Now</h2>
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{% trans "Trending Now" %}</h2>
     </div>
     <div class="flex gap-4 overflow-x-auto no-scrollbar pb-4">
         {% for item in trending %}
@@ -230,8 +231,8 @@
 <!-- New Releases (List Layout) -->
 <section>
 <div class="flex items-center justify-between mb-6">
-<h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">New Releases</h2>
-<a class="text-primary text-sm font-semibold hover:underline" href="#">View All</a>
+<h2 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{% trans "New Releases" %}</h2>
+<a class="text-primary text-sm font-semibold hover:underline" href="#">{% trans "View All" %}</a>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 <!-- New Release Item 1 -->
@@ -242,9 +243,9 @@
 <div class="flex flex-col justify-center flex-1 min-w-0">
 <div class="flex justify-between items-start mb-1">
 <h4 class="text-slate-900 dark:text-white font-semibold truncate pr-2">The Witcher</h4>
-<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">Today</span>
+<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">{% trans "Today" %}</span>
 </div>
-<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Season 3 • Episode 1</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">{% trans "Season 3 • Episode 1" %}</p>
 <div class="flex items-center gap-2">
 <span class="bg-[#E50914]/20 text-[#E50914] text-[10px] font-bold px-2 py-0.5 rounded border border-[#E50914]/20 uppercase">Netflix</span>
 <span class="text-xs text-slate-400">• Fantasy</span>
@@ -262,9 +263,9 @@
 <div class="flex flex-col justify-center flex-1 min-w-0">
 <div class="flex justify-between items-start mb-1">
 <h4 class="text-slate-900 dark:text-white font-semibold truncate pr-2">Black Mirror</h4>
-<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">Yesterday</span>
+<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">{% trans "Yesterday" %}</span>
 </div>
-<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Season 6 • Full Release</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">{% trans "Season 6 • Full Release" %}</p>
 <div class="flex items-center gap-2">
 <span class="bg-[#E50914]/20 text-[#E50914] text-[10px] font-bold px-2 py-0.5 rounded border border-[#E50914]/20 uppercase">Netflix</span>
 <span class="text-xs text-slate-400">• Sci-Fi Anthology</span>
@@ -282,9 +283,9 @@
 <div class="flex flex-col justify-center flex-1 min-w-0">
 <div class="flex justify-between items-start mb-1">
 <h4 class="text-slate-900 dark:text-white font-semibold truncate pr-2">Ted Lasso</h4>
-<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">2 days ago</span>
+<span class="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">{% trans "2 days ago" %}</span>
 </div>
-<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Season 3 • Finale</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">{% trans "Season 3 • Finale" %}</p>
 <div class="flex items-center gap-2">
 <span class="bg-slate-200 dark:bg-white/20 text-slate-700 dark:text-white text-[10px] font-bold px-2 py-0.5 rounded border border-slate-300 dark:border-white/20 uppercase">Apple TV+</span>
 <span class="text-xs text-slate-400">• Comedy</span>

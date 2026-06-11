@@ -1,4 +1,6 @@
-{% extends "base/initial.html" %} {% block content %}
+{% extends "base/initial.html" %}
+{% load i18n %}
+{% block content %}
 <div class="flex items-center justify-center min-h-[calc(100vh-80px)] bg-slate-50 dark:bg-background-dark px-4 py-8">
     <div class="max-w-lg w-full text-center">
         <div class="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -7,11 +9,11 @@
             </svg>
         </div>
         
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">You're All Set!</h2>
-        <p class="text-slate-500 dark:text-slate-400 mb-8">Your profile has been created successfully. Time to start watching!</p>
+        <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">{% trans "You're All Set!" %}</h2>
+        <p class="text-slate-500 dark:text-slate-400 mb-8">{% trans "Your profile has been created successfully. Time to start watching!" %}</p>
         
         <a href="{% url 'app:main' %}" class="inline-block bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-primary/20">
-            Go to Main
+            {% trans "Go to Main" %}
         </a>
     </div>
 </div>

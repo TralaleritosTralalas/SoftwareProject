@@ -1,0 +1,1855 @@
+# StreamSync Translation File - Spanish.
+# Copyright (C) 2026 StreamSync Inc.
+# This file is distributed under the same license as the StreamSync package.
+# Toni <toni@github.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: StreamSync 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-11 11:34+0000\n"
+"PO-Revision-Date: 2026-06-11 10:48+0200\n"
+"Last-Translator: Toni <toni@github.com>\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: app/templates/admin/tech.html:13
+msgid "System Administration"
+msgstr "Administración del Sistema"
+
+#: app/templates/admin/tech.html:18
+msgid "Monitoring system integrity & access control."
+msgstr "Monitoreando la integridad del sistema y el control de acceso."
+
+#: app/templates/admin/tech.html:23
+msgid "Search users by name or email..."
+msgstr "Buscar usuarios por nombre o email..."
+
+#: app/templates/admin/tech.html:31
+#: app/templates/pages/direction_dashboard.html:20
+#: app/templates/pages/manager_dashboard.html:19
+msgid "Filters"
+msgstr "Filtros"
+
+#: app/templates/admin/tech.html:42
+msgid "All Roles"
+msgstr "Todos los Roles"
+
+#: app/templates/admin/tech.html:55
+msgid "All Status"
+msgstr "Todos los Estados"
+
+#: app/templates/admin/tech.html:56
+msgid "ACTIVE"
+msgstr "ACTIVO"
+
+#: app/templates/admin/tech.html:57
+msgid "INACTIVE"
+msgstr "INACTIVO"
+
+#: app/templates/admin/tech.html:64
+msgid "RESET"
+msgstr "RESTABLECER"
+
+#: app/templates/admin/tech.html:79
+msgid "Database Entities"
+msgstr "Entidades de Base de Datos"
+
+#: app/templates/admin/tech.html:82
+msgid "ADD USER"
+msgstr "AÑADIR USUARIO"
+
+#: app/templates/admin/tech.html:90
+msgid "User Identity"
+msgstr "Identidad de Usuario"
+
+#: app/templates/admin/tech.html:91
+msgid "Privileges"
+msgstr "Privilegios"
+
+#: app/templates/admin/tech.html:92
+msgid "Status"
+msgstr "Estado"
+
+#: app/templates/admin/tech.html:93
+msgid "Operational Actions"
+msgstr "Acciones Operativas"
+
+#: app/templates/admin/tech.html:119
+msgid "UNASSIGNED"
+msgstr "SIN ASIGNAR"
+
+#: app/templates/admin/tech.html:126
+msgid "Operational"
+msgstr "Operativo"
+
+#: app/templates/admin/tech.html:131
+msgid "Locked"
+msgstr "Bloqueado"
+
+#: app/templates/admin/tech.html:139
+msgid "Edit User"
+msgstr "Editar Usuario"
+
+#: app/templates/admin/tech.html:144
+msgid "Confirm deletion of"
+msgstr "Confirmar eliminación de"
+
+#: app/templates/admin/tech.html:147
+msgid "Delete User"
+msgstr "Eliminar Usuario"
+
+#: app/templates/admin/tech.html:158
+msgid "No records match your current parameters."
+msgstr "No hay registros que coincidan con tus parámetros actuales."
+
+#: app/templates/admin/tech.html:169
+msgid "System Modules"
+msgstr "Módulos del Sistema"
+
+#: app/templates/admin/tech.html:189
+msgid "Manage data entries"
+msgstr "Gestionar entradas de datos"
+
+#: app/templates/admin/tech.html:200
+msgid "System Integrity"
+msgstr "Integridad del Sistema"
+
+#: app/templates/admin/tech.html:201
+msgid ""
+"All services are currently operational. Database latency is within normal "
+"parameters (12ms)."
+msgstr ""
+"Todos los servicios están operativos actualmente. La latencia de la base de "
+"datos está dentro de los parámetros normales (12ms)."
+
+#: app/templates/admin/tech_add_user.html:10
+#: app/templates/admin/tech_edit_user.html:10
+msgid "BACK TO DASHBOARD"
+msgstr "VOLVER AL PANEL"
+
+#: app/templates/admin/tech_add_user.html:15
+msgid "CREATE"
+msgstr "CREAR"
+
+#: app/templates/admin/tech_add_user.html:15
+msgid "NEW ACCOUNT"
+msgstr "NUEVA CUENTA"
+
+#: app/templates/admin/tech_add_user.html:16
+msgid "Configure user credentials and profile settings simultaneously."
+msgstr ""
+"Configurar credenciales de usuario y ajustes de perfil simultáneamente."
+
+#: app/templates/admin/tech_add_user.html:23
+#: app/templates/admin/tech_edit_user.html:28
+msgid "Personal Information"
+msgstr "Información Personal"
+
+#: app/templates/admin/tech_add_user.html:25
+#: app/templates/admin/tech_edit_user.html:30
+#: app/templates/pages/user_settings.html:131
+#: app/templates/registration/singup.html:39
+#: app/templates/registration/singup.html:179
+msgid "First Name"
+msgstr "Nombre"
+
+#: app/templates/admin/tech_add_user.html:29
+#: app/templates/admin/tech_edit_user.html:34
+#: app/templates/pages/user_settings.html:147
+#: app/templates/registration/singup.html:49
+#: app/templates/registration/singup.html:181
+msgid "Last Name"
+msgstr "Apellido"
+
+#: app/templates/admin/tech_add_user.html:33
+#: app/templates/registration/password_reset_form.html:25
+#: app/templates/registration/singup.html:71
+msgid "Email Address"
+msgstr "Correo Electrónico"
+
+#: app/templates/admin/tech_add_user.html:41
+#: app/templates/admin/tech_edit_user.html:47
+msgid "System Credentials"
+msgstr "Credenciales del Sistema"
+
+#: app/templates/admin/tech_add_user.html:43
+#: app/templates/admin/tech_edit_user.html:51
+#: app/templates/pages/user_settings.html:163
+#: app/templates/registration/singup.html:60
+msgid "Username"
+msgstr "Nombre de Usuario"
+
+#: app/templates/admin/tech_add_user.html:47
+#: app/templates/registration/login.html:41
+#: app/templates/registration/password_reset_confirm.html:26
+#: app/templates/registration/singup.html:81
+msgid "Password"
+msgstr "Contraseña"
+
+#: app/templates/admin/tech_add_user.html:51
+#: app/templates/admin/tech_edit_user.html:59
+msgid "Repeat Password"
+msgstr "Repetir Contraseña"
+
+#: app/templates/admin/tech_add_user.html:59
+#: app/templates/admin/tech_edit_user.html:67
+msgid "Profile Configuration"
+msgstr "Configuración de Perfil"
+
+#: app/templates/admin/tech_add_user.html:61
+#: app/templates/admin/tech_edit_user.html:69
+msgid "Assigned Role"
+msgstr "Rol Asignado"
+
+#: app/templates/admin/tech_add_user.html:69
+msgid "Profile Picture"
+msgstr "Foto de Perfil"
+
+#: app/templates/admin/tech_add_user.html:77
+msgid "CREATE SYSTEM USER"
+msgstr "CREAR USUARIO DEL SISTEMA"
+
+#: app/templates/admin/tech_add_user.html:80
+#: app/templates/admin/tech_edit_user.html:90
+msgid "CANCEL"
+msgstr "CANCELAR"
+
+#: app/templates/admin/tech_edit_user.html:16
+msgid "EDIT"
+msgstr "EDITAR"
+
+#: app/templates/admin/tech_edit_user.html:16
+msgid "USER"
+msgstr "USUARIO"
+
+#: app/templates/admin/tech_edit_user.html:17
+msgid "Modifying account of"
+msgstr "Modificando la cuenta de"
+
+#: app/templates/admin/tech_edit_user.html:38
+msgid "Email"
+msgstr "Email"
+
+#: app/templates/admin/tech_edit_user.html:48
+msgid "Leave password blank if you don't want to change it."
+msgstr "Deja la contraseña en blanco si no deseas cambiarla."
+
+#: app/templates/admin/tech_edit_user.html:55
+#: app/templates/pages/user_settings.html:357
+#: app/templates/registration/password_reset_confirm.html:15
+#: app/templates/registration/password_reset_confirm.html:39
+msgid "New Password"
+msgstr "Nueva Contraseña"
+
+#: app/templates/admin/tech_edit_user.html:79
+msgid "Change Picture"
+msgstr "Cambiar Imagen"
+
+#: app/templates/admin/tech_edit_user.html:87
+msgid "SAVE CHANGES"
+msgstr "GUARDAR CAMBIOS"
+
+#: app/templates/components/card_movies.html:3
+#: app/templates/components/card_series.html:2
+#: app/templates/pages/content_view.html:4
+msgid "Unknown Genre"
+msgstr "Género Desconocido"
+
+#: app/templates/components/card_movies.html:4
+#: app/templates/components/card_series.html:3
+msgid "No Image"
+msgstr "Sin Imagen"
+
+#: app/templates/components/card_movies.html:7
+#: app/templates/components/card_movies.html:15
+#: app/templates/components/navbar.html:25
+#: app/templates/pages/list_detail.html:77 app/templates/pages/movies.html:3
+msgid "Movies"
+msgstr "Películas"
+
+#: app/templates/components/card_movies.html:40
+#: app/templates/components/card_series.html:39
+msgid "UNAVAILABLE"
+msgstr "NO DISPONIBLE"
+
+#: app/templates/components/card_movies.html:59
+#: app/templates/components/card_series.html:58
+msgid "Unavailable"
+msgstr "No disponible"
+
+#: app/templates/components/card_movies.html:64
+#: app/templates/components/card_series.html:63
+#: app/templates/pages/main.html:92 app/templates/pages/main.html:156
+#: app/templates/pages/search.html:75
+msgid "Watch now"
+msgstr "Ver ahora"
+
+#: app/templates/components/card_series.html:6
+#: app/templates/components/card_series.html:14
+#: app/templates/components/navbar.html:29
+#: app/templates/pages/list_detail.html:102 app/templates/pages/series.html:3
+msgid "Series"
+msgstr "Series"
+
+#: app/templates/components/footer.html:5
+msgid "All rights reserved."
+msgstr "Todos los derechos reservados."
+
+#: app/templates/components/footer.html:7
+#: app/templates/registration/privacy_policy.html:12
+msgid "Privacy Policy"
+msgstr "Política de Privacidad"
+
+#: app/templates/components/footer.html:8
+#: app/templates/registration/terms_of_service.html:12
+msgid "Terms of Service"
+msgstr "Términos de Servicio"
+
+#: app/templates/components/footer.html:9
+#: app/templates/registration/help_center.html:12
+msgid "Help Center"
+msgstr "Centro de Ayuda"
+
+#: app/templates/components/navbar.html:21 app/templates/pages/catalog.html:6
+msgid "Full Catalog"
+msgstr "Catálogo Completo"
+
+#: app/templates/components/navbar.html:35
+msgid "My List"
+msgstr "Mi Lista"
+
+#: app/templates/components/navbar.html:42
+#: app/templates/pages/manager_dashboard.html:4
+msgid "Manager Dashboard"
+msgstr "Panel del Manager"
+
+#: app/templates/components/navbar.html:47
+msgid "Executive Analytics"
+msgstr "Analítica Ejecutiva"
+
+#: app/templates/components/navbar.html:52
+msgid "Tech Dashboard"
+msgstr "Panel Técnico"
+
+#: app/templates/components/navbar.html:56
+msgid "Django Admin"
+msgstr "Administración Django"
+
+#: app/templates/components/navbar.html:69
+msgid "Search movies, shows, or platforms..."
+msgstr "Busca películas, series o plataformas..."
+
+#: app/templates/components/navbar.html:111
+msgid "Notifications"
+msgstr "Notificaciones"
+
+#: app/templates/components/navbar.html:113
+msgid "Mark all as read"
+msgstr "Marcar todo como leído"
+
+#: app/templates/components/navbar.html:124
+#, python-format
+msgid "%(time)s ago"
+msgstr "hace %(time)s"
+
+#: app/templates/components/navbar.html:131
+msgid "All caught up!"
+msgstr "¡Todo al día!"
+
+#: app/templates/components/navbar.html:162
+msgid "Signed in as"
+msgstr "Conectado como"
+
+#: app/templates/components/navbar.html:170
+msgid "Personal Library"
+msgstr "Biblioteca Personal"
+
+#: app/templates/components/navbar.html:177
+#: app/templates/pages/content_view.html:189
+#: app/templates/pages/user_settings.html:4
+msgid "Settings"
+msgstr "Ajustes"
+
+#: app/templates/components/navbar.html:187
+msgid "Sign Out"
+msgstr "Cerrar Sesión"
+
+#: app/templates/components/navbar.html:209
+msgid "Log In"
+msgstr "Iniciar Sesión"
+
+#: app/templates/components/navbar.html:214
+msgid "Sign Up"
+msgstr "Registrarse"
+
+#: app/templates/components/platforms_filter.html:3
+msgid "Filter by:"
+msgstr "Filtrar por:"
+
+#: app/templates/components/platforms_filter.html:7
+#: app/templates/pages/direction_dashboard.html:7
+msgid "All Platforms"
+msgstr "Todas las plataformas"
+
+#: app/templates/components/platforms_filter.html:15
+#: app/templates/pages/direction_dashboard.html:9
+#: app/templates/pages/manager_dashboard.html:8
+#: app/templates/pages/manager_dashboard.html:80
+msgid "All Genres"
+msgstr "Todos los géneros"
+
+#: app/templates/components/platforms_filter.html:23
+msgid "Sort by Rating"
+msgstr "Ordenar por puntuación"
+
+#: app/templates/components/platforms_filter.html:24
+msgid "Rating: Highest to Lowest"
+msgstr "Puntuación: de mayor a menor"
+
+#: app/templates/components/platforms_filter.html:25
+msgid "Rating: Lowest to Highest"
+msgstr "Puntuación: de menor a mayor"
+
+#: app/templates/components/platforms_filter.html:30
+msgid "Sort by Year"
+msgstr "Ordenar por año"
+
+#: app/templates/components/platforms_filter.html:31
+msgid "Year: Most recent"
+msgstr "Año: más reciente"
+
+#: app/templates/components/platforms_filter.html:32
+msgid "Year: Oldest"
+msgstr "Año: más antiguo"
+
+#: app/templates/components/watchlist_modal.html:9
+msgid "Saved!"
+msgstr "¡Guardado!"
+
+#: app/templates/components/watchlist_modal.html:17
+#: app/templates/pages/content_view.html:125
+msgid "Add to Watchlist"
+msgstr "Añadir a la lista de seguimiento"
+
+#: app/templates/components/watchlist_modal.html:27
+msgid "Loading lists..."
+msgstr "Cargando listas..."
+
+#: app/templates/components/watchlist_modal.html:34
+msgid "Create New List"
+msgstr "Crear Nueva Lista"
+
+#: app/templates/components/watchlist_modal.html:38
+msgid "List name..."
+msgstr "Nombre de la lista..."
+
+#: app/templates/pages/catalog.html:3
+msgid "Catalog"
+msgstr "Catálogo"
+
+#: app/templates/pages/content_view.html:5
+msgid "Unknown Director"
+msgstr "Director Desconocido"
+
+#: app/templates/pages/content_view.html:6
+msgid "Unknown Nationality"
+msgstr "Nacionalidad Desconocida"
+
+#: app/templates/pages/content_view.html:7
+msgid "Not Seen"
+msgstr "No visto"
+
+#: app/templates/pages/content_view.html:8
+msgid "Watching"
+msgstr "Viendo"
+
+#: app/templates/pages/content_view.html:9
+#: app/templates/pages/personal_library.html:54
+#: app/templates/pages/personal_library.html:186
+msgid "Completed"
+msgstr "Completado"
+
+#: app/templates/pages/content_view.html:15
+msgid "backdrop"
+msgstr "fondo"
+
+#: app/templates/pages/content_view.html:65
+msgid "TV Series"
+msgstr "Serie de TV"
+
+#: app/templates/pages/content_view.html:69
+msgid "Movie"
+msgstr "Película"
+
+#: app/templates/pages/content_view.html:87
+msgid "(Unavailable)"
+msgstr "(No disponible)"
+
+#: app/templates/pages/content_view.html:94
+msgid "Synopsis"
+msgstr "Sinopsis"
+
+#: app/templates/pages/content_view.html:102
+msgid "Directed By"
+msgstr "Dirigido por"
+
+#: app/templates/pages/content_view.html:105
+msgid "Director Profile"
+msgstr "Perfil del director"
+
+#: app/templates/pages/content_view.html:131
+msgid "Remove from Favorites"
+msgstr "Quitar de Favoritos"
+
+#: app/templates/pages/content_view.html:131
+msgid "Add to Favorites"
+msgstr "Añadir a Favoritos"
+
+#: app/templates/pages/content_view.html:159
+msgid "Administrator Mode (Pre-visualization)"
+msgstr "Modo Administrador (Previsualización)"
+
+#: app/templates/pages/content_view.html:166
+msgid "Log in to customize your experience"
+msgstr "Inicia sesión para personalizar tu experiencia"
+
+#: app/templates/pages/content_view.html:177 app/templates/pages/home.html:5
+msgid "Home"
+msgstr "Inicio"
+
+#: app/templates/pages/content_view.html:181
+msgid "Discovery"
+msgstr "Descubrir"
+
+#: app/templates/pages/content_view.html:185
+msgid "Watchlist"
+msgstr "Lista de seguimiento"
+
+#: app/templates/pages/direction_dashboard.html:3
+#: app/templates/pages/direction_dashboard.html:111
+msgid "Direction Dashboard"
+msgstr "Panel de Dirección"
+
+#: app/templates/pages/direction_dashboard.html:8
+#: app/templates/pages/manager_dashboard.html:7
+#: app/templates/pages/manager_dashboard.html:72
+msgid "All Countries"
+msgstr "Todos los países"
+
+#: app/templates/pages/direction_dashboard.html:22
+msgid "Control Panel"
+msgstr "Panel de Control"
+
+#: app/templates/pages/direction_dashboard.html:26
+#: app/templates/pages/manager_dashboard.html:25
+msgid "Time Analytics"
+msgstr "Análisis Temporal"
+
+#: app/templates/pages/direction_dashboard.html:27
+#: app/templates/pages/manager_dashboard.html:26
+msgid "Predefined reporting periods"
+msgstr "Periodos de informe predefinidos"
+
+#: app/templates/pages/direction_dashboard.html:31
+#: app/templates/pages/manager_dashboard.html:30
+msgid "24H"
+msgstr ""
+
+#: app/templates/pages/direction_dashboard.html:33
+#: app/templates/pages/manager_dashboard.html:32
+msgid "7D"
+msgstr ""
+
+#: app/templates/pages/direction_dashboard.html:35
+#: app/templates/pages/manager_dashboard.html:34
+msgid "30D"
+msgstr ""
+
+#: app/templates/pages/direction_dashboard.html:40
+#: app/templates/pages/manager_dashboard.html:39
+msgid "QUARTER"
+msgstr "TRIMESTRE"
+
+#: app/templates/pages/direction_dashboard.html:42
+#: app/templates/pages/manager_dashboard.html:41
+msgid "YTD"
+msgstr "YTD"
+
+#: app/templates/pages/direction_dashboard.html:48
+#: app/templates/pages/manager_dashboard.html:47
+msgid "Custom Range"
+msgstr "Rango Personalizado"
+
+#: app/templates/pages/direction_dashboard.html:49
+#: app/templates/pages/manager_dashboard.html:48
+msgid "Specific calendar selection"
+msgstr "Selección de calendario específica"
+
+#: app/templates/pages/direction_dashboard.html:54
+#: app/templates/pages/manager_dashboard.html:53
+msgid "From"
+msgstr "Desde"
+
+#: app/templates/pages/direction_dashboard.html:60
+#: app/templates/pages/manager_dashboard.html:59
+msgid "To"
+msgstr "Hasta"
+
+#: app/templates/pages/direction_dashboard.html:64
+#: app/templates/pages/manager_dashboard.html:63
+msgid "UPDATE SEARCH"
+msgstr "ACTUALIZAR BÚSQUEDA"
+
+#: app/templates/pages/direction_dashboard.html:69
+#: app/templates/pages/manager_dashboard.html:68
+msgid "Segmentation"
+msgstr "Segmentación"
+
+#: app/templates/pages/direction_dashboard.html:70
+#: app/templates/pages/manager_dashboard.html:69
+msgid "Categorical filters"
+msgstr "Filtros categóricos"
+
+#: app/templates/pages/direction_dashboard.html:102
+#: app/templates/pages/manager_dashboard.html:90
+msgid "CLEAR ALL FILTERS"
+msgstr "LIMPIAR TODOS LOS FILTROS"
+
+#: app/templates/pages/direction_dashboard.html:112
+msgid "Strategic performance analysis and interaction growth trends."
+msgstr ""
+"Análisis de rendimiento estratégico y tendencias de crecimiento de "
+"interacción."
+
+#: app/templates/pages/direction_dashboard.html:116
+#: app/templates/pages/manager_dashboard.html:104
+msgid "EXPORT CSV"
+msgstr "EXPORTAR CSV"
+
+#: app/templates/pages/direction_dashboard.html:122
+msgid "Total Engagement"
+msgstr "Interacción Total"
+
+#: app/templates/pages/direction_dashboard.html:125
+msgid "Clicks"
+msgstr "Clics"
+
+#: app/templates/pages/direction_dashboard.html:129
+#, fuzzy
+#| msgid "Favorites"
+msgid "Total Favorites"
+msgstr "Favoritos"
+
+#: app/templates/pages/direction_dashboard.html:132
+#: app/templates/pages/direction_dashboard.html:237
+#: app/templates/pages/manager_dashboard.html:120
+msgid "Favs"
+msgstr "Favs"
+
+#: app/templates/pages/direction_dashboard.html:136
+#, fuzzy
+#| msgid "Platform"
+msgid "Top Platform"
+msgstr "Plataforma"
+
+#: app/templates/pages/direction_dashboard.html:139
+#, fuzzy
+#| msgid "Clicks"
+msgid "Highest Clicks"
+msgstr "Clics"
+
+#: app/templates/pages/direction_dashboard.html:149
+#, fuzzy
+#| msgid "Periodic Engagement Trend"
+msgid "Engagement Trend"
+msgstr "Tendencia de Interacción Periódica"
+
+#: app/templates/pages/direction_dashboard.html:164
+#: app/templates/pages/manager_dashboard.html:152
+msgid "Split"
+msgstr "División"
+
+#: app/templates/pages/direction_dashboard.html:182
+#: app/templates/pages/manager_dashboard.html:170
+msgid "Genre Distribution"
+msgstr "Distribución de Géneros"
+
+#: app/templates/pages/direction_dashboard.html:197
+#, fuzzy
+#| msgid "Platform Control"
+msgid "Platform Comparison"
+msgstr "Control de Plataforma"
+
+#: app/templates/pages/direction_dashboard.html:213
+#: app/templates/pages/manager_dashboard.html:185
+msgid "Top Content Ranking"
+msgstr "Ranking de Contenido Principal"
+
+#: app/templates/pages/direction_dashboard.html:227
+msgid "Top Content Performance"
+msgstr "Rendimiento del Contenido Principal"
+
+#: app/templates/pages/direction_dashboard.html:234
+#: app/templates/pages/manager_dashboard.html:207
+msgid "Title & Director"
+msgstr "Título y Director"
+
+#: app/templates/pages/direction_dashboard.html:235
+#: app/templates/pages/manager_dashboard.html:208
+msgid "Genre"
+msgstr "Género"
+
+#: app/templates/pages/direction_dashboard.html:236
+#: app/templates/pages/manager_dashboard.html:209
+#: app/templates/pages/user_settings.html:179
+#: app/templates/registration/onboarding.html:66
+msgid "Country"
+msgstr "País"
+
+#: app/templates/pages/direction_dashboard.html:246
+#: app/templates/pages/manager_dashboard.html:219
+msgid "Dir."
+msgstr "Dir."
+
+#: app/templates/pages/direction_dashboard.html:256
+msgid "No content matches the selected filters."
+msgstr "Ningún contenido coincide con los filtros seleccionados."
+
+#: app/templates/pages/home.html:29
+msgid "The Future of Streaming"
+msgstr "El Futuro del Streaming"
+
+#: app/templates/pages/home.html:33
+msgid "All your streaming platforms in"
+msgstr "Todas tus plataformas de streaming en"
+
+#: app/templates/pages/home.html:34
+msgid "one place"
+msgstr "un solo lugar"
+
+#: app/templates/pages/home.html:38
+msgid ""
+"Experience entertainment management reimagined. StreamSync unifies multiple "
+"platforms into a single, seamless cinematic interface."
+msgstr ""
+"Experimenta la gestión del entretenimiento reorganizada. StreamSync unifica "
+"múltiples plataformas en una interfaz cinematográfica única y fluida."
+
+#: app/templates/pages/home.html:45
+msgid "Get Started for Free"
+msgstr "Comienza gratis"
+
+#: app/templates/pages/home.html:50
+msgid "Go to Dashboard"
+msgstr "Ir al Panel de Control"
+
+#: app/templates/pages/home.html:64
+msgid "Services Integrated"
+msgstr "Servicios Integrados"
+
+#: app/templates/pages/home.html:68
+msgid "Movies Indexed"
+msgstr "Películas Indexadas"
+
+#: app/templates/pages/home.html:72
+msgid "Active Users"
+msgstr "Usuarios Activos"
+
+#: app/templates/pages/home.html:80
+msgid "Premium Tools"
+msgstr "Herramientas Premium"
+
+#: app/templates/pages/home.html:82
+msgid "Unlock your full viewing potential"
+msgstr "Desbloquea todo tu potencial de visualización"
+
+#: app/templates/pages/home.html:84
+msgid ""
+"Powerful features designed to save you time and help you discover your next "
+"obsession."
+msgstr ""
+"Potentes funciones diseñadas para ahorrarte tiempo y ayudarte a descubrir tu "
+"próxima obsesión."
+
+#: app/templates/pages/home.html:94
+msgid "Unified Search"
+msgstr "Búsqueda Unificada"
+
+#: app/templates/pages/home.html:96
+msgid ""
+"Stop jumping between tabs. Search across multiples platforms instantly from "
+"one bar."
+msgstr ""
+"Deja de saltar entre pestañas. Busca en múltiples plataformas al instante "
+"desde una sola barra."
+
+#: app/templates/pages/home.html:105
+msgid "Series Tracking"
+msgstr "Seguimiento de Series"
+
+#: app/templates/pages/home.html:107
+msgid ""
+"Never forget which episode you're on. Keep track of every season and episode "
+"automatically."
+msgstr ""
+"No olvides nunca en qué episodio te quedaste. Haz un seguimiento automático "
+"de cada temporada y episodio."
+
+#: app/templates/pages/home.html:116
+msgid "Smart Recs"
+msgstr "Recomendaciones Inteligentes"
+
+#: app/templates/pages/home.html:118
+msgid ""
+"AI-driven suggestions that understand your unique taste better than any "
+"single platform algorithm."
+msgstr ""
+"Sugerencias basadas en IA que entienden tus gustos únicos mejor que el "
+"algoritmo de cualquier plataforma individual."
+
+#: app/templates/pages/home.html:127
+msgid "Availability Alerts"
+msgstr "Alertas de Disponibilidad"
+
+#: app/templates/pages/home.html:129
+msgid ""
+"Get notified the second a movie on your watchlist becomes available on your "
+"subscribed services."
+msgstr ""
+"Recibe notificaciones en el segundo en que una película de tu lista de "
+"seguimiento esté disponible en tus servicios suscritos."
+
+#: app/templates/pages/list_detail.html:3
+msgid "List Detail"
+msgstr ""
+
+#: app/templates/pages/list_detail.html:44
+#: app/templates/pages/list_detail.html:80
+#: app/templates/pages/list_detail.html:105
+#: app/templates/pages/personal_library.html:257
+#, python-format
+msgid "%(counter)s title"
+msgid_plural "%(counter)s titles"
+msgstr[0] "%(counter)s título"
+msgstr[1] "%(counter)s títulos"
+
+#: app/templates/pages/list_detail.html:55
+#: app/templates/pages/rename_list_modal.html:55
+msgid "Rename"
+msgstr "Renombrar"
+
+#: app/templates/pages/list_detail.html:61
+msgid "Delete"
+msgstr "Eliminar"
+
+#: app/templates/pages/list_detail.html:122
+msgid "This list is empty"
+msgstr "Esta lista está vacía"
+
+#: app/templates/pages/list_detail.html:123
+msgid "Start adding movies and series to this list from their detail pages."
+msgstr ""
+"Empieza a añadir películas y series a esta lista desde sus páginas de "
+"detalle."
+
+#: app/templates/pages/list_detail.html:125
+msgid "Browse content"
+msgstr "Explorar contenido"
+
+#: app/templates/pages/main.html:4
+msgid "Dashboard"
+msgstr "Panel de Control"
+
+#: app/templates/pages/main.html:10
+#: app/templates/pages/personal_library.html:49
+#: app/templates/pages/personal_library.html:88
+msgid "Continue Watching"
+msgstr "Continuar Viendo"
+
+#: app/templates/pages/main.html:27
+#, python-format
+msgid "%(minutes)sm left"
+msgstr "%(minutes)sm restantes"
+
+#: app/templates/pages/main.html:41
+msgid "RESUME"
+msgstr "REANUDAR"
+
+#: app/templates/pages/main.html:56
+msgid "Oops, you're not watching anything yet"
+msgstr "Vaya, aún no estás viendo nada"
+
+#: app/templates/pages/main.html:57
+msgid "Take a look at our catalog!"
+msgstr "¡Echa un vistazo a nuestro catálogo!"
+
+#: app/templates/pages/main.html:59
+msgid "Browse Catalog"
+msgstr "Explorar Catálogo"
+
+#: app/templates/pages/main.html:68
+msgid "Series Recommended for You"
+msgstr "Series Recomendadas para Ti"
+
+#: app/templates/pages/main.html:122
+msgid "Movies Recommended for You"
+msgstr "Películas Recomendadas para Ti"
+
+#: app/templates/pages/main.html:188
+msgid "Recommended for You"
+msgstr "Recomendado para Ti"
+
+#: app/templates/pages/main.html:191
+msgid "Complete your profile to get personalized recommendations"
+msgstr "Completa tu perfil para obtener recomendaciones personalizadas"
+
+#: app/templates/pages/main.html:193
+msgid "Select Genres"
+msgstr "Seleccionar Géneros"
+
+#: app/templates/pages/main.html:202
+msgid "Trending Now"
+msgstr "Tendencia Ahora"
+
+#: app/templates/pages/main.html:234
+msgid "New Releases"
+msgstr "Nuevos Estrenos"
+
+#: app/templates/pages/main.html:235
+msgid "View All"
+msgstr "Ver Todo"
+
+#: app/templates/pages/main.html:246
+msgid "Today"
+msgstr "Hoy"
+
+#: app/templates/pages/main.html:248
+msgid "Season 3 • Episode 1"
+msgstr "Temporada 3 • Episodio 1"
+
+#: app/templates/pages/main.html:266
+msgid "Yesterday"
+msgstr "Ayer"
+
+#: app/templates/pages/main.html:268
+msgid "Season 6 • Full Release"
+msgstr "Temporada 6 • Estreno Completo"
+
+#: app/templates/pages/main.html:286
+msgid "2 days ago"
+msgstr "Hace 2 días"
+
+#: app/templates/pages/main.html:288
+msgid "Season 3 • Finale"
+msgstr "Temporada 3 • Final"
+
+#: app/templates/pages/manager_dashboard.html:21
+msgid "Platform Control"
+msgstr "Control de Plataforma"
+
+#: app/templates/pages/manager_dashboard.html:99
+msgid "Dashboard:"
+msgstr "Panel:"
+
+#: app/templates/pages/manager_dashboard.html:100
+msgid "Performance metrics for your catalog and audience engagement."
+msgstr ""
+"Métricas de rendimiento para tu catálogo y participación de la audiencia."
+
+#: app/templates/pages/manager_dashboard.html:110
+msgid "Platform Clicks"
+msgstr "Clics de Plataforma"
+
+#: app/templates/pages/manager_dashboard.html:113
+msgid "Total"
+msgstr "Total"
+
+#: app/templates/pages/manager_dashboard.html:117
+msgid "Favorite Saves"
+msgstr "Guardados como Favoritos"
+
+#: app/templates/pages/manager_dashboard.html:124
+msgid "Catalog Diversity"
+msgstr "Diversidad del Catálogo"
+
+#: app/templates/pages/manager_dashboard.html:127
+msgid "Available Genres"
+msgstr "Géneros Disponibles"
+
+#: app/templates/pages/manager_dashboard.html:137
+msgid "Platform Growth Trend"
+msgstr "Tendencia de Crecimiento de Plataforma"
+
+#: app/templates/pages/manager_dashboard.html:141
+#: app/templates/pages/manager_dashboard.html:156
+#: app/templates/pages/manager_dashboard.html:174
+#: app/templates/pages/manager_dashboard.html:189
+msgid "PNG"
+msgstr "PNG"
+
+#: app/templates/pages/manager_dashboard.html:200
+msgid "Top Catalog Items"
+msgstr "Principales Elementos del Catálogo"
+
+#: app/templates/pages/manager_dashboard.html:210
+msgid "Interactions"
+msgstr "Interacciones"
+
+#: app/templates/pages/manager_dashboard.html:229
+msgid "No items found."
+msgstr "No se encontraron elementos."
+
+#: app/templates/pages/personal_library.html:4
+msgid "Library"
+msgstr "Biblioteca"
+
+#: app/templates/pages/personal_library.html:35
+msgid "Your Library"
+msgstr "Tu Biblioteca"
+
+#: app/templates/pages/personal_library.html:39
+msgid "Track what you're watching and organize your favorite titles."
+msgstr "Sigue lo que estás viendo y organiza tus títulos favoritos."
+
+#: app/templates/pages/personal_library.html:59
+#: app/templates/pages/personal_library.html:137
+msgid "Favorites"
+msgstr "Favoritos"
+
+#: app/templates/pages/personal_library.html:64
+msgid "Lists"
+msgstr "Listas"
+
+#: app/templates/pages/personal_library.html:92
+msgid "Pick up where you left off."
+msgstr "Continúa donde lo dejaste."
+
+#: app/templates/pages/personal_library.html:113
+msgid "Nothing to continue. Start watching something!"
+msgstr "Nada que continuar. ¡Empieza a ver algo!"
+
+#: app/templates/pages/personal_library.html:141
+msgid "Your all-time favorite titles."
+msgstr "Tus títulos favoritos de siempre."
+
+#: app/templates/pages/personal_library.html:162
+msgid "No favorites yet. Start adding your favorite titles!"
+msgstr "Aún no hay favoritos. ¡Empieza a añadir tus títulos favoritos!"
+
+#: app/templates/pages/personal_library.html:190
+msgid "Titles you've finished watching."
+msgstr "Títulos que has terminado de ver."
+
+#: app/templates/pages/personal_library.html:211
+msgid "No completed titles yet."
+msgstr "Aún no hay títulos completados."
+
+#: app/templates/pages/personal_library.html:225
+msgid "Your Lists"
+msgstr "Tus Listas"
+
+#: app/templates/pages/personal_library.html:229
+msgid "Personal collections created by you."
+msgstr "Colecciones personales creadas por ti."
+
+#: app/templates/pages/personal_library.html:237
+msgid "New List"
+msgstr "Nueva Lista"
+
+#: app/templates/pages/personal_library.html:264
+msgid "Rename list"
+msgstr "Renombrar lista"
+
+#: app/templates/pages/personal_library.html:269
+msgid "Delete list"
+msgstr "Eliminar lista"
+
+#: app/templates/pages/personal_library.html:285
+msgid "No items yet — start adding content!"
+msgstr "Aún no hay elementos? ¡empieza a añadir contenido!"
+
+#: app/templates/pages/personal_library.html:289
+#, python-format
+msgid "+%(extra)s more title"
+msgid_plural "+%(extra)s more titles"
+msgstr[0] "+%(extra)s título más"
+msgstr[1] "+%(extra)s títulos más"
+
+#: app/templates/pages/personal_library.html:301
+msgid "No lists yet"
+msgstr "Aún no hay listas"
+
+#: app/templates/pages/personal_library.html:302
+msgid "Create your first list to organize your favorite content"
+msgstr "Crea tu primera lista para organizar tu contenido favorito"
+
+#: app/templates/pages/personal_library.html:304
+msgid "Create your first list"
+msgstr "Crear tu primera lista"
+
+#: app/templates/pages/redirect_simulation.html:4
+#: app/templates/pages/redirect_simulation.html:16
+#, fuzzy
+#| msgid "Login to StreamSync"
+msgid "Leaving StreamSync"
+msgstr "Iniciar Sesión en StreamSync"
+
+#: app/templates/pages/redirect_simulation.html:20
+msgid "You are being redirected to an external site."
+msgstr ""
+
+#: app/templates/pages/redirect_simulation.html:25
+msgid "Content to visit"
+msgstr ""
+
+#: app/templates/pages/redirect_simulation.html:30
+msgid "External website from"
+msgstr ""
+
+#: app/templates/pages/redirect_simulation.html:39
+msgid "Returning to Previous Page"
+msgstr ""
+
+#: app/templates/pages/rename_list_modal.html:22
+msgid "Rename List"
+msgstr "Renombrar Lista"
+
+#: app/templates/pages/rename_list_modal.html:23
+msgid "Enter a new name for this list."
+msgstr "Introduce un nuevo nombre para esta lista."
+
+#: app/templates/pages/rename_list_modal.html:36
+msgid "List name…"
+msgstr "Nombre de la lista..."
+
+#: app/templates/pages/rename_list_modal.html:51
+#: app/templates/pages/user_settings.html:259
+#: app/templates/pages/user_settings.html:513
+#: app/templates/pages/user_settings.html:555
+#: app/templates/pages/user_settings.html:692
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: app/templates/pages/search.html:4 app/templates/pages/search.html:6
+#: app/templates/pages/search.html:21
+msgid "Search"
+msgstr "Buscar"
+
+#: app/templates/pages/search.html:13
+msgid "Search Results for"
+msgstr "Resultados de búsqueda para"
+
+#: app/templates/pages/search.html:17
+#, python-format
+msgid "%(counter)s result found across your connected platforms."
+msgid_plural "%(counter)s results found across your connected platforms."
+msgstr[0] "%(counter)s resultado encontrado en tus plataformas conectadas."
+msgstr[1] "%(counter)s resultados encontrados en tus plataformas conectadas."
+
+#: app/templates/pages/search.html:22
+msgid "Type in the search bar to find movies and TV shows."
+msgstr "Escribe en la barra de búsqueda para encontrar películas y series."
+
+#: app/templates/pages/search.html:34
+msgid "Apply Filters"
+msgstr "Aplicar Filtros"
+
+#: app/templates/pages/search.html:54
+#, python-format
+msgid "No results for \"%(query)s\""
+msgstr "Sin resultados para \"%(query)s\""
+
+#: app/templates/pages/search.html:55
+msgid "Try another search term or check the spelling."
+msgstr "Prueba con otro término de búsqueda o revisa la ortografía."
+
+#: app/templates/pages/search.html:62
+msgid "You might like"
+msgstr "También te puede gustar"
+
+#: app/templates/pages/user_settings.html:95
+msgid "Account Settings"
+msgstr "Ajustes de la Cuenta"
+
+#: app/templates/pages/user_settings.html:99
+msgid "Manage your profile information and preferences."
+msgstr "Gestiona tu información de perfil y preferencias."
+
+#: app/templates/pages/user_settings.html:115
+#: app/templates/pages/user_settings.html:692
+msgid "Edit Profile"
+msgstr "Editar Perfil"
+
+#: app/templates/pages/user_settings.html:201
+#: app/templates/registration/onboarding.html:84
+msgid "Gender"
+msgstr "Género"
+
+#: app/templates/pages/user_settings.html:209
+#: app/templates/registration/onboarding.html:90
+msgid "Male"
+msgstr "Masculino"
+
+#: app/templates/pages/user_settings.html:213
+#: app/templates/registration/onboarding.html:91
+msgid "Female"
+msgstr "Femenino"
+
+#: app/templates/pages/user_settings.html:217
+#: app/templates/registration/onboarding.html:92
+msgid "Non-binary"
+msgstr "No binario"
+
+#: app/templates/pages/user_settings.html:221
+msgid "Other"
+msgstr "Otro"
+
+#: app/templates/pages/user_settings.html:234
+msgid "Bio"
+msgstr "Biografía"
+
+#: app/templates/pages/user_settings.html:267
+msgid "Save Changes"
+msgstr "Guardar Cambios"
+
+#: app/templates/pages/user_settings.html:305
+msgid "Security"
+msgstr "Seguridad"
+
+#: app/templates/pages/user_settings.html:309
+msgid "Manage your password and security preferences."
+msgstr "Gestiona tu contraseña y preferencias de seguridad."
+
+#: app/templates/pages/user_settings.html:325
+msgid "Change Password"
+msgstr "Cambiar Contraseña"
+
+#: app/templates/pages/user_settings.html:339
+msgid "Current Password"
+msgstr "Contraseña Actual"
+
+#: app/templates/pages/user_settings.html:364
+msgid "Enter new password"
+msgstr "Introduce la nueva contraseña"
+
+#: app/templates/pages/user_settings.html:372
+#: app/templates/registration/password_reset_confirm.html:51
+#: app/templates/registration/singup.html:102
+msgid "Confirm Password"
+msgstr "Confirmar Contraseña"
+
+#: app/templates/pages/user_settings.html:379
+msgid "Confirm new password"
+msgstr "Confirmar nueva contraseña"
+
+#: app/templates/pages/user_settings.html:393
+#: app/templates/registration/password_reset_confirm.html:44
+#: app/templates/registration/singup.html:87
+msgid "At least 8 characters"
+msgstr "Al menos 8 caracteres"
+
+#: app/templates/pages/user_settings.html:396
+#: app/templates/registration/password_reset_confirm.html:45
+#: app/templates/registration/singup.html:90
+msgid "Not a commonly used password"
+msgstr "No es una contraseña común"
+
+#: app/templates/pages/user_settings.html:399
+#: app/templates/registration/password_reset_confirm.html:46
+#: app/templates/registration/singup.html:93
+msgid "Not entirely numeric"
+msgstr "No totalmente numérica"
+
+#: app/templates/pages/user_settings.html:412
+msgid "Forgot your password?"
+msgstr "¿Olvidaste tu contraseña?"
+
+#: app/templates/pages/user_settings.html:422
+#: app/templates/registration/password_reset_confirm.html:62
+msgid "Update Password"
+msgstr "Actualizar Contraseña"
+
+#: app/templates/pages/user_settings.html:448
+msgid "Your Activity"
+msgstr "Tu Actividad"
+
+#: app/templates/pages/user_settings.html:459
+msgid "Watched"
+msgstr "Visto"
+
+#: app/templates/pages/user_settings.html:475
+msgid "Danger Zone"
+msgstr "Zona de Peligro"
+
+#: app/templates/pages/user_settings.html:480
+msgid ""
+"Once you delete your account, there is no going back. Please be certain."
+msgstr ""
+"Una vez que elimines tu cuenta, no hay vuelta atrás. Por favor, asegúrate."
+
+#: app/templates/pages/user_settings.html:486
+#: app/templates/pages/user_settings.html:502
+msgid "Delete Account"
+msgstr "Eliminar Cuenta"
+
+#: app/templates/pages/user_settings.html:505
+msgid ""
+"Are you sure you want to delete your account? This action cannot be undone. "
+"All your data will be permanently removed."
+msgstr ""
+"¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede "
+"deshacer. Todos tus datos serán eliminados permanentemente."
+
+#: app/templates/pages/user_settings.html:517
+msgid "Yes, delete my account"
+msgstr "Sí, eliminar mi cuenta"
+
+#: app/templates/pages/user_settings.html:545
+msgid "Adjust profile picture"
+msgstr "Ajustar foto de perfil"
+
+#: app/templates/pages/user_settings.html:560
+#: app/templates/pages/user_settings.html:645
+msgid "Save"
+msgstr "Guardar"
+
+#: app/templates/pages/user_settings.html:616
+msgid "Saving..."
+msgstr "Guardando..."
+
+#: app/templates/pages/user_settings.html:637
+msgid "Error:"
+msgstr "Error:"
+
+#: app/templates/pages/user_settings.html:637
+msgid "Unknown error"
+msgstr "Error desconocido"
+
+#: app/templates/pages/user_settings.html:641
+msgid "Error uploading image:"
+msgstr "Error al subir la imagen:"
+
+#: app/templates/pages/user_settings.html:823
+msgid "Passwords match"
+msgstr "Las contraseñas coinciden"
+
+#: app/templates/pages/user_settings.html:828
+msgid "Passwords do not match"
+msgstr "Las contraseñas no coinciden"
+
+#: app/templates/registration/help_center.html:13
+msgid "Find answers to your questions or contact our support team."
+msgstr ""
+"Encuentra respuestas a tus preguntas o contacta a nuestro equipo de soporte."
+
+#: app/templates/registration/help_center.html:20
+msgid "How do I reset my password?"
+msgstr "¿Cómo restablezco mi contraseña?"
+
+#: app/templates/registration/help_center.html:22
+msgid ""
+"Go to the login page and click on 'Forgot Password?'. We will send you a "
+"reset link to your registered email address. Follow the instructions in the "
+"email to set a new secure password."
+msgstr ""
+"Ve a la página de inicio de sesión y haz clic en '¿Olvidaste tu "
+"contraseña?'.Te enviaremos un enlace de restablecimiento a tu correo "
+"electrónico registrado. Sigue las instrucciones del correo para establecer "
+"una nueva contraseña segura."
+
+#: app/templates/registration/help_center.html:28
+msgid "How does the Favorites list work?"
+msgstr "¿Cómo funciona la lista de Favoritos?"
+
+#: app/templates/registration/help_center.html:30
+msgid ""
+"When browsing the content catalog, click the heart icon on any movie or "
+"series to add it to your Personal Library. You can view all your saved "
+"content in the 'My Library' tab at any time."
+msgstr ""
+"Al navegar por el catálogo de contenido, haz clic en el icono de corazón en "
+"cualquier película o serie para añadirla a tu Biblioteca Personal. Puedes "
+"ver todo tu contenido guardado en la pestaña 'Mi Biblioteca' en cualquier "
+"momento."
+
+#: app/templates/registration/help_center.html:34
+msgid "Still need help?"
+msgstr "¿Aún necesitas ayuda?"
+
+#: app/templates/registration/help_center.html:35
+msgid ""
+"Our support team is available 24/7 to assist you with any platform issues."
+msgstr ""
+"Nuestro equipo de soporte está disponible 24/7 para ayudarte con cualquier "
+"problema de la plataforma."
+
+#: app/templates/registration/help_center.html:38
+msgid "Contact Support"
+msgstr "Contactar Soporte"
+
+#: app/templates/registration/help_center.html:46
+msgid "Go Back"
+msgstr "Volver"
+
+#: app/templates/registration/login.html:19
+msgid "Login to StreamSync"
+msgstr "Iniciar Sesión en StreamSync"
+
+#: app/templates/registration/login.html:20
+msgid "Enter your credentials to continue"
+msgstr "Introduce tus credenciales para continuar"
+
+#: app/templates/registration/login.html:26
+msgid "Invalid username or password."
+msgstr "Usuario o contraseña inválidos."
+
+#: app/templates/registration/login.html:33
+msgid "Username or Email"
+msgstr "Usuario o Correo"
+
+#: app/templates/registration/login.html:36
+#: app/templates/registration/password_reset_form.html:28
+msgid "name@example.com"
+msgstr "nombre@ejemplo.com"
+
+#: app/templates/registration/login.html:42
+msgid "Forgot password?"
+msgstr "¿Olvidaste la contraseña?"
+
+#: app/templates/registration/login.html:47
+msgid "Enter your password"
+msgstr "Introduce tu contraseña"
+
+#: app/templates/registration/login.html:53
+msgid "Sign In"
+msgstr "Iniciar Sesión"
+
+#: app/templates/registration/login.html:61
+msgid "Don't have an account?"
+msgstr "¿No tienes una cuenta?"
+
+#: app/templates/registration/login.html:62
+msgid "Register here"
+msgstr "Regístrate aquí"
+
+#: app/templates/registration/onboarding.html:19
+msgid "Complete Your Profile"
+msgstr "Completa tu Perfil"
+
+#: app/templates/registration/onboarding.html:20
+msgid "Step 1 of 2"
+msgstr "Paso 1 de 2"
+
+#: app/templates/registration/onboarding.html:30
+#: app/templates/registration/onboarding_genres.html:33
+msgid "Profile"
+msgstr "Perfil"
+
+#: app/templates/registration/onboarding.html:34
+#: app/templates/registration/onboarding_genres.html:37
+msgid "Genres"
+msgstr "Géneros"
+
+#: app/templates/registration/onboarding.html:56
+msgid "Date of Birth"
+msgstr "Fecha de Nacimiento"
+
+#: app/templates/registration/onboarding.html:71
+msgid "Select country"
+msgstr "Seleccionar país"
+
+#: app/templates/registration/onboarding.html:89
+msgid "Select gender"
+msgstr "Seleccionar género"
+
+#: app/templates/registration/onboarding.html:93
+msgid "Other / Prefer not to say"
+msgstr "Otro / Prefiero no decirlo"
+
+#: app/templates/registration/onboarding.html:105
+#: app/templates/registration/onboarding_genres.html:91
+msgid "Continue"
+msgstr "Continuar"
+
+#: app/templates/registration/onboarding_complete.html:12
+msgid "You're All Set!"
+msgstr "¡Todo Listo!"
+
+#: app/templates/registration/onboarding_complete.html:13
+msgid "Your profile has been created successfully. Time to start watching!"
+msgstr "Tu perfil se ha creado correctamente. ¡Hora de empezar a ver!"
+
+#: app/templates/registration/onboarding_complete.html:16
+msgid "Go to Main"
+msgstr "Ir al Inicio"
+
+#: app/templates/registration/onboarding_genres.html:20
+msgid "Personalize Your Experience"
+msgstr "Personaliza tu Experiencia"
+
+#: app/templates/registration/onboarding_genres.html:22
+msgid ""
+"Select at least 3 genres you love. We'll use this to create a personalized "
+"feed just for you."
+msgstr ""
+"Selecciona al menos 3 géneros que te gusten. Usaremos esto para crear un "
+"feed personalizado solo para ti."
+
+#: app/templates/registration/onboarding_genres.html:80
+#: app/templates/registration/onboarding_genres.html:97
+msgid "Select at least 3 genres"
+msgstr "Selecciona al menos 3 géneros"
+
+#: app/templates/registration/onboarding_genres.html:86
+msgid "selected"
+msgstr "seleccionados"
+
+#: app/templates/registration/password_reset_complete.html:11
+msgid "Password Updated!"
+msgstr "¡Contraseña Actualizada!"
+
+#: app/templates/registration/password_reset_complete.html:13
+msgid ""
+"Your password has been changed successfully. You can now use your new "
+"credentials to access your account."
+msgstr ""
+"Tu contraseña se ha cambiado correctamente. Ahora puedes usar tus nuevas "
+"credenciales para acceder a tu cuenta."
+
+#: app/templates/registration/password_reset_complete.html:16
+msgid "Go to Login"
+msgstr "Ir a Inicio de Sesión"
+
+#: app/templates/registration/password_reset_confirm.html:16
+msgid "Enter your new secure password"
+msgstr "Introduce tu nueva contraseña segura"
+
+#: app/templates/registration/password_reset_confirm.html:26
+msgid "Confirmation"
+msgstr "Confirmación"
+
+#: app/templates/registration/password_reset_confirm.html:68
+msgid "Link Expired"
+msgstr "Enlace Expirado"
+
+#: app/templates/registration/password_reset_confirm.html:69
+msgid "The password reset link was invalid."
+msgstr "El enlace de restablecimiento de contraseña no era válido."
+
+#: app/templates/registration/password_reset_confirm.html:70
+msgid "Request a new link"
+msgstr "Solicitar un nuevo enlace"
+
+#: app/templates/registration/password_reset_done.html:11
+msgid "Check your inbox"
+msgstr "Revisa tu bandeja de entrada"
+
+#: app/templates/registration/password_reset_done.html:13
+msgid ""
+"We've sent an email to your address. If it doesn't appear, check your spam "
+"folder."
+msgstr ""
+"Hemos enviado un correo a tu dirección. Si no aparece, revisa tu carpeta de "
+"spam."
+
+#: app/templates/registration/password_reset_done.html:16
+msgid "Return to Login"
+msgstr "Volver a Inicio de Sesión"
+
+#: app/templates/registration/password_reset_form.html:17
+msgid "Reset Password"
+msgstr "Restablecer Contraseña"
+
+#: app/templates/registration/password_reset_form.html:18
+msgid "Enter your email and we'll send you instructions."
+msgstr "Introduce tu correo y te enviaremos instrucciones."
+
+#: app/templates/registration/password_reset_form.html:33
+msgid "Send Reset Link"
+msgstr "Enviar Enlace de Restablecimiento"
+
+#: app/templates/registration/password_reset_form.html:40
+msgid "Back to Login"
+msgstr "Volver a Inicio de Sesión"
+
+#: app/templates/registration/privacy_policy.html:13
+msgid "At StreamSync, we take your privacy seriously."
+msgstr "En StreamSync, tomamos tu privacidad en serio."
+
+#: app/templates/registration/privacy_policy.html:18
+msgid ""
+"This Privacy Policy explains how we collect, use, and protect your "
+"information."
+msgstr ""
+"Esta Política de Privacidad explica cómo recopilamos, usamos y protegemos tu "
+"información."
+
+#: app/templates/registration/privacy_policy.html:22
+msgid "0. Educational Disclaimer"
+msgstr "0. Aviso Educativo"
+
+#: app/templates/registration/privacy_policy.html:23
+msgid ""
+"This platform is a technical demonstration for learning the Django "
+"Framework. It is not a commercial entity. All simulated environments are for "
+"academic purposes."
+msgstr ""
+"Esta plataforma es una demostración técnica para aprender el Framework "
+"Django. No es una entidad comercial. Todos los entornos simulados son con "
+"fines académicos."
+
+#: app/templates/registration/privacy_policy.html:27
+msgid "1. Information we collect"
+msgstr "1. Información que recopilamos"
+
+#: app/templates/registration/privacy_policy.html:28
+msgid ""
+"We collect information you provide when creating an account, including your "
+"name, email address, and other profile information."
+msgstr ""
+"Recopilamos la información que proporcionas al crear una cuenta, incluyendo "
+"tu nombre, dirección de correo electrónico y otra información de perfil."
+
+#: app/templates/registration/privacy_policy.html:32
+msgid "2. How we will use Your Information"
+msgstr "2. Cómo usaremos tu Información"
+
+#: app/templates/registration/privacy_policy.html:33
+msgid ""
+"We will use your information to provide and improve our services, "
+"communicate with you, and ensure security."
+msgstr ""
+"Usaremos tu información para proporcionar y mejorar nuestros servicios, "
+"comunicarnos contigo y garantizar la seguridad."
+
+#: app/templates/registration/privacy_policy.html:37
+msgid "3. Information Sharing"
+msgstr "3. Compartir Información"
+
+#: app/templates/registration/privacy_policy.html:38
+msgid ""
+"We do not sell your personal information. We may share data with trusted "
+"partners to help operate our service."
+msgstr ""
+"No vendemos tu información personal. Podemos compartir datos con socios de "
+"confianza para ayudar a operar nuestro servicio."
+
+#: app/templates/registration/privacy_policy.html:42
+msgid "4. Data Security"
+msgstr "4. Seguridad de Datos"
+
+#: app/templates/registration/privacy_policy.html:43
+msgid ""
+"We implement industry-standard security measures to protect your data from "
+"unauthorized access."
+msgstr ""
+"Implementamos medidas de seguridad estándar de la industria para proteger "
+"tus datos contra accesos no autorizados."
+
+#: app/templates/registration/privacy_policy.html:47
+msgid "5. Cookies"
+msgstr "5. Cookies"
+
+#: app/templates/registration/privacy_policy.html:48
+msgid ""
+"We use cookies to enhance your user experience. You can control cookies "
+"through your browser settings."
+msgstr ""
+"Usamos cookies para mejorar tu experiencia de usuario. Puedes controlar las "
+"cookies a través de la configuración de tu navegador."
+
+#: app/templates/registration/privacy_policy.html:52
+msgid "6. Your Rights"
+msgstr "6. Tus Derechos"
+
+#: app/templates/registration/privacy_policy.html:53
+msgid ""
+"You have the right to access, correct, or delete your personal information. "
+"Contact us to exercise these rights."
+msgstr ""
+"Tienes derecho a acceder, corregir o eliminar tu información personal. "
+"Contáctanos para ejercer estos derechos."
+
+#: app/templates/registration/privacy_policy.html:57
+msgid "7. Changes to Policy"
+msgstr "7. Cambios a la Política"
+
+#: app/templates/registration/privacy_policy.html:58
+msgid ""
+"We may update this policy periodically. We will notify you of any material "
+"changes."
+msgstr ""
+"Podemos actualizar esta política periódicamente. Te notificaremos sobre "
+"cambios materiales."
+
+#: app/templates/registration/privacy_policy.html:62
+msgid "8. Contact"
+msgstr "8. Contacto"
+
+#: app/templates/registration/privacy_policy.html:63
+msgid "If you have questions about this Privacy Policy, please contact us."
+msgstr "Si tienes preguntas sobre esta Política de Privacidad, contáctanos."
+
+#: app/templates/registration/privacy_policy.html:70
+msgid "Acknowledge & Go Back"
+msgstr "Reconocer y Volver"
+
+#: app/templates/registration/singup.html:19
+#: app/templates/registration/singup.html:144
+msgid "Create Account"
+msgstr "Crear Cuenta"
+
+#: app/templates/registration/singup.html:21
+msgid "Join StreamSync to start watching"
+msgstr "Únete a StreamSync para empezar a ver"
+
+#: app/templates/registration/singup.html:29
+msgid "Please correct the errors below"
+msgstr "Corrige los errores a continuación"
+
+#: app/templates/registration/singup.html:64
+msgid "Required. 150 characters or fewer."
+msgstr "Obligatorio. 150 caracteres o menos."
+
+#: app/templates/registration/singup.html:122
+#, python-format
+msgid ""
+"I agree to the <a href=\"%(terms_url)s\" target=\"_blank\" class=\"text-"
+"primary hover:underline\">Terms of Service</a>"
+msgstr ""
+"Acepto los <a href=\"%(terms_url)s\" target=\"_blank\" class=\"text-"
+"primary hover:underline\">Términos de Servicio</a>"
+
+#: app/templates/registration/singup.html:134
+#, python-format
+msgid ""
+"I agree to the <a href=\"%(privacy_url)s\" target=\"_blank\" class=\"text-"
+"primary hover:underline\">Privacy Policy</a>"
+msgstr ""
+"Acepto la <a href=\"%(privacy_url)s\" target=\"_blank\" class=\"text-"
+"primary hover:underline\">Política de Privacidad</a>"
+
+#: app/templates/registration/singup.html:152
+msgid "Already have an account?"
+msgstr "¿Ya tienes una cuenta?"
+
+#: app/templates/registration/singup.html:153
+msgid "Log in here"
+msgstr "Inicia sesión aquí"
+
+#: app/templates/registration/singup.html:175
+msgid "Enter your email"
+msgstr "Introduce tu correo electrónico"
+
+#: app/templates/registration/singup.html:177
+msgid "Enter your username"
+msgstr "Introduce tu nombre de usuario"
+
+#: app/templates/registration/terms_of_service.html:13
+msgid "Welcome to StreamSync. Our rules and guidelines."
+msgstr "Bienvenido a StreamSync. Nuestras reglas y pautas."
+
+#: app/templates/registration/terms_of_service.html:18
+msgid ""
+"By accessing and using our service, you agree to be bound by these Terms of "
+"Service."
+msgstr ""
+"Al acceder y usar nuestro servicio, aceptas estar sujeto a estos Términos de "
+"Servicio."
+
+#: app/templates/registration/terms_of_service.html:22
+msgid "1. Acceptance of Terms"
+msgstr "1. Aceptación de los Términos"
+
+#: app/templates/registration/terms_of_service.html:23
+msgid ""
+"By creating an account or accessing StreamSync, you acknowledge that you "
+"have read, understood, and agree to be bound by these terms."
+msgstr ""
+"Al crear una cuenta o acceder a StreamSync, reconoces que has leído, "
+"entendido y aceptas estar sujeto a estos términos."
+
+#: app/templates/registration/terms_of_service.html:27
+msgid "2. Use of Service"
+msgstr "2. Uso del Servicio"
+
+#: app/templates/registration/terms_of_service.html:28
+msgid ""
+"You agree to use the service only for lawful purposes and in accordance with "
+"these Terms."
+msgstr ""
+"Aceptas usar el servicio solo para fines legales y de acuerdo con estos "
+"Términos."
+
+#: app/templates/registration/terms_of_service.html:32
+msgid "3. Account Security"
+msgstr "3. Seguridad de la Cuenta"
+
+#: app/templates/registration/terms_of_service.html:33
+msgid ""
+"You are responsible for maintaining the confidentiality of your credentials "
+"and for all activities that occur under your account."
+msgstr ""
+"Eres responsable de mantener la confidencialidad de tus credenciales y de "
+"todas las actividades que ocurran bajo tu cuenta."
+
+#: app/templates/registration/terms_of_service.html:37
+msgid "4. Privacy"
+msgstr "4. Privacidad"
+
+#: app/templates/registration/terms_of_service.html:38
+msgid ""
+"Your privacy is important to us. Please review our Privacy Policy to "
+"understand how we collect and use your information."
+msgstr ""
+"Tu privacidad es importante para nosotros. Revisa nuestra Política de "
+"Privacidad para entender cómo recopilamos y usamos tu información."
+
+#: app/templates/registration/terms_of_service.html:42
+msgid "5. Changes to Terms"
+msgstr "5. Cambios a los Términos"
+
+#: app/templates/registration/terms_of_service.html:43
+msgid ""
+"We reserve the right to modify these terms at any time. Continued use of the "
+"service constitutes acceptance of any changes."
+msgstr ""
+"Nos reservamos el derecho de modificar estos términos en cualquier momento. "
+"El uso continuado del servicio constituye la aceptación de cualquier cambio."
+
+#: app/templates/registration/terms_of_service.html:47
+msgid "6. Contact"
+msgstr "6. Contacto"
+
+#: app/templates/registration/terms_of_service.html:48
+msgid ""
+"If you have any questions about these Terms of Service, please contact us."
+msgstr ""
+"Si tienes alguna pregunta sobre estos Términos de Servicio, contáctanos."
+
+#: app/templates/registration/terms_of_service.html:55
+msgid "Accept & Go Back"
+msgstr "Aceptar y Volver"
+
+#~ msgid "Interest Score"
+#~ msgstr "Puntuación de Interés"
+
+#~ msgid "Dominant Entity"
+#~ msgstr "Entidad Dominante"
+
+#~ msgid "No analytics data found for this period"
+#~ msgstr "No se encontraron datos analíticos para este periodo"
+
+#~ msgid "Interactions (Favs)"
+#~ msgstr "Interacciones (Favs)"
+
+#~ msgid "Reviews"
+#~ msgstr "Reseñas"
+
+#~ msgid "I agree to the"
+#~ msgstr "Acepto los"

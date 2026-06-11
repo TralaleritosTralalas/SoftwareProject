@@ -7,8 +7,10 @@ class BaseTestSuite(TestCase):
     @classmethod
     def setUp(cls):
         cls.user_pwd = "password123"
-        cls.user = User.objects.create_user(
+        cls.user, created = User.objects.get_or_create(
             username='tester',
-            email='test@test.com',
-            password=cls.user_pwd
+            defaults={'email': 'test@test.com'}
         )
+        if created or not cls.user.check_password(cls.user_pwd):
+            cls.user.set_password(cls.user_pwd)
+            cls.user.save()

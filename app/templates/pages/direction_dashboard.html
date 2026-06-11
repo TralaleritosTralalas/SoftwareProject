@@ -1,7 +1,12 @@
 {% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}StreamSync {% trans "Direction Dashboard" %}{% endblock %}
 {% load static %}
 
 {% block content %}
+    {% trans "All Platforms" as all_platforms_text %}
+    {% trans "All Countries" as all_countries_text %}
+    {% trans "All Genres" as all_genres_text %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <div class="flex min-h-screen font-display text-slate-100 bg-transparent">
@@ -12,79 +17,81 @@
 
                 <div class="text-center mb-2">
                     <h2 class="text-xl font-bold text-white flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-primary">tune</span> Filters
+                        <span class="material-symbols-outlined text-primary">tune</span> {% trans "Filters" %}
                     </h2>
-                    <p class="text-[9px] text-slate-500 uppercase tracking-widest mt-1">Control Panel</p>
+                    <p class="text-[9px] text-slate-500 uppercase tracking-widest mt-1">{% trans "Control Panel" %}</p>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-[11px] font-black text-primary uppercase tracking-tight block">Time Analytics</label>
-                    <span class="text-[9px] text-slate-500 leading-none block -mt-1">Predefined reporting periods</span>
+                    <label class="text-[11px] font-black text-primary uppercase tracking-tight block">{% trans "Time Analytics" %}</label>
+                    <span class="text-[9px] text-slate-500 leading-none block -mt-1">{% trans "Predefined reporting periods" %}</span>
 
                     <div class="grid grid-cols-3 gap-2 bg-slate-950/60 p-1 rounded-2xl border border-slate-800/50">
                         <button type="button" onclick="setQuickRange('24h')"
-                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '24h' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">24H</button>
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '24h' or filters_data.range == '24h' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">{% trans "24H" %}</button>
                         <button type="button" onclick="setQuickRange('7d')"
-                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '7d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">7D</button>
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '7d' or filters_data.range == '7d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">{% trans "7D" %}</button>
                         <button type="button" onclick="setQuickRange('30d')"
-                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '30d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">30D</button>
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '30d' or filters_data.range == '30d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">{% trans "30D" %}</button>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 bg-slate-950/60 p-1.5 rounded-2xl border border-slate-800/50">
                         <button type="button" onclick="setQuickRange('90d')"
-                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '90d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">QUARTER</button>
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '90d' or filters_data.range == '90d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">{% trans "QUARTER" %}</button>
                         <button type="button" onclick="setQuickRange('ytd')"
-                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == 'ytd' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">YTD</button>
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == 'ytd' or filters_data.range == 'ytd' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">{% trans "YTD" %}</button>
                     </div>
-                    <input type="hidden" name="range" id="range-input" value="{{ filters.range }}">
+                    <input type="hidden" name="range" id="range-input" value="{% if filters.range %}{{ filters.range }}{% else %}{{ filters_data.range }}{% endif %}">
                 </div>
 
                 <div class="space-y-3">
-                    <label class="text-[11px] font-black text-primary uppercase tracking-tight block">Custom Range</label>
-                    <span class="text-[9px] text-slate-500 leading-none block -mt-1">Specific calendar selection</span>
+                    <label class="text-[11px] font-black text-primary uppercase tracking-tight block">{% trans "Custom Range" %}</label>
+                    <span class="text-[9px] text-slate-500 leading-none block -mt-1">{% trans "Specific calendar selection" %}</span>
                     <div class="relative">
-                        <input type="date" name="start_date" id="start_date" value="{{ filters.start_date }}"
+                        <input type="date" name="start_date" id="start_date" value="{% if filters.start_date %}{{ filters.start_date }}{% else %}{{ filters_data.start_date }}{% endif %}"
                                onfocus="clearQuickRange()"
                                class="w-full bg-slate-950/40 border border-slate-800 text-[11px] text-slate-300 rounded-2xl px-4 py-3 outline-none focus:border-primary appearance-none">
-                        <span class="text-[8px] text-slate-500 absolute -top-2 left-4 bg-[#0f172a] px-2 border border-slate-800 rounded-full font-bold uppercase">From</span>
+                        <span class="text-[8px] text-slate-500 absolute -top-2 left-4 bg-[#0f172a] px-2 border border-slate-800 rounded-full font-bold uppercase">{% trans "From" %}</span>
                     </div>
                     <div class="relative">
-                        <input type="date" name="end_date" id="end_date" value="{{ filters.end_date }}"
+                        <input type="date" name="end_date" id="end_date" value="{% if filters.end_date %}{{ filters.end_date }}{% else %}{{ filters_data.end_date }}{% endif %}"
                                onfocus="clearQuickRange()"
                                class="w-full bg-slate-950/40 border border-slate-800 text-[11px] text-slate-300 rounded-2xl px-4 py-3 outline-none focus:border-primary appearance-none">
-                        <span class="text-[8px] text-slate-500 absolute -top-2 left-4 bg-[#0f172a] px-2 border border-slate-800 rounded-full font-bold uppercase">To</span>
+                        <span class="text-[8px] text-slate-500 absolute -top-2 left-4 bg-[#0f172a] px-2 border border-slate-800 rounded-full font-bold uppercase">{% trans "To" %}</span>
                     </div>
                     <button type="submit"
                             class="w-full py-3 bg-slate-800 hover:bg-primary text-white rounded-2xl text-[10px] font-black transition-all flex items-center justify-center gap-2">
-                        UPDATE SEARCH <span class="material-symbols-outlined text-base">calendar_month</span>
+                        {% trans "UPDATE SEARCH" %} <span class="material-symbols-outlined text-base">calendar_month</span>
                     </button>
                 </div>
 
                 <div class="space-y-3 pt-3 border-t border-slate-800/50">
-                    <label class="text-[11px] font-black text-primary uppercase tracking-tight block">Segmentation</label>
-                    <span class="text-[9px] text-slate-500 leading-none block -mt-1">Categorical filters</span>
+                    <label class="text-[11px] font-black text-primary uppercase tracking-tight block">{% trans "Segmentation" %}</label>
+                    <span class="text-[9px] text-slate-500 leading-none block -mt-1">{% trans "Categorical filters" %}</span>
 
+                    {% if platforms %}
                     <select name="platform" onchange="this.form.submit()"
                             class="w-full bg-slate-950/40 border border-slate-800 text-xs font-bold text-slate-300 rounded-2xl px-4 py-3 appearance-none focus:border-primary outline-none cursor-pointer">
-                        <option value="all">All Platforms</option>
+                        <option value="all">{{ all_platforms_text }}</option>
                         {% for p in platforms %}
-                            <option value="{{ p.id }}" {% if filters.platform|stringformat:"s" == p.id|stringformat:"s" %}selected{% endif %}>{{ p.platform_name }}</option>
+                            <option value="{{ p.id }}" {% if filters.platform|stringformat:"s" == p.id|stringformat:"s" or platform.id|stringformat:"s" == p.id|stringformat:"s" %}selected{% endif %}>{{ p.platform_name }}</option>
                         {% endfor %}
                     </select>
+                    {% endif %}
 
                     <select name="country" onchange="this.form.submit()"
                             class="w-full bg-slate-950/40 border border-slate-800 text-xs font-bold text-slate-300 rounded-2xl px-4 py-3 appearance-none focus:border-primary outline-none cursor-pointer">
-                        <option value="all">All Countries</option>
+                        <option value="all">{{ all_countries_text }}</option>
                         {% for c in countries %}
-                            <option value="{{ c.id }}" {% if filters.country|stringformat:"s" == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+                            <option value="{{ c.id }}" {% if filters.country|stringformat:"s" == c.id|stringformat:"s" or filters_data.country|stringformat:"s" == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
                         {% endfor %}
                     </select>
 
                     <select name="genre" onchange="this.form.submit()"
                             class="w-full bg-slate-950/40 border border-slate-800 text-xs font-bold text-slate-300 rounded-2xl px-4 py-3 appearance-none focus:border-primary outline-none cursor-pointer">
-                        <option value="all">All Genres</option>
+                        <option value="all">{{ all_genres_text }}</option>
                         {% for g in genres %}
-                            <option value="{{ g.id }}" {% if filters.genre|stringformat:"s" == g.id|stringformat:"s" %}selected{% endif %}>{{ g.name }}</option>
+                            <option value="{{ g.id }}" {% if filters.genre|stringformat:"s" == g.id|stringformat:"s" or filters_data.genre|stringformat:"s" == g.id|stringformat:"s" %}selected{% endif %}>{{ g.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -92,7 +99,7 @@
                 <div class="pt-2 border-t border-slate-800/50">
                     <a href="{% url 'app:direction_dashboard' %}"
                        class="w-full py-3 bg-slate-950/40 hover:bg-slate-800/60 text-slate-400 hover:text-white border border-slate-800/80 rounded-2xl text-[10px] font-black transition-all flex items-center justify-center gap-2">
-                        CLEAR ALL FILTERS <span class="material-symbols-outlined text-base">filter_alt_off</span>
+                        {% trans "CLEAR ALL FILTERS" %} <span class="material-symbols-outlined text-base">filter_alt_off</span>
                     </a>
                 </div>
             </form>
@@ -101,35 +108,35 @@
         <main class="flex-1 p-8 lg:p-12 overflow-y-auto">
             <header class="mb-10 flex justify-between items-start">
                 <div>
-                    <h1 class="text-4xl font-black text-white tracking-tight mb-2">Direction Dashboard</h1>
-                    <p class="text-slate-400 text-sm">Strategic performance analysis and interaction growth trends.</p>
+                    <h1 class="text-4xl font-black text-white tracking-tight mb-2">{% trans "Direction Dashboard" %}</h1>
+                    <p class="text-slate-400 text-sm">{% trans "Strategic performance analysis and interaction growth trends." %}</p>
                 </div>
                 <a href="?{{ request.GET.urlencode }}&export=csv"
                    class="flex items-center gap-3 bg-[#2563eb] hover:bg-[#1d4ed8] text-white px-8 py-3.5 rounded-2xl font-black text-[11px] tracking-widest transition-all active:scale-95 uppercase">
-                    <span class="material-symbols-outlined text-lg">download</span> EXPORT CSV
+                    <span class="material-symbols-outlined text-lg">download</span> {% trans "EXPORT CSV" %}
                 </a>
             </header>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="group bg-slate-900/40 border border-slate-800/50 p-8 rounded-3xl hover:bg-slate-800/40 hover:border-primary/30 transition-all hover:-translate-y-1">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-primary transition-colors">Total Engagement</p>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-primary transition-colors">{% trans "Total Engagement" %}</p>
                     <h3 class="text-3xl font-black text-white flex items-baseline gap-2 flex-wrap">
                         {{ total_clicks }}
-                        <span class="text-[11px] font-black text-slate-600 uppercase tracking-widest">Clicks</span>
+                        <span class="text-[11px] font-black text-slate-600 uppercase tracking-widest">{% trans "Clicks" %}</span>
                     </h3>
                 </div>
                 <div class="group bg-slate-900/40 border border-slate-800/50 p-8 rounded-3xl hover:bg-slate-800/40 hover:border-primary/30 transition-all hover:-translate-y-1">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-primary transition-colors">Total Favorites</p>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-primary transition-colors">{% trans "Total Favorites" %}</p>
                     <h3 class="text-3xl font-black text-white flex items-baseline gap-2 flex-wrap">
                         {{ total_favorites }}
-                        <span class="text-[11px] font-black text-slate-600 uppercase tracking-widest">Favs</span>
+                        <span class="text-[11px] font-black text-slate-600 uppercase tracking-widest">{% trans "Favs" %}</span>
                     </h3>
                 </div>
                 <div class="group bg-slate-900/40 border border-slate-800/50 p-8 rounded-3xl hover:bg-slate-800/40 hover:border-primary/30 transition-all hover:-translate-y-1 min-w-0">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-primary transition-colors">Top Platform</p>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 group-hover:text-primary transition-colors">{% trans "Top Platform" %}</p>
                     <h3 class="text-2xl font-black text-primary uppercase leading-tight truncate">
-                        {% if top_platform %}{{ top_platform.platform__platform_name }}{% else %}—{% endif %}
-                        <span class="text-[10px] font-black text-slate-600 uppercase tracking-widest block mt-1">Highest Clicks</span>
+                        {% if top_platform %}{{ top_platform }}{% elif platform %}{{ platform.platform_name }}{% else %}—{% endif %}
+                        <span class="text-[10px] font-black text-slate-600 uppercase tracking-widest block mt-1">{% trans "Highest Clicks" %}</span>
                     </h3>
                 </div>
             </div>
@@ -139,7 +146,7 @@
                 <section class="lg:col-span-2 bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8 shadow-2xl">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="font-bold text-white flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">analytics</span> Engagement Trend
+                            <span class="material-symbols-outlined text-primary">analytics</span> {% trans "Engagement Trend" %}
                         </h3>
                         <button onclick="downloadChart('trendChart', 'engagement_trend')"
                                 class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 hover:text-primary transition-colors bg-slate-800/60 hover:bg-slate-800 px-3 py-1.5 rounded-xl">
@@ -154,7 +161,7 @@
                 <section class="bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8 shadow-2xl">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="font-bold text-white flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">donut_large</span> Split
+                            <span class="material-symbols-outlined text-primary">donut_large</span> {% trans "Split" %}
                         </h3>
                         <button onclick="downloadChart('donutChart', 'clicks_vs_favs')"
                                 class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 hover:text-primary transition-colors bg-slate-800/60 hover:bg-slate-800 px-3 py-1.5 rounded-xl">
@@ -172,7 +179,7 @@
                 <section class="bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8 shadow-2xl">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="font-bold text-white flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">category</span> Genre Distribution
+                            <span class="material-symbols-outlined text-primary">category</span> {% trans "Genre Distribution" %}
                         </h3>
                         <button onclick="downloadChart('genreChart', 'genre_distribution')"
                                 class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 hover:text-primary transition-colors bg-slate-800/60 hover:bg-slate-800 px-3 py-1.5 rounded-xl">
@@ -187,7 +194,7 @@
                 <section class="bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8 shadow-2xl">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="font-bold text-white flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">bar_chart</span> Platform Comparison
+                            <span class="material-symbols-outlined text-primary">bar_chart</span> {% trans "Platform Comparison" %}
                         </h3>
                         <button onclick="downloadChart('platformChart', 'platform_comparison')"
                                 class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 hover:text-primary transition-colors bg-slate-800/60 hover:bg-slate-800 px-3 py-1.5 rounded-xl">
@@ -203,7 +210,7 @@
             <section class="bg-slate-900/30 border border-slate-800/50 rounded-3xl p-8 mb-6 shadow-2xl">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-bold text-white flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">leaderboard</span> Top Content Ranking
+                        <span class="material-symbols-outlined text-primary">leaderboard</span> {% trans "Top Content Ranking" %}
                     </h3>
                     <button onclick="downloadChart('topContentChart', 'top_content_ranking')"
                             class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 hover:text-primary transition-colors bg-slate-800/60 hover:bg-slate-800 px-3 py-1.5 rounded-xl">
@@ -217,17 +224,17 @@
 
             <section class="bg-slate-900/30 border border-slate-800/50 rounded-3xl overflow-hidden shadow-2xl">
                 <div class="p-8 pb-4 font-bold text-white flex items-center gap-2 border-b border-slate-800/50">
-                    <span class="material-symbols-outlined text-primary">military_tech</span> Top Content Performance
+                    <span class="material-symbols-outlined text-primary">military_tech</span> {% trans "Top Content Performance" %}
                 </div>
                 <div class="px-8 pb-8 pt-4 overflow-x-auto">
                     <table class="w-full text-left table-auto">
                         <thead class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                             <tr>
                                 <th class="py-4 px-4">#</th>
-                                <th class="py-4 px-4">Title & Director</th>
-                                <th class="py-4 px-4 text-center">Genre</th>
-                                <th class="py-4 px-4 text-center">Country</th>
-                                <th class="py-4 px-4 text-right">Favs</th>
+                                <th class="py-4 px-4">{% trans "Title & Director" %}</th>
+                                <th class="py-4 px-4 text-center">{% trans "Genre" %}</th>
+                                <th class="py-4 px-4 text-center">{% trans "Country" %}</th>
+                                <th class="py-4 px-4 text-right">{% trans "Favs" %}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-800/40">
@@ -236,7 +243,7 @@
                                 <td class="py-5 px-4 font-mono text-slate-600 font-black text-sm">{{ forloop.counter }}</td>
                                 <td class="py-5 px-4">
                                     <div class="font-bold text-slate-200 group-hover:text-primary transition-colors">{{ content.title }}</div>
-                                    <div class="text-[10px] text-slate-600 font-bold uppercase tracking-widest">Dir. {{ content.director.name }}</div>
+                                    <div class="text-[10px] text-slate-600 font-bold uppercase tracking-widest">{% trans "Dir." %} {{ content.director.name }}</div>
                                 </td>
                                 <td class="py-5 px-4 text-center">
                                     <span class="bg-slate-800 px-3 py-1 rounded-full text-[9px] text-slate-300 border border-slate-700 font-black uppercase">{{ content.genre.name }}</span>
@@ -246,7 +253,7 @@
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="5" class="py-16 text-center text-slate-600 italic text-sm">No content matches the selected filters.</td>
+                                <td colspan="5" class="py-16 text-center text-slate-600 italic text-sm">{% trans "No content matches the selected filters." %}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
