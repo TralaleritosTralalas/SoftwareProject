@@ -128,10 +128,10 @@
         </div>
         
         <!-- Action Buttons -->
-        <button
+        <button id="watchlist-btn"
           class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 active:scale-95">
-          <span class="material-symbols-outlined text-blue-400">bookmark_add</span>
-          {% trans "Add to Watchlist" %}
+          <span class="material-symbols-outlined text-blue-400" id="watchlist-icon">bookmark_add</span>
+          <span id="watchlist-text">{% trans "Add to Watchlist" %}</span>
         </button>
 
         <button id="favorite-btn"
