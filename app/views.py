@@ -31,6 +31,9 @@ def home(request):
 @login_required
 def user_settings(request):
     countries = Country.objects.all()
+    completed_count = VisualizationProgress.objects.filter(
+        user=request.user, completed=True
+    ).count()
 
     if request.method == 'POST':
         user = request.user
@@ -59,6 +62,7 @@ def user_settings(request):
                 return render(request, 'pages/user_settings.html', {
                     'user': user,
                     'countries': countries,
+                    'completed_count': completed_count,
                     'password_errors': password_errors
                 })
 
@@ -69,8 +73,16 @@ def user_settings(request):
             return render(request, 'pages/user_settings.html', {
                 'user': user,
                 'countries': countries,
+                'completed_count': completed_count,
                 'password_success': 'Password changed successfully!'
             })
+
+        if request.POST.get('action') == 'upload_avatar':
+            if request.FILES.get('profile_picture'):
+                user.profile_picture = request.FILES['profile_picture']
+                user.save()
+                return JsonResponse({'success': True, 'url': user.profile_picture.url})
+            return JsonResponse({'success': False, 'error': 'No file provided'}, status=400)
 
         username = request.POST.get('username', '').strip()
         first_name = request.POST.get('first_name', '').strip()
@@ -96,6 +108,7 @@ def user_settings(request):
             return render(request, 'pages/user_settings.html', {
                 'user': user,
                 'countries': countries,
+                'completed_count': completed_count,
                 'errors': errors
             })
 
@@ -118,12 +131,14 @@ def user_settings(request):
         return render(request, 'pages/user_settings.html', {
             'user': user,
             'countries': countries,
+            'completed_count': completed_count,
             'success': 'Profile updated successfully!'
         })
 
     return render(request, 'pages/user_settings.html', {
         'user': request.user,
-        'countries': countries
+        'countries': countries,
+        'completed_count': completed_count
     })
 
 @login_required
