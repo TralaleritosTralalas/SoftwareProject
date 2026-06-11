@@ -7,6 +7,27 @@
       <a href="{% url 'app:main' %}" class="flex items-center gap-3 text-primary">
         <div class="size-8 rounded-lg bg-primary/20 flex items-center justify-center">
           <span class="material-symbols-outlined text-primary text-2xl">play_circle</span>
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+                <a href="{% url 'app:catalog' %}"
+                   class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                    {% trans "Full Catalog" %}
+                </a>
+                <a href="{% url 'app:movies' %}"
+                   class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                    {% trans "Movies" %}
+                </a>
+                <a href="{% url 'app:series' %}"
+                   class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                    {% trans "Series" %}
+                </a>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'app:personal_library' %}"
+                       class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                        {% trans "My List" %}
+                    </a>
+                {% endif %}
+            </nav>
         </div>
         <h2 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
           StreamSync

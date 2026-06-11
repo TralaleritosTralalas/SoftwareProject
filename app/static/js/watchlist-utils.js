@@ -21,3 +21,17 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+function watchlistApiUrl(name, placeholderValue) {
+    if (window.API_URLS && window.API_URLS[name]) {
+        const url = window.API_URLS[name];
+        return placeholderValue !== undefined ? url.replace('99999', placeholderValue) : url;
+    }
+    const prefix = window.LANG_PREFIX ? `/${window.LANG_PREFIX}` : '';
+    const urls = {
+        getLists: `${prefix}/api/watchlist/lists/`,
+        createList: `${prefix}/api/watchlist/lists/create/`,
+    };
+    const url = urls[name];
+    return placeholderValue !== undefined ? url.replace('99999', placeholderValue) : url;
+}

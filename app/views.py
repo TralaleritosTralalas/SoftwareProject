@@ -291,46 +291,7 @@ def content_detail(request, ctype, cid):
         all_content = get_all_movies()
     
     content = None
-    
-    if content:
-        content['content_type'] = ctype
 
-        user_status = 'not_seen'
-        is_favorite = False
-        is_in_watchlist = False
-        
-        if request.user.is_authenticated:
-            try:
-                if ctype == 'series':
-                    local_content = Series.objects.filter(title=content.get('title')).first()
-                else:
-                    local_content = Movie.objects.filter(title=content.get('title')).first()
-                
-                if local_content:
-                    vp = VisualizationProgress.objects.filter(user=request.user, content=local_content).first()
-                    if vp:
-                        if vp.completed:
-                            user_status = 'completed'
-                        elif vp.last_minute > 0:
-                            user_status = 'watching'
-
-                    is_favorite = Favorite.objects.filter(user=request.user, content=local_content).exists()
-                    is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
-                    
-                    content_in_lists = list(Watchlist.objects.filter(
-                        user=request.user,
-                        content=local_content
-                    ).values_list('id', flat=True))
-            except Exception:
-                pass
-        
-        return render(request, 'pages/content_view.html', {
-            'content': content,
-            'user_status': user_status,
-            'is_favorite': is_favorite,
-            'is_in_watchlist': is_in_watchlist,
-            'content_in_lists': content_in_lists if 'content_in_lists' in locals() else []
-        })
     if cid.isdigit():
         content = next((item for item in all_content if item.get('id') == int(cid)), None)
     else:
@@ -376,6 +337,11 @@ def content_detail(request, ctype, cid):
                 
                 # Verificar Watchlist
                 is_in_watchlist = Watchlist.objects.filter(user=request.user, content=local_content).exists()
+                
+                content_in_lists = list(Watchlist.objects.filter(
+                    user=request.user,
+                    content=local_content
+                ).values_list('id', flat=True))
         except Exception as e:
             print(f"Error checking user status: {e}")
     
@@ -383,7 +349,8 @@ def content_detail(request, ctype, cid):
         'content': content,
         'user_status': user_status,
         'is_favorite': is_favorite,
-        'is_in_watchlist': is_in_watchlist
+        'is_in_watchlist': is_in_watchlist,
+        'content_in_lists': content_in_lists if 'content_in_lists' in locals() else []
     })
 
 def _safe_int(value, default=0):
