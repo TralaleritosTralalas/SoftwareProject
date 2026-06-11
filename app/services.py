@@ -49,7 +49,7 @@ def get_all_movies(platform_filter=None):
             continue
         
         # FIX: Ensure identifier is never empty
-        identifier = f"{movie.title.lower().strip()}_{movie.year}"
+        identifier = f"{movie.title.lower().strip().replace(' ', '-')}_{movie.year}"
         
         movie_data = {
             'id': movie.id,
@@ -108,7 +108,7 @@ def get_all_series(platform_filter=None):
             continue
         
         # FIX: Ensure identifier is never empty
-        identifier = f"{serie.title.lower().strip()}_{serie.start_year}"
+        identifier = f"{serie.title.lower().strip().replace(' ', '-')}_{serie.start_year}"
         
         serie_data = {
             'id': serie.id,
@@ -272,7 +272,7 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
             if search_query not in m_title and search_query not in d_name and score_title < THRESHOLD and score_director < THRESHOLD:
                 continue
 
-            identifier = f"{m_title}_{movie.year}".strip()
+            identifier = f"{m_title.replace(' ', '-')}_{movie.year}".strip()
             
             # Get platforms for this movie
             platforms_list = [cat.platform.platform_name for cat in movie.catalog_set.all()]
@@ -321,7 +321,7 @@ def search_content(query, platform=None, genre=None, sort_rating=None, sort_year
             if search_query not in s_title and search_query not in s_dir_name and score_title < THRESHOLD and score_director < THRESHOLD:
                 continue
 
-            identifier = f"{s_title}_{serie.start_year}".strip()
+            identifier = f"{s_title.replace(' ', '-')}_{serie.start_year}".strip()
             
             # Get platforms for this series
             platforms_list = [cat.platform.platform_name for cat in serie.catalog_set.all()]
