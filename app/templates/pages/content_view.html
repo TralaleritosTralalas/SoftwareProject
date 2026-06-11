@@ -91,7 +91,7 @@
             <button disabled
               class="bg-slate-500/50 text-slate-300 px-10 py-4 rounded-xl font-bold flex items-center gap-3 cursor-not-allowed transition-all">
               <span class="material-symbols-outlined">block</span>
-              {{ p.name }} (Unavailable)
+              {{ p.name }} {% trans "(Unavailable)" %}
             </button>
             {% endif %}
           {% endfor %}
@@ -187,19 +187,19 @@
   class="md:hidden fixed bottom-0 w-full z-50 bg-[#1a2333]/60 backdrop-blur-md flex justify-around items-center py-4 px-6 border-t border-white/5">
   <button class="flex flex-col items-center gap-1 text-[#256af4] font-bold">
     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
-    <span class="text-[10px]">Home</span>
+    <span class="text-[10px]">{% trans "Home" %}</span>
   </button>
   <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
     <span class="material-symbols-outlined">explore</span>
-    <span class="text-[10px]">Discovery</span>
+    <span class="text-[10px]">{% trans "Discovery" %}</span>
   </button>
   <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
     <span class="material-symbols-outlined">bookmark</span>
-    <span class="text-[10px]">Watchlist</span>
+    <span class="text-[10px]">{% trans "Watchlist" %}</span>
   </button>
   <button class="flex flex-col items-center gap-1 text-[#90a4cb]">
     <span class="material-symbols-outlined">settings</span>
-    <span class="text-[10px]">Settings</span>
+    <span class="text-[10px]">{% trans "Settings" %}</span>
   </button>
 </nav>
 

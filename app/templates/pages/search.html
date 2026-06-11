@@ -1,23 +1,24 @@
 {% extends "base/base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Search — StreamSync{% endblock %}
+{% block title %}{% trans "Search" %} — StreamSync{% endblock %}
 
 {% block content %}
 
 <!-- ── Search Header ─────────────────────────────────────────────────────── -->
 <header class="mb-10 mt-2">
     {% if query %}
-        <p class="text-on-surface-variant text-xs uppercase tracking-widest font-bold mb-2">Search Results for</p>
+        <p class="text-on-surface-variant text-xs uppercase tracking-widest font-bold mb-2">{% trans "Search Results for" %}</p>
         <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">"{{ query }}"</h1>
         {% if result_count %}
             <p class="text-on-surface-variant text-sm">
-                {{ result_count }} result{{ result_count|pluralize }} found across your connected platforms.
+                {% blocktrans count counter=result_count %}{{ counter }} result found across your connected platforms.{% plural %}{{ counter }} results found across your connected platforms.{% endblocktrans %}
             </p>
         {% endif %}
     {% else %}
-        <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Search</h1>
-        <p class="text-on-surface-variant text-sm">Type in the search bar to find movies and TV shows.</p>
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">{% trans "Search" %}</h1>
+        <p class="text-on-surface-variant text-sm">{% trans "Type in the search bar to find movies and TV shows." %}</p>
     {% endif %}
 </header>
 
@@ -29,7 +30,7 @@
     {% include "components/platforms_filter.html" with selected_platform=selected_platform selected_genre=selected_genre %}
 
     <button type="submit" class="bg-primary px-4 py-2 rounded-lg text-sm font-bold text-white hover:bg-blue-600 transition-colors">
-        Aplicar Filtros
+        {% trans "Apply Filters" %}
     </button>
 </form>
 
@@ -49,15 +50,15 @@
             <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-surface-dark mb-6">
                 <span class="material-symbols-outlined text-slate-500 text-4xl">search_off</span>
             </div>
-            <h2 class="text-2xl font-bold mb-2">No results for "{{ query }}"</h2>
-            <p class="text-slate-400 text-sm mb-2">Try another search term or check the spelling.</p>
+            <h2 class="text-2xl font-bold mb-2">{% blocktrans %}No results for "{{ query }}"{% endblocktrans %}</h2>
+            <p class="text-slate-400 text-sm mb-2">{% trans "Try another search term or check the spelling." %}</p>
         </div>
 
         {% if suggestions %}
             <div class="mt-8">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="h-px flex-1 bg-slate-800"></div>
-                    <p class="text-slate-500 text-xs uppercase tracking-widest font-bold px-2">You might like</p>
+                    <p class="text-slate-500 text-xs uppercase tracking-widest font-bold px-2">{% trans "You might like" %}</p>
                     <div class="h-px flex-1 bg-slate-800"></div>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
@@ -70,7 +71,7 @@
                                     </span>
                                 </div>
                                 <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
-                                    <button class="bg-primary text-white text-xs font-bold py-2 rounded-lg">Watch now</button>
+                                    <button class="bg-primary text-white text-xs font-bold py-2 rounded-lg">{% trans "Watch now" %}</button>
                                 </div>
                             </div>
                             <div class="px-1">

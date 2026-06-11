@@ -1,6 +1,7 @@
 {% extends "base/base.html" %}
+{% load i18n %}
 
-{% block title %}Library · StreamSync{% endblock %}
+{% block title %}{% trans "Library" %} · StreamSync{% endblock %}
 
 {% block extra_scripts %}
 {% load static %}
@@ -31,11 +32,11 @@ window.contentInLists = [];
 
           <div>
             <h1 class="text-4xl font-black tracking-tight text-white">
-              Your Library
+              {% trans "Your Library" %}
             </h1>
 
             <p class="text-text-secondary text-sm mt-1">
-              Track what you're watching and organize your favorite titles.
+              {% trans "Track what you're watching and organize your favorite titles." %}
             </p>
           </div>
         </div>
@@ -45,19 +46,23 @@ window.contentInLists = [];
     <!-- STATS -->
     <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-    {% with title="Continue Watching" value=watching_count icon="play_circle" icon_color="text-blue-400" %}
+    {% trans "Continue Watching" as continue_watching_title %}
+    {% with title=continue_watching_title value=watching_count icon="play_circle" icon_color="text-blue-400" %}
       {% include "components/stat_card.html" %}
     {% endwith %}
 
-    {% with title="Completed" value=completed_count icon="check_circle" icon_color="text-emerald-400" %}
+    {% trans "Completed" as completed_title %}
+    {% with title=completed_title value=completed_count icon="check_circle" icon_color="text-emerald-400" %}
       {% include "components/stat_card.html" %}
     {% endwith %}
 
-    {% with title="Favorites" value=favorites_count icon="favorite" icon_color="text-red-400 fill-current" %}
+    {% trans "Favorites" as favorites_title %}
+    {% with title=favorites_title value=favorites_count icon="favorite" icon_color="text-red-400 fill-current" %}
       {% include "components/stat_card.html" %}
     {% endwith %}
 
-    {% with title="Lists" value=lists_count|default:0 icon="stacks" icon_color="text-primary" %}
+    {% trans "Lists" as lists_title %}
+    {% with title=lists_title value=lists_count|default:0 icon="stacks" icon_color="text-primary" %}
       {% include "components/stat_card.html" %}
     {% endwith %}
 
@@ -80,11 +85,11 @@ window.contentInLists = [];
 
           <div>
             <h2 class="text-2xl font-bold text-white tracking-tight">
-              Continue Watching
+              {% trans "Continue Watching" %}
             </h2>
 
             <p class="text-sm text-text-secondary mt-1">
-              Pick up where you left off.
+              {% trans "Pick up where you left off." %}
             </p>
           </div>
 
@@ -105,7 +110,7 @@ window.contentInLists = [];
         {% endif %}
 
         {% if not continue_watching_movies and not continue_watching_series %}
-          <p class="text-text-secondary text-center py-8">Nothing to continue. Start watching something!</p>
+          <p class="text-text-secondary text-center py-8">{% trans "Nothing to continue. Start watching something!" %}</p>
         {% endif %}
 
       </div>
@@ -129,11 +134,11 @@ window.contentInLists = [];
 
           <div>
             <h2 class="text-2xl font-bold text-white tracking-tight">
-              Favorites
+              {% trans "Favorites" %}
             </h2>
 
             <p class="text-sm text-text-secondary mt-1">
-              Your all-time favorite titles.
+              {% trans "Your all-time favorite titles." %}
             </p>
           </div>
 
@@ -154,7 +159,7 @@ window.contentInLists = [];
         {% endif %}
 
         {% if not favorite_movies and not favorite_series %}
-          <p class="text-text-secondary text-center py-8">No favorites yet. Start adding your favorite titles!</p>
+          <p class="text-text-secondary text-center py-8">{% trans "No favorites yet. Start adding your favorite titles!" %}</p>
         {% endif %}
 
       </div>
@@ -178,11 +183,11 @@ window.contentInLists = [];
 
           <div>
             <h2 class="text-2xl font-bold text-white tracking-tight">
-              Completed
+              {% trans "Completed" %}
             </h2>
 
             <p class="text-sm text-text-secondary mt-1">
-              Titles you've finished watching.
+              {% trans "Titles you've finished watching." %}
             </p>
           </div>
 
@@ -203,7 +208,7 @@ window.contentInLists = [];
         {% endif %}
 
         {% if not completed_movies and not completed_series %}
-          <p class="text-text-secondary text-center py-8">No completed titles yet.</p>
+          <p class="text-text-secondary text-center py-8">{% trans "No completed titles yet." %}</p>
         {% endif %}
 
       </div>
@@ -217,11 +222,11 @@ window.contentInLists = [];
 
         <div>
           <h2 class="text-2xl font-bold text-white tracking-tight">
-            Your Lists
+            {% trans "Your Lists" %}
           </h2>
 
           <p class="text-sm text-text-secondary mt-1">
-            Personal collections created by you.
+            {% trans "Personal collections created by you." %}
           </p>
         </div>
 
@@ -229,7 +234,7 @@ window.contentInLists = [];
           class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-surface-highlight text-white text-sm font-semibold transition-all flex items-center gap-2"
         >
           <span class="material-symbols-outlined text-sm">add</span>
-          New List
+          {% trans "New List" %}
         </button>
 
       </div>
@@ -249,19 +254,19 @@ window.contentInLists = [];
                 <div class="min-w-0">
                   <h3 class="text-white font-bold text-sm leading-snug break-words">{{ list.name }}</h3>
                   <p class="text-xs text-text-secondary mt-0.5">
-                    {{ list.item_count }} title{{ list.item_count|pluralize }}
+                    {% blocktrans count counter=list.item_count %}{{ counter }} title{% plural %}{{ counter }} titles{% endblocktrans %}
                   </p>
                 </div>
               </div>
               <div class="flex items-center gap-1 flex-shrink-0 ml-2">
                 <button onclick="event.stopPropagation(); openRenameListModal({{ list.id }}, '{{ list.name|escapejs }}')"
                         class="p-2 rounded-lg hover:bg-white/5 text-text-secondary hover:text-white transition-all"
-                        title="Rename list">
+                        title="{% trans 'Rename list' %}">
                   <span class="material-symbols-outlined text-sm">edit</span>
                 </button>
                 <button onclick="event.stopPropagation(); confirmDeleteList({{ list.id }})"
                         class="p-2 rounded-lg hover:bg-red-500/10 text-text-secondary hover:text-red-400 transition-all"
-                        title="Delete list">
+                        title="{% trans 'Delete list' %}">
                   <span class="material-symbols-outlined text-sm">delete</span>
                 </button>
               </div>
@@ -277,11 +282,11 @@ window.contentInLists = [];
                 <span class="text-xs text-slate-300 font-medium truncate">{{ item.title }}</span>
               </div>
               {% empty %}
-              <p class="text-xs text-text-secondary italic">No items yet — start adding content!</p>
+              <p class="text-xs text-text-secondary italic">{% trans "No items yet — start adding content!" %}</p>
               {% endfor %}
               {% if list.item_count > 3 %}
               <div class="mt-1.5 text-xs text-primary font-semibold">
-                +{{ list.item_count|add:"-3" }} more title{{ list.item_count|add:"-3"|pluralize }}
+                {% blocktrans with extra=list.item_count|add:"-3" count counter=list.item_count|add:"-3" %}+{{ extra }} more title{% plural %}+{{ extra }} more titles{% endblocktrans %}
               </div>
               {% endif %}
             </div>
@@ -293,10 +298,10 @@ window.contentInLists = [];
             <div class="size-20 rounded-full bg-surface-highlight mx-auto flex items-center justify-center mb-6">
               <span class="material-symbols-outlined text-4xl text-text-secondary">playlist_add</span>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">No lists yet</h3>
-            <p class="text-text-secondary mb-6">Create your first list to organize your favorite content</p>
+            <h3 class="text-xl font-bold text-white mb-2">{% trans "No lists yet" %}</h3>
+            <p class="text-text-secondary mb-6">{% trans "Create your first list to organize your favorite content" %}</p>
             <button onclick="openCreateListModal()" class="px-6 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/80 transition-all">
-              Create your first list
+              {% trans "Create your first list" %}
             </button>
           </div>
         {% endif %}
