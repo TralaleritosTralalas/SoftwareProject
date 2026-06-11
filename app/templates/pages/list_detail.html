@@ -1,6 +1,6 @@
 {% extends "base/base.html" %}
-
-{% block title %}{{ list_name }} · StreamSync{% endblock %}
+{% load i18n %}
+{% block title %}StreamSync {% trans "List Detail" %}{% endblock %}
 
 {% block extra_scripts %}
 {% load static %}
@@ -41,7 +41,7 @@ window.contentInLists = [{{ list_id }}];
             </h1>
 
             <p class="text-text-secondary text-sm mt-1">
-              {{ item_count }} title{{ item_count|pluralize }}
+              {% blocktrans count counter=item_count %}{{ counter }} title{% plural %}{{ counter }} titles{% endblocktrans %}
             </p>
           </div>
         </div>
@@ -52,13 +52,13 @@ window.contentInLists = [{{ list_id }}];
           class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-surface-highlight text-white text-sm font-semibold transition-all flex items-center gap-2"
         >
           <span class="material-symbols-outlined text-sm">edit</span>
-          Rename
+          {% trans "Rename" %}
         </button>
         <button onclick="confirmDeleteList({{ list_id }})"
           class="h-10 px-4 rounded-xl border border-white/10 bg-surface-dark hover:bg-red-500/20 hover:text-red-400 text-white text-sm font-semibold transition-all flex items-center gap-2"
         >
           <span class="material-symbols-outlined text-sm">delete</span>
-          Delete
+          {% trans "Delete" %}
         </button>
       </div>
     </section>
@@ -74,10 +74,10 @@ window.contentInLists = [{{ list_id }}];
         </div>
         <div>
           <h2 class="text-2xl font-bold text-white tracking-tight">
-            Movies
+            {% trans "Movies" %}
           </h2>
           <p class="text-sm text-text-secondary mt-1">
-            {{ movies|length }} title{{ movies|length|pluralize }}
+            {% blocktrans count counter=movies|length %}{{ counter }} title{% plural %}{{ counter }} titles{% endblocktrans %}
           </p>
         </div>
       </div>
@@ -99,10 +99,10 @@ window.contentInLists = [{{ list_id }}];
         </div>
         <div>
           <h2 class="text-2xl font-bold text-white tracking-tight">
-            Series
+            {% trans "Series" %}
           </h2>
           <p class="text-sm text-text-secondary mt-1">
-            {{ series|length }} title{{ series|length|pluralize }}
+            {% blocktrans count counter=series|length %}{{ counter }} title{% plural %}{{ counter }} titles{% endblocktrans %}
           </p>
         </div>
       </div>
@@ -119,10 +119,10 @@ window.contentInLists = [{{ list_id }}];
       <div class="size-20 rounded-full bg-surface-highlight mx-auto flex items-center justify-center mb-6">
         <span class="material-symbols-outlined text-4xl text-text-secondary">playlist_remove</span>
       </div>
-      <h3 class="text-xl font-bold text-white mb-2">This list is empty</h3>
-      <p class="text-text-secondary mb-6">Start adding movies and series to this list from their detail pages.</p>
+      <h3 class="text-xl font-bold text-white mb-2">{% trans "This list is empty" %}</h3>
+      <p class="text-text-secondary mb-6">{% trans "Start adding movies and series to this list from their detail pages." %}</p>
       <a href="{% url 'app:main' %}" class="px-6 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary/80 transition-all">
-        Browse content
+        {% trans "Browse content" %}
       </a>
     </section>
     {% endif %}

@@ -1,6 +1,7 @@
 {% extends "base/base.html" %}
+{% load i18n %}
 
-{% block title %}StreamSync Dashboard{% endblock %}
+{% block title %}StreamSync {% trans "Settings" %}{% endblock %}
 
 {% block content %}
 
@@ -91,11 +92,11 @@
 
                             <div>
                                 <h3 class="text-2xl font-bold">
-                                    Account Settings
+                                    {% trans "Account Settings" %}
                                 </h3>
 
                                 <p class="text-sm text-on-surface-variant mt-1">
-                                    Manage your profile information and preferences.
+                                    {% trans "Manage your profile information and preferences." %}
                                 </p>
                             </div>
 
@@ -111,7 +112,7 @@
                                 </span>
 
                                 <span class="font-medium">
-                                    Edit Profile
+                                    {% trans "Edit Profile" %}
                                 </span>
 
                             </button>
@@ -127,7 +128,7 @@
                                 <div class="space-y-2">
 
                                     <label class="text-sm text-on-surface-variant">
-                                        First Name
+                                        {% trans "First Name" %}
                                     </label>
 
                                     <input
@@ -143,7 +144,7 @@
                                 <div class="space-y-2">
 
                                     <label class="text-sm text-on-surface-variant">
-                                        Last Name
+                                        {% trans "Last Name" %}
                                     </label>
 
                                     <input
@@ -159,7 +160,7 @@
                                 <div class="space-y-2">
 
                                     <label class="text-sm text-on-surface-variant">
-                                        Username
+                                        {% trans "Username" %}
                                     </label>
 
                                     <input
@@ -175,7 +176,7 @@
                                 <div class="space-y-2">
 
                                     <label class="text-sm text-on-surface-variant">
-                                        Country
+                                        {% trans "Country" %}
                                     </label>
 
                                     <select
@@ -197,7 +198,7 @@
                             <div class="space-y-2 md:col-span-2">
 
                                 <label class="text-sm text-on-surface-variant">
-                                    Gender
+                                    {% trans "Gender" %}
                                 </label>
 
                                 <input type="hidden" name="gender" id="selected-gender" value="{{ user.gender|default:'' }}">
@@ -205,19 +206,19 @@
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 
                                     <button type="button" onclick="selectGender('male')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'male' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
-                                        Male
+                                        {% trans "Male" %}
                                     </button>
 
                                     <button type="button" onclick="selectGender('female')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'female' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
-                                        Female
+                                        {% trans "Female" %}
                                     </button>
 
                                     <button type="button" onclick="selectGender('non-binary')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'non-binary' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
-                                        Non-binary
+                                        {% trans "Non-binary" %}
                                     </button>
 
                                     <button type="button" onclick="selectGender('other')" class="gender-btn p-3 rounded-2xl {% if user.gender == 'other' %}bg-primary text-white{% else %}bg-background-dark border border-outline-variant text-on-surface-variant opacity-70{% endif %} font-medium cursor-not-allowed transition-all">
-                                        Other
+                                        {% trans "Other" %}
                                     </button>
 
                                 </div>
@@ -230,7 +231,7 @@
                         <div class="space-y-2 mb-8">
 
                             <label class="text-sm text-on-surface-variant">
-                                Bio
+                                {% trans "Bio" %}
                             </label>
 
                             <textarea
@@ -255,7 +256,7 @@
                                 onclick="cancelProfileEdit()"
                                 class="px-6 py-3 text-on-surface-variant hover:text-white transition-colors">
 
-                                Cancel
+                                {% trans "Cancel" %}
 
                             </button>
 
@@ -263,7 +264,7 @@
                                 type="submit"
                                 class="px-8 py-3 bg-primary hover:bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all">
 
-                                Save Changes
+                                {% trans "Save Changes" %}
 
                             </button>
 
@@ -301,11 +302,11 @@
                             <div>
 
                                 <h3 class="text-2xl font-bold">
-                                    Security
+                                    {% trans "Security" %}
                                 </h3>
 
                                 <p class="text-sm text-on-surface-variant mt-1">
-                                    Manage your password and security preferences.
+                                    {% trans "Manage your password and security preferences." %}
                                 </p>
 
                             </div>
@@ -321,7 +322,7 @@
                                 </span>
 
                                 <span class="font-medium">
-                                    Change Password
+                                    {% trans "Change Password" %}
                                 </span>
 
                             </button>
@@ -335,7 +336,7 @@
                             <div class="space-y-2">
 
                                 <label class="text-sm text-on-surface-variant">
-                                    Current Password
+                                    {% trans "Current Password" %}
                                 </label>
 
                                 <input
@@ -353,14 +354,14 @@
                                 <div class="space-y-2">
 
                                     <label class="text-sm text-on-surface-variant">
-                                        New Password
+                                        {% trans "New Password" %}
                                     </label>
 
                                     <input
                                         disabled
                                         type="password"
                                         name="new_password"
-                                        placeholder="Enter new password"
+                                        placeholder="{% trans 'Enter new password' %}"
                                         class="security-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"/>
 
                                 </div>
@@ -368,14 +369,14 @@
                                 <div class="space-y-2">
 
                                     <label class="text-sm text-on-surface-variant">
-                                        Confirm Password
+                                        {% trans "Confirm Password" %}
                                     </label>
 
                                     <input
                                         disabled
                                         type="password"
                                         name="confirm_password"
-                                        placeholder="Confirm new password"
+                                        placeholder="{% trans 'Confirm new password' %}"
                                         class="security-field w-full p-4 rounded-2xl bg-background-dark/60 border border-outline-variant text-on-surface-variant cursor-not-allowed transition-all"/>
 
                                     <div id="password-match" class="text-[11px] text-on-surface-variant mt-2 hidden">
@@ -389,13 +390,13 @@
                             <!-- PASSWORD FEEDBACK -->
                             <div id="password-feedback" class="space-y-1 mt-2">
                                 <p class="text-[11px] text-on-surface-variant">
-                                    <span id="length-check">○</span> At least 8 characters
+                                    <span id="length-check">○</span> {% trans "At least 8 characters" %}
                                 </p>
                                 <p class="text-[11px] text-on-surface-variant">
-                                    <span id="common-check">○</span> Not a commonly used password
+                                    <span id="common-check">○</span> {% trans "Not a commonly used password" %}
                                 </p>
                                 <p class="text-[11px] text-on-surface-variant">
-                                    <span id="number-check">○</span> Not entirely numeric
+                                    <span id="number-check">○</span> {% trans "Not entirely numeric" %}
                                 </p>
                             </div>
 
@@ -408,7 +409,7 @@
                                     href="#"
                                     class="text-sm text-primary hover:underline">
 
-                                    Forgot your password?
+                                    {% trans "Forgot your password?" %}
 
                                 </a>
 
@@ -418,7 +419,7 @@
                                     value="change_password"
                                     class="px-8 py-3 bg-white text-black rounded-2xl font-bold hover:bg-slate-200 transition-all">
 
-                                    Update Password
+                                    {% trans "Update Password" %}
 
                                 </button>
 
@@ -444,35 +445,19 @@
                             analytics
                         </span>
 
-                        Your Activity
+                        {% trans "Your Activity" %}
 
                     </h4>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="p-5 bg-background-dark rounded-2xl border border-outline-variant text-center">
 
-                        <div class="p-5 bg-background-dark rounded-2xl border border-outline-variant text-center">
+                        <p class="text-3xl font-bold">
+                            {{ completed_count }}
+                        </p>
 
-                            <p class="text-3xl font-bold">
-                                {{ completed_count }}
-                            </p>
-
-                            <p class="text-[10px] uppercase tracking-wider text-on-surface-variant mt-1">
-                                Watched
-                            </p>
-
-                        </div>
-
-                        <div class="p-5 bg-background-dark rounded-2xl border border-outline-variant text-center">
-
-                            <p class="text-3xl font-bold">
-                                24
-                            </p>
-
-                            <p class="text-[10px] uppercase tracking-wider text-on-surface-variant mt-1">
-                                Reviews
-                            </p>
-
-                        </div>
+                        <p class="text-[10px] uppercase tracking-wider text-on-surface-variant mt-1">
+                            {% trans "Watched" %}
+                        </p>
 
                     </div>
 
@@ -487,18 +472,18 @@
                             delete_forever
                         </span>
 
-                        Danger Zone
+                        {% trans "Danger Zone" %}
 
                     </h4>
 
                     <p class="text-sm text-on-surface-variant mb-5">
-                        Once you delete your account, there is no going back. Please be certain.
+                        {% trans "Once you delete your account, there is no going back. Please be certain." %}
                     </p>
 
                     <button type="button" onclick="showDeleteModal()"
                             class="w-full px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold transition-all flex items-center justify-center gap-2">
                         <span class="material-symbols-outlined text-[20px]">delete</span>
-                        Delete Account
+                        {% trans "Delete Account" %}
                     </button>
 
                 </div>
@@ -514,11 +499,10 @@
                             <span class="material-symbols-outlined text-6xl text-red-500">delete_forever</span>
                         </div>
 
-                        <h3 class="text-2xl font-bold text-center mb-2">Delete Account</h3>
+                        <h3 class="text-2xl font-bold text-center mb-2">{% trans "Delete Account" %}</h3>
 
                         <p class="text-sm text-on-surface-variant text-center mb-8">
-                            Are you sure you want to delete your account? This action cannot be undone.
-                            All your data will be permanently removed.
+                            {% trans "Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently removed." %}
                         </p>
 
                         <form method="POST" action="{% url 'app:delete_account' %}">
@@ -526,11 +510,11 @@
                             <div class="flex gap-4">
                                 <button type="button" onclick="closeDeleteModal()"
                                         class="flex-1 px-6 py-3 rounded-2xl border border-outline-variant text-on-surface-variant hover:text-white transition-all font-medium">
-                                    Cancel
+                                    {% trans "Cancel" %}
                                 </button>
                                 <button type="submit"
                                         class="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold transition-all">
-                                    Yes, delete my account
+                                    {% trans "Yes, delete my account" %}
                                 </button>
                             </div>
                         </form>
@@ -558,7 +542,7 @@
             <span class="material-symbols-outlined text-5xl text-primary">photo_camera</span>
         </div>
 
-        <h3 class="text-2xl font-bold text-center mb-6">Adjust profile picture</h3>
+        <h3 class="text-2xl font-bold text-center mb-6">{% trans "Adjust profile picture" %}</h3>
 
         <div class="flex items-center justify-center mb-8">
             <img id="modal-preview" class="max-h-80 max-w-full rounded-2xl object-contain bg-black/20" />
@@ -568,12 +552,12 @@
 
             <button type="button" onclick="closeAvatarModal()"
                     class="flex-1 px-6 py-3 rounded-2xl border border-outline-variant text-on-surface-variant hover:text-white transition-all font-medium">
-                Cancel
+                {% trans "Cancel" %}
             </button>
 
             <button type="button" onclick="uploadAvatar()" id="save-avatar-btn"
                     class="flex-1 px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
-                <span id="save-avatar-text">Save</span>
+                <span id="save-avatar-text">{% trans "Save" %}</span>
                 <span id="save-avatar-spinner" class="hidden">
                     <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -629,7 +613,7 @@ function uploadAvatar() {
     const text = document.getElementById('save-avatar-text');
     const spinner = document.getElementById('save-avatar-spinner');
     btn.disabled = true;
-    text.textContent = 'Saving...';
+    text.textContent = '{% trans "Saving..." %}';
     spinner.classList.remove('hidden');
 
     const formData = new FormData();
@@ -650,15 +634,15 @@ function uploadAvatar() {
             document.getElementById('profile-preview').src = data.url;
             closeAvatarModal();
         } else {
-            alert('Error: ' + (data.error || 'Unknown error'));
+            alert('{% trans "Error:" %} ' + (data.error || '{% trans "Unknown error" %}'));
         }
     })
     .catch(err => {
-        alert('Error uploading image: ' + err.message);
+        alert('{% trans "Error uploading image:" %} ' + err.message);
     })
     .finally(() => {
         btn.disabled = false;
-        text.textContent = 'Save';
+        text.textContent = '{% trans "Save" %}';
         spinner.classList.add('hidden');
     });
 }
@@ -705,7 +689,7 @@ function toggleEditProfile() {
         }
     });
 
-    editBtn.querySelector('span:last-child').textContent = isEditing ? 'Cancel' : 'Edit Profile';
+    editBtn.querySelector('span:last-child').textContent = isEditing ? '{% trans "Cancel" %}' : '{% trans "Edit Profile" %}';
 
     actions.classList.toggle('hidden');
 
@@ -836,12 +820,12 @@ function validateConfirmPassword() {
 
     if (pwd1 === pwd2 && pwd1.length > 0) {
         matchIcon.textContent = '✓';
-        matchText.textContent = 'Passwords match';
+        matchText.textContent = '{% trans "Passwords match" %}';
         matchIcon.className = 'text-green-500';
         matchText.className = 'text-green-500';
     } else {
         matchIcon.textContent = '✗';
-        matchText.textContent = 'Passwords do not match';
+        matchText.textContent = '{% trans "Passwords do not match" %}';
         matchIcon.className = 'text-red-500';
         matchText.className = 'text-red-500';
     }

@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Rename List Modal — incluir en personal_library.html y list_detail.html #}
 {# Requiere watchlist.js (initRenameModal / openRenameListModal / closeRenameModal) #}
 <div id="rename-list-modal" class="fixed inset-0 z-[110] hidden" data-list-id="">
@@ -18,8 +19,8 @@
                 <span class="material-symbols-outlined">edit</span>
             </div>
             <div>
-                <h2 class="text-lg font-bold text-white leading-tight">Rename List</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Enter a new name for this list.</p>
+                <h2 class="text-lg font-bold text-white leading-tight">{% trans "Rename List" %}</h2>
+                <p class="text-xs text-slate-400 mt-0.5">{% trans "Enter a new name for this list." %}</p>
             </div>
             <button onclick="closeRenameModal()"
                     class="ml-auto p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors">
@@ -32,7 +33,7 @@
             <input
                 type="text"
                 id="rename-list-input"
-                placeholder="List name…"
+                placeholder="{% trans 'List name…' %}"
                 maxlength="200"
                 autocomplete="off"
                 class="w-full px-4 py-3 rounded-xl
@@ -47,11 +48,11 @@
             <div class="flex gap-3 pt-1">
                 <button type="button" id="rename-cancel-btn"
                         class="flex-1 py-2.5 rounded-xl border border-white/10 text-slate-300 text-sm font-semibold hover:bg-white/5 transition-colors">
-                    Cancel
+                    {% trans "Cancel" %}
                 </button>
                 <button type="submit"
                         class="flex-1 py-2.5 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary/85 transition-colors shadow-lg shadow-primary/20">
-                    Rename
+                    {% trans "Rename" %}
                 </button>
             </div>
         </form>
