@@ -1,5 +1,6 @@
 {% extends "base/initial.html" %}
 {% load static %}
+{% load i18n %}
 {% block content %}
 <style>
     .glass-panel {
@@ -15,9 +16,9 @@
         <div class="z-10 w-full max-w-[540px] px-8">
             <div class="flex flex-col items-center mb-10">
                 <div class="flex items-center gap-4 mb-4">
-                    <h1 class="text-4xl font-bold tracking-tight text-white">Create Account</h1>
+                    <h1 class="text-4xl font-bold tracking-tight text-white">{% trans "Create Account" %}</h1>
                 </div>
-                <p class="text-slate-400 text-center text-lg">Join StreamSync to start watching</p>
+                <p class="text-slate-400 text-center text-lg">{% trans "Join StreamSync to start watching" %}</p>
             </div>
 
             <div class="glass-panel rounded-2xl p-10 shadow-2xl">
@@ -25,7 +26,7 @@
                     <div class="mb-6 flex flex-col gap-2 bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-400 text-sm">
                         <div class="flex items-center gap-3 font-semibold">
                             <span class="material-symbols-outlined text-2xl">error</span>
-                            <span>Please correct the errors below</span>
+                            <span>{% trans "Please correct the errors below" %}</span>
                         </div>
                     </div>
                 {% endif %}
@@ -35,7 +36,7 @@
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1">
-                            <label class="text-sm font-medium text-slate-300 ml-1">First Name</label>
+                            <label class="text-sm font-medium text-slate-300 ml-1">{% trans "First Name" %}</label>
                             <div class="relative django-input-container">
                                 {{ form.first_name }}
                             </div>
@@ -45,7 +46,7 @@
                         </div>
 
                         <div class="flex flex-col gap-1">
-                            <label class="text-sm font-medium text-slate-300 ml-1">Last Name</label>
+                            <label class="text-sm font-medium text-slate-300 ml-1">{% trans "Last Name" %}</label>
                             <div class="relative django-input-container">
                                 {{ form.last_name }}
                             </div>
@@ -56,18 +57,18 @@
                     </div>
 
                     <div class="flex flex-col gap-1">
-                        <label class="text-sm font-medium text-slate-300 ml-1">Username</label>
+                        <label class="text-sm font-medium text-slate-300 ml-1">{% trans "Username" %}</label>
                         <div class="relative django-input-container">
                             {{ form.username }}
                         </div>
-                        <p class="text-[11px] text-slate-400 ml-1 leading-tight">Required. 150 characters or fewer.</p>
+                        <p class="text-[11px] text-slate-400 ml-1 leading-tight">{% trans "Required. 150 characters or fewer." %}</p>
                         {% for error in form.username.errors %}
                             <p class="text-xs text-red-500 error-message ml-1 mt-1">{{ error }}</p>
                         {% endfor %}
                     </div>
 
                     <div class="flex flex-col gap-1">
-                        <label class="text-sm font-medium text-slate-300 ml-1">Email Address</label>
+                        <label class="text-sm font-medium text-slate-300 ml-1">{% trans "Email Address" %}</label>
                         <div class="relative django-input-container">
                             {{ form.email }}
                         </div>
@@ -77,19 +78,19 @@
                     </div>
 
                     <div class="flex flex-col gap-1">
-                        <label class="text-sm font-medium text-slate-300 ml-1">Password</label>
+                        <label class="text-sm font-medium text-slate-300 ml-1">{% trans "Password" %}</label>
                         <div class="relative django-input-container">
                             {{ form.password1 }}
                         </div>
                         <div id="password1-feedback" class="space-y-1 mt-1 ml-1">
                             <p class="text-[11px] text-slate-400">
-                                <span id="length-check">○</span> At least 8 characters
+                                <span id="length-check">○</span> {% trans "At least 8 characters" %}
                             </p>
                             <p class="text-[11px] text-slate-400">
-                                <span id="common-check">○</span> Not a commonly used password
+                                <span id="common-check">○</span> {% trans "Not a commonly used password" %}
                             </p>
                             <p class="text-[11px] text-slate-400">
-                                <span id="number-check">○</span> Not entirely numeric
+                                <span id="number-check">○</span> {% trans "Not entirely numeric" %}
                             </p>
                         </div>
                         {% for error in form.password1.errors %}
@@ -98,7 +99,7 @@
                     </div>
 
                     <div class="flex flex-col gap-1">
-                        <label class="text-sm font-medium text-slate-300 ml-1">Confirm Password</label>
+                        <label class="text-sm font-medium text-slate-300 ml-1">{% trans "Confirm Password" %}</label>
                         <div class="relative django-input-container">
                             {{ form.password2 }}
                         </div>
@@ -110,13 +111,15 @@
                         {% endfor %}
                     </div>
 
+                    {% url 'terms_of_service' as terms_url %}
+                    {% url 'privacy_policy' as privacy_url %}
                     <div class="space-y-3 pt-2">
                         <div class="flex items-start gap-3">
                             <div class="flex items-center h-5 mt-0.5">
                                 {{ form.terms_of_service }}
                             </div>
                             <label for="id_terms_of_service" class="text-sm text-slate-400 select-none cursor-pointer leading-tight">
-                                I agree to the <a href="{% url 'terms_of_service' %}" target="_blank" class="text-primary hover:underline">Terms of Service</a>
+                                {% blocktrans with terms_url=terms_url %}I agree to the <a href="{{ terms_url }}" target="_blank" class="text-primary hover:underline">Terms of Service</a>{% endblocktrans %}
                             </label>
                         </div>
                         {% for error in form.terms_of_service.errors %}
@@ -128,7 +131,7 @@
                                 {{ form.privacy_policy }}
                             </div>
                             <label for="id_privacy_policy" class="text-sm text-slate-400 select-none cursor-pointer leading-tight">
-                                I agree to the <a href="{% url 'privacy_policy' %}" target="_blank" class="text-primary hover:underline">Privacy Policy</a>
+                                {% blocktrans with privacy_url=privacy_url %}I agree to the <a href="{{ privacy_url }}" target="_blank" class="text-primary hover:underline">Privacy Policy</a>{% endblocktrans %}
                             </label>
                         </div>
                         {% for error in form.privacy_policy.errors %}
@@ -138,7 +141,7 @@
 
                     <div class="pt-4">
                         <button type="submit" id="submit-btn" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 px-6 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-3 group text-xl disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                            Create Account
+                            {% trans "Create Account" %}
                             <span class="material-symbols-outlined text-2xl transition-transform group-hover:translate-x-1">arrow_forward</span>
                         </button>
                     </div>
@@ -146,8 +149,8 @@
 
                 <div class="mt-10 pt-8 border-t border-slate-800/50 flex flex-col items-center gap-5">
                     <p class="text-base text-slate-400">
-                        Already have an account?
-                        <a class="text-primary font-semibold hover:text-blue-400 ml-1" href="{% url 'login' %}">Log in here</a>
+                        {% trans "Already have an account?" %}
+                        <a class="text-primary font-semibold hover:text-blue-400 ml-1" href="{% url 'login' %}">{% trans "Log in here" %}</a>
                     </p>
                 </div>
             </div>
@@ -169,13 +172,13 @@
             if (input.name === 'password1' || input.name === 'password2') {
                 input.placeholder = "••••••••";
             } else if (input.name === 'email') {
-                input.placeholder = "Enter your email";
+                input.placeholder = "{% trans 'Enter your email' %}";
             } else if (input.name === 'username') {
-                input.placeholder = "Enter your username";
+                input.placeholder = "{% trans 'Enter your username' %}";
             } else if (input.name === 'first_name') {
-                input.placeholder = "First Name";
+                input.placeholder = "{% trans 'First Name' %}";
             } else if (input.name === 'last_name') {
-                input.placeholder = "Last Name";
+                input.placeholder = "{% trans 'Last Name' %}";
             }
         });
 
