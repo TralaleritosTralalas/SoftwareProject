@@ -196,6 +196,14 @@
         type: '{{ content.content_type|default:"movie" }}',
         userStatus: '{{ user_status|default:"not_seen" }}'
       };
+      window.API_URLS = {
+        toggleFavorite: "{% url 'app:toggle_favorite' ctype=content.content_type cid=content.unique_id %}",
+        updateStatus: "{% url 'app:update_status' ctype=content.content_type cid=content.unique_id %}",
+        addToList: "{% url 'app:add_to_list' ctype=content.content_type cid=content.unique_id list_id=99999 %}",
+        removeFromList: "{% url 'app:remove_from_list' ctype=content.content_type cid=content.unique_id list_id=99999 %}",
+        getLists: "{% url 'app:get_user_lists' %}",
+        createList: "{% url 'app:create_list' %}",
+      };
       window.contentInLists = {% firstof content_in_lists "[]" %};
     </script>
     <script src="{% static 'js/content.js' %}"></script>
