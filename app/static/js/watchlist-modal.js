@@ -59,7 +59,7 @@ function loadWatchlistLists() {
         </div>
     `;
     
-    fetch(window.API_URLS.getLists)
+    fetch(watchlistApiUrl('getLists'))
         .then(r => r.json())
         .then(data => {
             if (data.success && data.lists.length > 0) {
@@ -196,7 +196,7 @@ function createNewList() {
         return;
     }
     
-    fetch(window.API_URLS.createList, {
+    fetch(watchlistApiUrl('createList'), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
