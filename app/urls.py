@@ -11,6 +11,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('redirect/',views.login_redirect, name='login_redirect'),
     path('content/<str:ctype>/<str:cid>/', views.content_detail, name='content_detail'),
+    path('redirect-simulation/', views.redirect_simulation, name='redirect_simulation'),
     path('content/<str:ctype>/<str:cid>/update-status/', views.update_status, name='update_status'),
     path('content/<str:ctype>/<str:cid>/toggle-favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('content/<str:ctype>/<str:cid>/add-to-list/<int:list_id>/', views.add_to_list, name='add_to_list'),

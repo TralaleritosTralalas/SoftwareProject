@@ -4,6 +4,8 @@
 {% block title %}StreamSync {% trans "Manager Dashboard" %}{% endblock %}
 
 {% block content %}
+    {% trans "All Countries" as all_countries_text %}
+    {% trans "All Genres" as all_genres_text %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <div class="flex min-h-screen font-display text-slate-100 bg-transparent">
@@ -25,11 +27,11 @@
 
                     <div class="grid grid-cols-3 gap-2 bg-slate-950/60 p-1 rounded-2xl border border-slate-800/50">
                         <button type="button" onclick="setQuickRange('24h')"
-                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '24h' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">24H</button>
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '24h' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">{% trans "24H" %}</button>
                         <button type="button" onclick="setQuickRange('7d')"
-                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '7d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">7D</button>
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '7d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">{% trans "7D" %}</button>
                         <button type="button" onclick="setQuickRange('30d')"
-                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '30d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">30D</button>
+                                class="py-2 rounded-xl text-[9px] font-bold transition-all {% if filters.range == '30d' %}bg-primary text-white shadow-lg{% else %}text-slate-500 hover:text-slate-300{% endif %}">{% trans "30D" %}</button>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 bg-slate-950/60 p-1.5 rounded-2xl border border-slate-800/50">
