@@ -205,7 +205,7 @@
         getLists: "{% url 'app:get_user_lists' %}",
         createList: "{% url 'app:create_list' %}",
       };
-      window.contentInLists = {% firstof content_in_lists "[]" %};
+      window.contentInLists = JSON.parse('{{ content_in_lists|default:"[]" }}');
     </script>
     <script src="{% static 'js/content.js' %}"></script>
 {% endblock %}
