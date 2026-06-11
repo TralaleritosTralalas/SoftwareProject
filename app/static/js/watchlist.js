@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function loadUserLists() {
-    fetch(`/${window.LANG_PREFIX}/api/watchlist/lists/`)
+    fetch('/api/watchlist/lists/')
         .then(r => r.json())
         .then(data => {
             if (data.success) {
@@ -33,7 +33,7 @@ function openCreateListModal() {
 }
 
 function createList(name) {
-    fetch(`/${window.LANG_PREFIX}/api/watchlist/lists/create/`, {
+    fetch('/api/watchlist/lists/create/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 function renameList(listId, newName) {
-    fetch(`/${window.LANG_PREFIX}/api/watchlist/lists/${listId}/rename/`, {
+    fetch(`/api/watchlist/lists/${listId}/rename/`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ function renameList(listId, newName) {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            window.location.href = `/${window.LANG_PREFIX}/personal_library/`;
+            window.location.href = '/personal_library/';
         } else {
             const errorEl = document.getElementById('rename-list-error');
             if (errorEl) {
@@ -139,7 +139,7 @@ function confirmDeleteList(listId) {
 }
 
 function deleteList(listId) {
-    fetch(`/${window.LANG_PREFIX}/api/watchlist/lists/${listId}/`, {
+    fetch(`/api/watchlist/lists/${listId}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ function deleteList(listId) {
     .then(r => r.json())
     .then(data => {
         if (data.success) {
-            window.location.href = `/${window.LANG_PREFIX}/personal_library/`;
+            window.location.href = '/personal_library/';
         } else {
             alert(data.error || 'Failed to delete list');
         }
@@ -161,5 +161,5 @@ function deleteList(listId) {
 }
 
 function openListDetail(listId) {
-    window.location.href = `/${window.LANG_PREFIX}/personal_library/list/${listId}/`;
+    window.location.href = `/personal_library/list/${listId}/`;
 }

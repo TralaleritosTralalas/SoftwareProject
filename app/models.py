@@ -5,7 +5,6 @@ from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
 from django.utils import timezone
 from datetime import date
-from cloudinary.models import CloudinaryField
 
 
 class User(AbstractUser):
@@ -27,7 +26,7 @@ class User(AbstractUser):
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES, null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True, verbose_name="Fecha de Nacimiento")
     country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="País")
-    profile_picture = CloudinaryField('image', default='default_profile')
+    profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True, verbose_name="Foto de Perfil")
     bio = models.TextField(null=True, blank=True, verbose_name="Biografía")
     onboarding_completed = models.BooleanField(default=False)
     favorite_genres = models.ManyToManyField('Genre', blank=True, related_name='users')

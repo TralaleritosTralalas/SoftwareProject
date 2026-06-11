@@ -59,7 +59,7 @@ function loadWatchlistLists() {
         </div>
     `;
     
-    fetch(watchlistApiUrl('getLists'))
+    fetch('/api/watchlist/lists/')
         .then(r => r.json())
         .then(data => {
             if (data.success && data.lists.length > 0) {
@@ -146,8 +146,8 @@ function toggleListContent(listId, btnElement) {
     }
     
     const url = isInList 
-        ? window.API_URLS.removeFromList.replace('99999', listId)
-        : window.API_URLS.addToList.replace('99999', listId);
+        ? `/content/${contentType}/${contentId}/remove-from-list/${listId}/`
+        : `/content/${contentType}/${contentId}/add-to-list/${listId}/`;
     
     fetch(url, {
         method: 'POST',
@@ -196,7 +196,7 @@ function createNewList() {
         return;
     }
     
-    fetch(watchlistApiUrl('createList'), {
+    fetch('/api/watchlist/lists/create/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -214,7 +214,7 @@ function createNewList() {
                 const contentType = window.CONTENT_DATA.type;
                 const contentId = window.CONTENT_DATA.id;
                 
-                fetch(window.API_URLS.addToList.replace('99999', data.list.id), {
+                fetch(`/content/${contentType}/${contentId}/add-to-list/${data.list.id}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 <header class="sticky top-0 z-50 w-full border-b border-solid border-border-light dark:border-border-dark bg-surface-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-4">
     <div class="max-w-7xl mx-auto flex items-center justify-between h-10">
 
@@ -57,18 +58,7 @@
                     {% endif %}
                 {% endif %}
             </nav>
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
-
-    <div class="flex items-center gap-8">
-
-      <a href="{% url 'app:main' %}" class="flex items-center gap-3 text-primary">
-        <div class="size-8 rounded-lg bg-primary/20 flex items-center justify-center">
-          <span class="material-symbols-outlined text-primary text-2xl">play_circle</span>
         </div>
-        <h2 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
-          StreamSync
-        </h2>
-      </a>
 
         <div class="hidden md:flex flex-1 max-w-xl mx-8 items-center h-full">
             {% if user.role.name != 'manager' and user.role.name != 'director' and user.role.name != 'technical' %}
@@ -226,140 +216,6 @@
             {% endif %}
 
         </div>
-      <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
-        <a href="{% url 'app:catalog' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          {% trans "Full Catalog" %}
-        </a>
-        <a href="{% url 'app:movies' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          {% trans "Movies" %}
-        </a>
-        <a href="{% url 'app:series' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-          {% trans "Series" %}
-        </a>
-        {% if user.is_authenticated %}
-          <a href="{% url 'app:personal_library' %}" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-            {% trans "My List" %}
-          </a>
-        {% endif %}
-      </nav>
-
     </div>
-
-    <div class="hidden md:flex flex-1 max-w-xl mx-8">
-      <form action="{% url 'app:search' %}" method="GET" class="relative w-full group">
-
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-          <span class="material-symbols-outlined text-[20px]">search</span>
-        </div>
-        {% trans "Search movies, shows, or platforms..." as search_placeholder %}
-        <input
-          type="text"
-          name="q"
-          value="{{ request.GET.q }}"
-          placeholder="{{ search_placeholder }}"
-          class="block w-full rounded-xl border-none bg-slate-100 dark:bg-[#1e293b] py-2.5 pl-10 pr-3 text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-sm"
-        />
-
-       
-
-      </form>
-    </div>
-
-    {% get_current_language as LANGUAGE_CODE %}
-    <form action="{% url 'set_language' %}" method="post" class="flex items-center">
-        {% csrf_token %}
-        <input name="next" type="hidden" value="{{ request.path }}">
-        <div class="relative">
-            <select name="language" onchange="this.form.submit()" class="appearance-none bg-slate-100 dark:bg-[#1e293b] border-none rounded-xl py-1.5 pl-3 pr-8 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer shadow-sm">
-                <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>EN</option>
-                <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>ES</option>
-            </select>
-            <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none text-sm">expand_more</span>
-        </div>
-    </form>
-
-
-    <div class="flex items-center gap-4">
-  {% if user.is_authenticated %}
-    <div class="relative" id="notif-wrapper">
-      <button id="notif-button" class="relative p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400">
-        <span class="material-symbols-outlined">notifications</span>
-        {% if unread_count > 0 %}
-          <span id="notif-badge" class="absolute -top-0.5 -right-0.5 size-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">{{ unread_count }}</span>
-        {% endif %}
-      </button>
-      <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 origin-top-right rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl z-[60] overflow-hidden">
-        <div class="flex items-center justify-between p-3 border-b border-slate-100 dark:border-slate-800">
-          <p class="text-sm font-semibold text-slate-900 dark:text-white">Notifications</p>
-          {% if unread_count > 0 %}
-            <button id="mark-all-seen" class="text-xs text-primary font-medium hover:text-primary/80 transition-colors">
-              ✓ Mark all as read
-            </button>
-          {% endif %}
-        </div>
-        <div class="max-h-64 overflow-y-auto" id="notif-list">
-          {% for n in unread_notifications %}
-            <div class="notif-item cursor-pointer p-3 border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-start gap-3" data-id="{{ n.id }}">
-              <span class="material-symbols-outlined text-primary text-xl mt-0.5">notifications_active</span>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{{ n.message }}</p>
-              </div>
-            </div>
-          {% empty %}
-            <div class="p-8 text-center flex flex-col items-center gap-2" id="notif-empty">
-              <span class="material-symbols-outlined text-3xl text-green-500">check_circle</span>
-              <p class="text-sm text-slate-400">There are no notifications</p>
-              <p class="text-xs text-slate-500">You'll be up to date when there are new updates.</p>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-
-    <div class="h-8 w-[1px] bg-border-light dark:bg-border-dark mx-1"></div>
-
-    <div class="relative" id="user-menu-wrapper">
-      <button id="user-menu-button" class="flex items-center gap-2 rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
-        <div class="size-9 rounded-full bg-cover bg-center border border-slate-200 dark:border-slate-700"
-          style='background-image: url("{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}https://randomuser.me/api/portraits/men/32.jpg{% endif %}");'>
-        </div>
-        <span class="material-symbols-outlined text-slate-400 text-sm">expand_more</span>
-      </button>
-
-      <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-52 origin-top-right rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl z-[60] overflow-hidden">
-        <div class="p-2 flex flex-col gap-1">
-          
-          <a href="{% url 'app:personal_library' %}" class="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
-            <span class="material-symbols-outlined text-primary">video_library</span>
-            Personal Library
-          </a>
-
-          <a href="{% url 'app:user_settings' %}" class="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">
-            <span class="material-symbols-outlined text-slate-400">settings</span>
-            Settings
-          </a>
-
-          <div class="h-[1px] bg-slate-100 dark:bg-slate-800 my-1"></div>
-
-          <form action="{% url 'logout' %}" method="post" class="w-full">
-            {% csrf_token %}
-            <button type="submit" class="flex w-full items-center gap-3 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors">
-              <span class="material-symbols-outlined">logout</span>
-              Sign Out
-            </button>
-          </form>
-
-        </div>
-      </div>
-    </div>
-  {% else %}
-    <a href="{% url 'login' %}" class="text-sm font-bold text-primary px-4 py-2 rounded-xl hover:bg-primary/10 transition-colors">
-      Sign In
-    </a>
-  {% endif %}
-</div>
-
-
 </header>
-{% load static %}
 <script src="{% static 'js/navbar.js' %}"></script>
