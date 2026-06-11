@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function updateStatus(status) {
-    fetch(window.API_URLS.updateStatus, {
+    fetch(`/content/${contentType}/${contentId}/update-status/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function toggleFavorite() {
-    fetch(window.API_URLS.toggleFavorite, {
+    fetch(`/content/${contentType}/${contentId}/toggle-favorite/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
