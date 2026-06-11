@@ -126,42 +126,58 @@
             </div>
           </div>
         </div>
-        
-        <!-- Action Buttons -->
-        <button id="watchlist-btn"
-          class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 active:scale-95">
-          <span class="material-symbols-outlined text-blue-400" id="watchlist-icon">bookmark_add</span>
-          <span id="watchlist-text">{% trans "Add to Watchlist" %}</span>
-        </button>
+        {% if request.user.is_authenticated %}
+          {% if not request.user.is_superuser %}
+            <!-- Action Buttons for Authenticated Customers -->
+            <button
+              class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 active:scale-95">
+              <span class="material-symbols-outlined text-blue-400">bookmark_add</span>
+              {% trans "Add to Watchlist" %}
+            </button>
 
-        <button id="favorite-btn"
-          class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-pink-500/30 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 hover:text-pink-300 active:scale-95">
-          <span class="material-symbols-outlined text-pink-400" id="favorite-icon">{% if is_favorite %}favorite{% else %}favorite_border{% endif %}</span>
-          <span id="favorite-text">{% if is_favorite %}{% trans "Remove from Favorites" %}{% else %}{% trans "Add to Favorites" %}{% endif %}</span>
-        </button>
+            <button id="favorite-btn"
+              class="flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-pink-500/30 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 hover:text-pink-300 active:scale-95">
+              <span class="material-symbols-outlined text-pink-400" id="favorite-icon">{% if is_favorite %}favorite{% else %}favorite_border{% endif %}</span>
+              <span id="favorite-text">{% if is_favorite %}{% trans "Remove from Favorites" %}{% else %}{% trans "Add to Favorites" %}{% endif %}</span>
+            </button>
 
-        <div class="relative">
-          <button id="status-btn" type="button"
-            class="w-full flex items-center justify-between gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-purple-500/30 bg-purple-500/10 text-purple-400 active:scale-95">
-            <span class="material-symbols-outlined text-purple-400" id="status-icon">visibility_off</span>
-            <span id="status-text">{{ not_seen_text }}</span>
-            <span class="material-symbols-outlined text-purple-400">expand_more</span>
-          </button>
-          <div id="status-dropdown" class="hidden absolute top-full left-0 w-full mt-2 bg-surface-dark border border-white/10 rounded-xl overflow-hidden z-50 shadow-xl">
-            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="not_seen">
-              <span class="material-symbols-outlined text-sm">visibility_off</span>
-              {{ not_seen_text }}
-            </button>
-            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="watching">
-              <span class="material-symbols-outlined text-sm">play_circle</span>
-              {{ watching_text }}
-            </button>
-            <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="completed">
-              <span class="material-symbols-outlined text-sm">check_circle</span>
-              {{ completed_text }}
-            </button>
-          </div>
-        </div>
+            <div class="relative">
+              <button id="status-btn" type="button"
+                class="w-full flex items-center justify-between gap-3 px-6 py-3 rounded-xl font-semibold transition-all border border-purple-500/30 bg-purple-500/10 text-purple-400 active:scale-95">
+                <span class="material-symbols-outlined text-purple-400" id="status-icon">visibility_off</span>
+                <span id="status-text">{{ not_seen_text }}</span>
+                <span class="material-symbols-outlined text-purple-400">expand_more</span>
+              </button>
+              <div id="status-dropdown" class="hidden absolute top-full left-0 w-full mt-2 bg-surface-dark border border-white/10 rounded-xl overflow-hidden z-50 shadow-xl">
+                <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="not_seen">
+                  <span class="material-symbols-outlined text-sm">visibility_off</span>
+                  {{ not_seen_text }}
+                </button>
+                <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="watching">
+                  <span class="material-symbols-outlined text-sm">play_circle</span>
+                  {{ watching_text }}
+                </button>
+                <button type="button" class="w-full px-6 py-3 text-left hover:bg-white/10 text-slate-300 flex items-center gap-3 transition-colors" data-status="completed">
+                  <span class="material-symbols-outlined text-sm">check_circle</span>
+                  {{ completed_text }}
+                </button>
+              </div>
+            </div>
+          {% else %}
+            <!-- Information Panel for Superusers -->
+            <div class="flex items-center gap-3 px-6 py-4 rounded-xl font-medium border border-amber-500/20 bg-amber-500/5 text-amber-400 text-sm italic">
+              <span class="material-symbols-outlined text-amber-400">admin_panel_settings</span>
+              {% trans "Administrator Mode (Pre-visualization)" %}
+            </div>
+          {% endif %}
+        {% else %}
+          <!-- Call to Action for Guest Users -->
+          <a href="{% url 'login' %}"
+            class="flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-bold transition-all border border-white/10 bg-white/5 hover:bg-white/10 text-on-surface hover:border-white/20 active:scale-95 text-center group text-sm">
+            <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">login</span>
+            {% trans "Log in to customize your experience" %}
+          </a>
+        {% endif %}
       </div>
     </div>
   </div>
